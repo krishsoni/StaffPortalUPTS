@@ -11,7 +11,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // parse requests of content-type - application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '5mb' }));
 
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
