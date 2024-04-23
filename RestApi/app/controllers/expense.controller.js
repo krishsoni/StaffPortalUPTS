@@ -103,3 +103,41 @@ exports.getExpenseByEmpId = (req, res)=>{
          res.send(results);
      });
 };
+
+exports.getExpenseView = (req,res) =>{
+    console.log('came here--->',req);
+        Expense.aggregate([
+            {
+              $lookup: {
+                from: "employees",
+                localField: "empId",
+                foreignField: "_id",
+                as: "employee"
+              }
+            },
+            {
+              $unwind: "$employee"
+            },
+            {
+                $project: {
+                  _id: 0, // Exclude _id field
+                  expenseId: "$_id",
+                  amount: 1, // Include fields from expenses collection
+                  createdAt: 1,
+                  employeeId: "$employee._id",
+                  empId: "$employee.firstname", // Include fields from employees collection
+                  projectNumber: 1,
+                  expenseType :1,
+                  floor: 1,
+                  pour: 1,
+                  noofWorkers: 1,
+                  worktype: 1,
+                  remarks: 1
+    
+                }
+              }
+          ], function(err, results) {
+            console.log(results);
+             res.send(results);
+         });
+    };

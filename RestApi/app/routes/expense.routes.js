@@ -13,5 +13,8 @@ module.exports = (app) => {
     // Update a Note with noteId
     app.put('/expense/:id', expense.update);
 
-    app.get('/expense/getByEmpId/:id', expense.getExpenseByEmpId)
+    app.get('/expense/getByEmpId/:id', expense.getExpenseByEmpId);
+
+    app.get('/expenseDetails/GetView',expense.getExpenseView)
+
 }
