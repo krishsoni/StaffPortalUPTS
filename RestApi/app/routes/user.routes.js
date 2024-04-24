@@ -15,7 +15,7 @@ module.exports = (app) => {
     app.get('/user/:id', user.findOne);
 
     // Update a Note with noteId
-    app.put('/user/:noteId', user.update);
+    app.put('/user/:id', user.update);
 
     // Delete a Note with noteId
     app.delete('/user/:noteId', user.delete);
@@ -23,4 +23,5 @@ module.exports = (app) => {
     app.post('/user/getuserbyUserName', user.getuserbyUserName);
 
     app.post('/user/getuserbyName', user.getuserbyName);
+
 }

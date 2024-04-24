@@ -125,7 +125,7 @@ exports.getExpenseView = (req,res) =>{
                   amount: 1, // Include fields from expenses collection
                   createdAt: 1,
                   employeeId: "$employee._id",
-                  empId: "$employee.firstname", // Include fields from employees collection
+                  empName: "$employee.firstname", // Include fields from employees collection
                   projectNumber: 1,
                   expenseType :1,
                   floor: 1,

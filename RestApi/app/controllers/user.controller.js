@@ -1,6 +1,8 @@
 const User = require('../models/user.model.js');
 const  genToken  = require('../auth/auth.js');
 
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 // Create and Save a new User
 exports.create = (req, res) => {
   // Validate request
@@ -23,7 +25,8 @@ const user = new User({
     postalcode: req.body.postalcode,
     password: req.body.password,
     isadmin : req.body.isadmin,
-    empId : req.body.empId
+    empId : req.body.empId,
+    passwordChange: false
 });
 
 // Save User in the database
@@ -117,7 +120,34 @@ exports.getuserbyName = (req,res) => {
 
 // Update a User identified by the UserId in the request
 exports.update = (req, res) => {
-
+    if(!req.params.id) {
+        return res.status(400).send({
+            message: "user id can not be empty"
+        });
+    }  
+    // Find note and update it with the request body
+    User.findByIdAndUpdate(new ObjectId(req.params.id), {
+        password: req.body.password,
+        passwordChange: req.body.passwordChange
+    }, {new: true})
+    .then(user => {
+        if(!user) {
+            return res.status(404).send({
+                message: "user not found with id " + req.params.id
+            });
+        }
+        res.send(user);
+    }).catch(err => {
+        console.log(err);
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "user not found with id " + req.params.id
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating user with id " + req.params.id
+        });
+    });
 };
 
 // Delete a User with the specified UserId in the request

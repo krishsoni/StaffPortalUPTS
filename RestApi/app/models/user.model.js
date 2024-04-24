@@ -11,7 +11,8 @@ const UserSchema = mongoose.Schema({
     postalcode: String,
     password: String,
     isadmin : Boolean,
-    empId:Number
+    empId:Number,
+    passwordChange: Boolean
 }, {
     timestamps: true
 });
