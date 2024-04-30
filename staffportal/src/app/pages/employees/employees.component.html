@@ -1,0 +1,170 @@
+<div *ngIf="addemployee=== false">
+<div class="header bg-gradient-info pb-8 pt-5">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="row card-header border-0">
+          <div class="col-sm-6">
+            <h3 class="mb-0">Employees</h3>
+          </div>
+          <div *ngIf="addbtn === true" class="col-sm-6">
+            <button class="btn btn-success btn-sm float-right" (click)="addEmployeeBtn()">
+                Add New Employee <i class="fas fa-user"></i>
+            </button>
+        </div>
+        <div *ngIf="addbtn === false" class="col-sm-6">
+          <button class="btn btn-warning btn-sm float-right" (click)="back()">
+              Back <i class="fas fa-backward"></i>
+          </button>
+      </div>
+</div>
+<div class="card-body bg-secondary">
+  <ag-grid-angular class="ag-theme-quartz"
+  style="width: 100%; height: 600px;" [columnDefs]="colDefs" [rowData]="rowData" [gridOptions]="gridOptions"
+  [pagination]="true" [autoSizeStrategy]="autoSizeStrategy" (gridReady)="onGridReady($event)"
+  (rowEditingStopped)="onRowEditingStopped($event)"
+    (rowEditingStarted)="onRowEditingStarted($event)"
+    (cellClicked)="onCellClicked($event)"
+    [editType]="fullRow"
+    [suppressClickEdit]="true">
+  </ag-grid-angular>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div *ngIf="addemployee=== true">
+  <div class="header bg-gradient-gray pb-8 pt-5">
+    <div class="container-fluid">
+      <div class="header-body">
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="row card-header border-0">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Add New Employee</h3>
+            </div>
+            <div *ngIf="addbtn === false" class="col-sm-6">
+              <button class="btn btn-warning btn-sm float-right" (click)="back()">
+                  Back <i class="fas fa-backward"></i>
+              </button>
+          </div>
+          </div>
+           <div class="card-body">
+            
+            <div style="width: 100%">
+              <div class="card card-stats mb-4 mb-lg-0">
+                <div class="card-body">
+                  <form ngNativeValidate #form>
+                    <div class="pl-lg-4">
+                      <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-empNo">Employee No</label>
+                            <input [(ngModel)]="empNo"[ngModelOptions]="{standalone: true}" required type="text" id="input-empNo" class="form-control form-control-alternative" placeholder="Enter Emp Number" >
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-firstname">Employee Name</label>
+                            <input [(ngModel)]="firstname"[ngModelOptions]="{standalone: true}" required type="text" id="input-firstname" class="form-control form-control-alternative" placeholder="Enter Emp Name" >
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-mobilenumber">Mobile No</label>
+                            <input [(ngModel)]="mobilenumber"[ngModelOptions]="{standalone: true}" required type="number" id="input-mobilenumber" class="form-control form-control-alternative" placeholder="Enter Mobile No">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-username">Username</label>
+                            <input [(ngModel)]="username"[ngModelOptions]="{standalone: true}" required type="text" id="input-username" class="form-control form-control-alternative" placeholder="Enter Username" >
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-city">City</label>
+                            <input [(ngModel)]="city"[ngModelOptions]="{standalone: true}" required type="text" id="input-city" class="form-control form-control-alternative" placeholder="Enter City" >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pl-lg-4">
+                        <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                              <label class="form-control-label" for="input-manager">Project Coordinator</label>
+                              <input [(ngModel)]="manager"[ngModelOptions]="{standalone: true}" required type="text" id="" class="form-control form-control-alternative" placeholder="Enter Project Coordinator Name" >
+                          </div>
+                        </div>
+                        <!-- <div class="col-lg-6">
+                          <div class="form-group">
+                              <label class="form-control-label" for="input-floor">No of Floors</label>
+                              <input [(ngModel)]="floor"[ngModelOptions]="{standalone: true}" required type="text" id="input-floor" class="form-control form-control-alternative" placeholder="Enter Floors" >
+                          </div>
+                        </div> -->
+                        </div>
+                        <div class="">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="input-gratuity">Gratuity</label>
+                                <input [(ngModel)]="gratuity"[ngModelOptions]="{standalone: true}" required type="text" id="input-gratuity" class="form-control form-control-alternative" placeholder="Enter Gratuity" >
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="input-bonus">Bonus</label>
+                                <input [(ngModel)]="bonus"[ngModelOptions]="{standalone: true}" required type="text" id="input-bonus" class="form-control form-control-alternative" placeholder="Enter Bonus" >
+                            </div>
+                          </div>
+                          </div>
+                    </div>
+                    <!-- <div class="pl-lg-4">
+                      <div class="">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-control-label" for="input-workType">WorkType</label>
+                            <input [(ngModel)]="workType"[ngModelOptions]="{standalone: true}" required type="text" id="input-workType" class="form-control form-control-alternative" placeholder="Enter Work Type" >
+                        </div>
+                      </div>
+                      </div>
+                      
+                  </div> -->
+                    
+                    <hr class="my-4" />
+                    <div class="text-center">
+                      <button title="Submit" class="btn btn-success my-4" (click)="addEmployee()">
+                        Submit</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- <div class="col-sm-8 text-center">
+          <span class="badge badge-primary text-center" [routerLink]="['/home']">Back to Home</span>
+        </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>

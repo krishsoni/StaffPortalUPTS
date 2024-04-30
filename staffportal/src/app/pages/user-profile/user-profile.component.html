@@ -1,0 +1,121 @@
+<div class="header pb-6 pt-5 pt-lg-8 d-flex align-items-center">
+  <!-- Mask -->
+  <span class="mask bg-gradient-info opacity-8"></span>
+  <!-- Header container -->
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Profile Details : {{username}}</h3>
+            </div>
+            <!-- <div class="col-4 text-right">
+              <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+            </div> -->
+          </div>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col">
+                <h5>Emp No: {{empNo}}</h5>
+                <h5>Username: {{username}}</h5>
+                <h5>Mobile no: {{phonenumber}}</h5>
+                <h5>Supervisor: {{manager}}</h5>
+                <h5>City: {{city}}</h5>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+      <div class="card card-profile shadow">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <!-- <div class="card-profile-image">
+              <a href="javascript:void(0)">
+                <img src="assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
+              </a>
+            </div> -->
+          </div>
+        </div>
+        <div class="card-header text-center border-0 pt-md-4 pb-0 pb-md-4">
+            <h5>Expenses Raised</h5>
+        </div>
+        <div class="card-body pt-0 pt-md-4">
+          <!-- <div class="row">
+            <div class="col">
+              <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                <div>
+                  <span class="heading">{{explength}}</span>
+                  <span class="description">Expenses Raised</span>
+                </div>
+                <div>
+                  <span class="heading">{{totalexpofemp}}</span>
+                  <span class="description">Amount</span>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="text-dark"><b>Project No</b></th>
+                  <th scope="col" class="text-dark"><b>No of Expenses</b></th>
+                  <th scope="col" class="text-dark"><b>Amount</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let exp of expData">
+                  <td class="text-center">
+                    <label class="text-dark"  for="">{{exp.projectNumber}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark"  for="">{{exp.count}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark" for="">{{exp.totalAmount}}</label>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-center">
+                    <label class="text-dark" style="font-weight: bold;" for="">Total: {{projectCount}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark" style="font-weight: bold;" for="">{{explength}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark" style="font-weight: bold;" for="">{{totalexpofemp}}</label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <span style="cursor: pointer;" class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
+            </div>
+          </div>
+          <!-- <div class="">
+            <h3>
+              Jessica Jones<span class="font-weight-light">, 27</span>
+            </h3>
+             <div class="h5 font-weight-300">
+              <i class="ni location_pin mr-2"></i>Bucharest, Romania
+            </div>
+            <div class="h5 mt-4">
+              Project No  - Expenses Raised - Amount
+            </div>
+            <div class="h5 mt-4" *ngFor="let exp of expData">
+              {{exp.projectNumber}} - {{exp.count}} - {{exp.totalAmount}}
+            </div>
+            <hr class="my-4" />
+            <a [routerLink]="['/home']">Go To Home</a>
+          </div> -->
+        </div>
+      </div>
+    </div>
+   
+  </div>
+</div>

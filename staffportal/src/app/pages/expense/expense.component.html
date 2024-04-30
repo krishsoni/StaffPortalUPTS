@@ -1,0 +1,335 @@
+<div *ngIf="createexpense=== true">
+<div class="header pb-8 pt-lg-8 d-flex align-items-center" style="min-height: 50px;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-info opacity-8"></span>
+  
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <a class="text-dark text-center" (click)="backtoMenu()"><i
+                class="fas fa-backward"></i><b> Back</b></a>
+            </div>
+                <div class="col-4">
+                  <h5 class="mb-0">Add Expense</h5>
+                </div>
+                <div class="col-4">
+                  <span class="btn-warning btn-sm float-right">
+                    {{ date | date: "dd-MM-yyyy" }}
+                  </span>
+              </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-control-label " for="input-state">State: &nbsp;</label>
+        <select (change)="onstateChange()" [(ngModel)]="state" class="btn btn-pill"
+                    style="background: white;padding:4px !important">
+                    <option [ngValue]="undefined" disabled>Select State</option>
+                    <option *ngFor="let state of stateslist" [value]="state">{{state}}</option>
+        </select>
+          </div>
+          <div class="form-group">
+            <label class="form-control-label " for="input-city">City: &nbsp;</label>
+        <select (change)="oncityChange()" [(ngModel)]="selectedcity" class="btn btn-pill"
+                    style="background: white;padding:4px !important">
+                    <option [ngValue]="undefined" disabled>Select City</option>
+                    <option *ngFor="let city of citylist" [value]="city">{{city}}</option>
+        </select>
+          </div>
+          <div class="form-group">
+            <label class="form-control-label " for="input-project">Project: &nbsp;</label>
+        <select (change)="onvalueChange()" [(ngModel)]="projectName" class="btn btn-pill"
+                    style="background: white;padding:4px !important" >
+                    <option [ngValue]="undefined" disabled>Select Project</option>
+                    <option *ngFor="let project of projectslists" [value]="project.projectName">{{project.projectName}}</option>
+        </select>
+          </div>
+        <div *ngIf="projectselected===true" class="form-group">
+          <form #expForm="ngForm">
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label " for="input-projectNo">Project No: &nbsp;</label>
+                    <label class="form-control-label " for="input-projectNumber">{{selectedProject.projectNumber}}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label " for="sprojectfloor">Slab: &nbsp;</label>
+                    <select id="sprojectfloor" name="sprojectfloor"  (change)="onfloorChange()"  class="btn btn-pill" [(ngModel)]="sprojectfloor"
+                     style="background: white;padding:4px !important" required #sprojectfloorcontrol="ngModel">
+                      <option value="undefined" disabled>Select Slab</option>
+                      <option *ngFor="let floor of floors" >{{floor}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="sprojectfloorcontrol.touched && sprojectfloorcontrol.invalid">
+                      Select Slab
+                    </span>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label " for="sprojectpour">Pour: &nbsp;</label>
+                    <select id="sprojectpour" name="sprojectpour" (change)="onpourChange()"  class="btn btn-pill" [(ngModel)]="sprojectpour"
+                     style="background: white;padding:4px !important" required #sprojectpourcontrol="ngModel">
+                      <option [ngValue]="undefined" disabled>Select Pour</option>
+                      <option *ngFor="let pour of pours">{{pour}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="sprojectpourcontrol.touched && sprojectpourcontrol.invalid">
+                      Select Pour
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label " for="sworktype">Work: &nbsp;</label>
+                    <select id="sworktype" name="sworktype" (change)="onworkChange()"  class="btn btn-pill" [(ngModel)]="sworktype"
+                     style="background: white;padding:4px !important" required #sprojectwpcontrol="ngModel">
+                    <option [ngValue]="undefined" disabled>Select WorkType</option>
+                    <option *ngFor="let worktype of worktypes">{{worktype}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="sprojectwpcontrol.touched && sprojectwpcontrol.invalid">
+                      Select WorkType
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div>
+              Form : {{expForm.invalid }}
+            </div> -->
+            <div class="text-center">
+              <button title="Fill Expenses" [disabled]="expForm.invalid"  type="button" class="btn btn-success my-4" (click)="fillexpenses()">
+                Fill Expenses</button>
+            </div>
+            <!-- Address <span class="badge badge-pill badge-success">Fill Expenses</span> -->
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div *ngIf="submit=== true">
+  <div class="header pb-8 pt-lg-8 d-flex align-items-center" style="min-height: 50px;">
+    <span class="mask bg-gradient-info opacity-8"></span>
+    
+  </div>
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-xl-8 order-xl-1">
+        <div class="card bg-secondary shadow">
+          <div class="card-header bg-white border-0">
+            <div class="row align-items-center">
+              <div class="col-4">
+                <a class="text-dark" (click)="backtoMenu()"><i
+                  class="fas fa-backward"></i><b> Back</b></a>
+              </div>
+                  <div class="col-4">
+                    <h5 class="mb-0">Add Expense</h5>
+                  </div>
+                  <div class="col-4">
+                    <span class="btn-warning btn-sm float-right">
+                      {{ date | date: "dd-MM-yyyy" }}
+                    </span>
+                </div>
+              <!-- <div class="col-4 text-right">
+                <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+              </div> -->
+            </div>
+          </div>
+          <!-- <div class="table-responsive">
+            <table mobileTable>
+              <thead>
+                <tr>
+                  <th scope=""><b>Expenses</b></th>
+                  <th scope=""><b>No of Workers</b></th>
+                  <th scope=""><b>Amount</b></th>
+                  <th scope=""><b>Remarks</b></th>
+                  <th scope=""><b>Attachment</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let exptypes of data; let i = index;">
+                  <td label="Expense:-">
+                      <label class="" for="input-exptypes[i]" style="font-weight: bold;">{{exptypes[0]}}</label>
+                  </td>
+                  <td label="No of workers:">
+                    <input style="width: 30%;" type="number" id="exp{{exptypes}}" [(ngModel)]="exptypes[1]" [ngModelOptions]="{standalone: true}" class="" placeholder="" >
+                  </td>
+                  <td label="Amount:">
+                      <div>
+                        <input style="width: 100%;" type="number" id=exptypes{{i}} [(ngModel)]="exptypes[2]" [ngModelOptions]="{standalone: true}" class="" placeholder="Enter Amount" >
+                      </div>
+                  </td>
+                  <td label="Remarks:">
+                    <div>
+                      <input style="width: 100%" type="text" id=exptypes{{i}} [(ngModel)]="exptypes[3]" [ngModelOptions]="{standalone: true}" class="" placeholder="Enter Remarks" >
+                    </div>
+                </td>
+                <td label="Attachment:">
+                  <div class="btn-sm btn-primary" style="width: 80%;">
+                    <input type="file" style="width: 100%" id=exptypes{{i}} [(ngModel)]="exptypes[4]" (change)="onFileSelected($event)"  [ngModelOptions]="{standalone: true}" class="" placeholder="Add File"  >
+                  </div>
+              </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <button title="Submit Expenses" type="button" class="btn btn-success my-4" ng-model="submit" (click)="submitexpenses()">
+                Submit</button>
+            </div>
+          </div> -->
+          <!-- <div class="col-xl-4"> -->
+            <div class="card bg-secondary shadow">
+              <div class="card-header bg-transparent">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h5>Project: {{projectName}}</h5>
+                    <h5>Slab: {{sprojectfloor}}</h5>
+                    <h5>Pour: {{sprojectpour}}</h5>
+                    <h5>Worktype: {{sworktype}}</h5>
+                  </div>
+                </div>
+              </div>
+                <!-- <div class="form-group">
+                  <label class="form-control-label text-dark" >Expense Type:  &nbsp;</label>
+              <select (change)="onworktypechange()" [(ngModel)]="exptype" class="btn btn-pill"
+                          style="background: white;padding:4px !important">
+                          <option value="undefined" disabled selected>Select Exp Type</option>
+                          <option *ngFor="let worktype of expenseTypes" [value]="worktype">{{worktype}}</option>
+              </select>
+                </div> -->
+                <div class="table-responsive">
+            <table mobileTable>
+              <thead>
+                <tr>
+                  <th scope=""><b>Expenses</b></th>
+                  <th scope=""><b>No of Workers</b></th>
+                  <th scope=""><b>Amount</b></th>
+                  <th scope=""><b>Remarks</b></th>
+                  <th scope=""><b>Attachment</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td label="Expense:-">
+                    <select (change)="onworktypechange()" [(ngModel)]="exptype" class="btn btn-pill"
+                      style="background: white;padding:4px !important">
+                      <option value="undefined" disabled selected>Select Expense Type</option>
+                      <option *ngFor="let worktype of expenseTypes" [value]="worktype">{{worktype}}</option>
+                    </select>
+                  </td>
+                  <td label="No of workers:">
+                    <input style="width: 30%;" type="number" [(ngModel)]="noofworkers" [[ngModelOptions]="{standalone: true}" class="" placeholder="" >
+                  </td>
+                  <td label="Amount:">
+                      <div>
+                        <input style="width: 100%;" type="number"  [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" class="" placeholder="Enter Amount" >
+                      </div>
+                  </td>
+                  <td label="Remarks:">
+                    <div>
+                      <input style="width: 100%" type="text" [(ngModel)]="remarks" [ngModelOptions]="{standalone: true}" class="" placeholder="Enter Remarks" >
+                    </div>
+                </td>
+                <td label="Attachment:">
+                  <div class="btn-sm btn-primary" style="width: 80%;">
+                    <input type="file" style="width: 100%" [(ngModel)]="file" (change)="onFileSelected($event)"  [ngModelOptions]="{standalone: true}" class="" placeholder="Add File"  >
+                  </div>
+              </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col">
+            <h5>No of Expenses Submitted:{{expnum}}</h5>
+          </div>
+            <div class="row align-items-center">
+              <div class="col-6 text-center">
+                <button title="Submit Expenses" type="button" class="btn btn-success my-4" ng-model="submit" (click)="submitExp()">
+                  Submit</button>
+              </div>
+              <div class="col-6 text-center" *ngIf="completeexp=== true">
+                <button title="Submit Expenses" type="button" class="btn btn-warning my-4" ng-model="submit" (click)="completeExp()">
+                  Complete</button>
+              </div>
+            </div>
+            </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+<div *ngIf="submitexpensesdetails=== true">
+  <div class="header bg-gradient-info pb-8 pt-5">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="col-sm-8 text-center">
+          <h3 class="text-white">Staff Portal by UPTS/PMSS</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <h3 class="mb-0 text-center">Thankyou!</h3>
+          </div>
+          <div class="col-sm-4 text-center">
+            <span class="badge badge-primary">{{username}}</span>
+          </div>
+           <div class="card-body">
+            
+            <div style="width: 20rem;">
+              <div class="card card-stats mb-4 mb-lg-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-8 text-center">
+                      <span class="badge badge-primary text-center">Project: {{projectName}}</span>
+                    </div>
+                    
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <br/>
+                      <h5 class="card-title text-uppercase mb-0">Your raised Expense Amount</h5>
+                      <span class="h2 mb-0 text-right">₹{{totalexpamt}}</span>
+                    </div>
+                    <!-- <div class="col text-right">
+                      <button type="button" class="btn btn-danger btn-sm">-</button>
+                      <input class="col-sm-1" type="number" value="1">
+                      <button type="button" class="btn btn-success btn-sm">+</button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-sm-8 text-center">
+          <span style="cursor: pointer;" class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+    
+  

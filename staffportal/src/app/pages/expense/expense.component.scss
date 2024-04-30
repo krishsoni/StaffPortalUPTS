@@ -1,0 +1,41 @@
+th, td {background: #ffffff; padding: 10px}
+//#f7fafc;
+@media screen and (max-width: 600px) {
+  table[mobileTable] {
+    width: 100%;
+  }
+
+  table[mobileTable] thead {
+    display: none;
+  }
+
+  table[mobileTable] tr {
+    border: solid #000000;
+    display: block;
+    background-color: #f7fafc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+  table[mobileTable] tr:hover  {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  table[mobileTable] td {
+    border-bottom: 1px solid #eee;
+  }
+
+  table[mobileTable] tr {
+    margin-bottom: 8px;
+  }
+
+  table[mobileTable] td {
+    display: flex;
+  }
+  
+  table[mobileTable] td::before {
+    content: attr(label);
+    //font-weight: bold;
+    width: 120px;
+    min-width: 120px;
+  }
+}

@@ -1,0 +1,280 @@
+<div *ngIf="addproject=== false">
+<div class="header bg-gradient-info pb-8 pt-5">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="row card-header border-0">
+          <div class="col-sm-6">
+            <h3 class="mb-0">Projects</h3>
+          </div>
+          <div *ngIf="addbtn === true" class="col-sm-6">
+            <button class="btn btn-success btn-sm float-right" (click)="addProject()">
+                Add New Project <i class="fas fa-receipt"></i>
+            </button>
+        </div>
+        <div *ngIf="addbtn === false" class="col-sm-6">
+          <button class="btn btn-warning btn-sm float-right" (click)="back()">
+              Back <i class="fas fa-backward"></i>
+          </button>
+      </div>
+</div>
+<div class="card-body bg-secondary">
+  <ag-grid-angular class="ag-theme-quartz"
+  style="width: 100%; height: 600px;" [columnDefs]="colDefs" [rowData]="rowData" [gridOptions]="gridOptions"
+  [pagination]="true" [autoSizeStrategy]="autoSizeStrategy" (gridReady)="onGridReady($event)"
+  (rowEditingStopped)="onRowEditingStopped($event)"
+    (rowEditingStarted)="onRowEditingStarted($event)"
+    (cellClicked)="onCellClicked($event)"
+    [editType]="fullRow"
+    [getRowStyle]="getRowStyle"
+    [suppressClickEdit]="true">
+  </ag-grid-angular>
+</div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div *ngIf="addproject=== true">
+  <div class="header bg-gradient-info pb-8 pt-5">
+    <div class="container-fluid">
+      <div class="header-body">
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="row card-header border-0">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Add New Project</h3>
+            </div>
+            <div *ngIf="addbtn === false" class="col-sm-6">
+              <button class="btn btn-warning btn-sm float-right" (click)="back()">
+                  Back <i class="fas fa-backward"></i>
+              </button>
+          </div>
+          </div>
+           <div class="card-body">
+            
+            <div style="width: 100%">
+              <div class="card card-stats mb-4 mb-lg-0">
+                <div class="card-body">
+                  <form ngNativeValidate #form>
+                    <div class="pl-lg-4">
+                      <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-projectNumber">Project No</label>
+                            <input [(ngModel)]="projectNumber"[ngModelOptions]="{standalone: true}" required type="number" id="input-projectNumber" class="form-control form-control-alternative" placeholder="Enter Project No" >
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-projectName">Project Name</label>
+                            <input [(ngModel)]="projectName"[ngModelOptions]="{standalone: true}" required type="text" id="input-projectName" class="form-control form-control-alternative" placeholder="Enter Project Name">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-state">State</label>
+                            <input [(ngModel)]="state"[ngModelOptions]="{standalone: true}" required type="text" id="input-state" class="form-control form-control-alternative" placeholder="Enter State" >
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-city">City</label>
+                            <input [(ngModel)]="city"[ngModelOptions]="{standalone: true}" required type="text" id="input-city" class="form-control form-control-alternative" placeholder="Enter City" >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pl-lg-4">
+                        <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                              <label class="form-control-label" for="input-supervisor">Project Coordinator</label>
+                              <input [(ngModel)]="supervisor"[ngModelOptions]="{standalone: true}" required type="text" id="input-supervisor" class="form-control form-control-alternative" placeholder="Enter Project Coordinator Name" >
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                              <label class="form-control-label" for="input-floor">No of Slabs</label>
+                              <input [(ngModel)]="floor"[ngModelOptions]="{standalone: true}" required type="text" id="input-floor" class="form-control form-control-alternative" placeholder="Enter Slabs" >
+                          </div>
+                        </div>
+                        </div>
+                        <div class="">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="input-pour">Pour</label>
+                                <input [(ngModel)]="pour"[ngModelOptions]="{standalone: true}" required type="text" id="input-pour" class="form-control form-control-alternative" placeholder="Enter Pour" >
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="input-remarks">Remarks</label>
+                                <input [(ngModel)]="remarks"[ngModelOptions]="{standalone: true}" required type="text" id="input-remarks" class="form-control form-control-alternative" placeholder="Enter Remarks" >
+                            </div>
+                          </div>
+                          </div>
+                    </div>
+                    <div class="pl-lg-4">
+                      <div class="">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-control-label" for="input-workType">WorkType</label>
+                            <input [(ngModel)]="workType"[ngModelOptions]="{standalone: true}" required type="text" id="input-workType" class="form-control form-control-alternative" placeholder="Enter Work Type" >
+                        </div>
+                      </div>
+                      </div>
+                      
+                  </div>
+                    
+                    <hr class="my-4" />
+                    <div class="text-center">
+                      <button title="Submit" class="btn btn-success my-4" (click)="submitproject()">
+                        Submit</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- <div class="col-sm-8 text-center">
+          <span class="badge badge-primary text-center" [routerLink]="['/home']">Back to Home</span>
+        </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- <div *ngIf="editproject=== true">
+    <div class="header bg-gradient-info pb-8 pt-5">
+      <div class="container-fluid">
+        <div class="header-body">
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid mt--7">
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+            <div class="row card-header border-0">
+              <div class="col-sm-6">
+                <h3 class="mb-0">Edit Project{{editrowData.ProjectName}}</h3>
+              </div>
+              <div *ngIf="addbtn === false" class="col-sm-6">
+                <button class="btn btn-warning btn-sm float-right" (click)="back()">
+                    Back <i class="fas fa-backward"></i>
+                </button>
+            </div>
+            </div>
+             <div class="card-body">
+              
+              <div style="width: 100%">
+                <div class="card card-stats mb-4 mb-lg-0">
+                  <div class="card-body">
+                    <form ngNativeValidate #form>
+                      <div class="pl-lg-4">
+                        <div class="">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="input-projectNumber">Project No</label>
+                              <input [(ngModel)]="projectNumber"[ngModelOptions]="{standalone: true}" required type="number" id="input-projectNumber" class="form-control form-control-alternative" placeholder="Enter Project No" >
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="input-projectName">Project Name</label>
+                              <input [(ngModel)]="projectName"[ngModelOptions]="{standalone: true}" required type="text" id="input-projectName" class="form-control form-control-alternative" placeholder="Enter Project Name">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="input-state">State</label>
+                              <input [(ngModel)]="state"[ngModelOptions]="{standalone: true}" required type="text" id="input-state" class="form-control form-control-alternative" placeholder="Enter State" >
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="input-city">City</label>
+                              <input [(ngModel)]="city"[ngModelOptions]="{standalone: true}" required type="text" id="input-city" class="form-control form-control-alternative" placeholder="Enter City" >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="pl-lg-4">
+                          <div class="">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="input-supervisor">Supervisor</label>
+                                <input [(ngModel)]="supervisor"[ngModelOptions]="{standalone: true}" required type="text" id="input-supervisor" class="form-control form-control-alternative" placeholder="Enter Supervisor Name" >
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="input-floor">No of Floors</label>
+                                <input [(ngModel)]="floor"[ngModelOptions]="{standalone: true}" required type="text" id="input-floor" class="form-control form-control-alternative" placeholder="Enter Floors" >
+                            </div>
+                          </div>
+                          </div>
+                          <div class="">
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                  <label class="form-control-label" for="input-pour">Pour</label>
+                                  <input [(ngModel)]="pour"[ngModelOptions]="{standalone: true}" required type="text" id="input-pour" class="form-control form-control-alternative" placeholder="Enter Pour" >
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                              <div class="form-group">
+                                  <label class="form-control-label" for="input-remarks">Remarks</label>
+                                  <input [(ngModel)]="remarks"[ngModelOptions]="{standalone: true}" required type="text" id="input-remarks" class="form-control form-control-alternative" placeholder="Enter Remarks" >
+                              </div>
+                            </div>
+                            </div>
+                      </div>
+                      <div class="pl-lg-4">
+                        <div class="">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                              <label class="form-control-label" for="input-workType">WorkType</label>
+                              <input [(ngModel)]="workType"[ngModelOptions]="{standalone: true}" required type="text" id="input-workType" class="form-control form-control-alternative" placeholder="Enter Work Type" >
+                          </div>
+                        </div>
+                        </div>
+                        
+                    </div>
+                      
+                      <hr class="my-4" />
+                      <div class="text-center">
+                        <button title="Submit" class="btn btn-success my-4" (click)="submitproject()">
+                          Submit</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div> -->

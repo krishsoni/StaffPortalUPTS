@@ -1,0 +1,36 @@
+<div class="header bg-gradient-info pb-8 pt-5">
+    <div class="container-fluid">
+      <div class="header-body">
+        <h3 class="text-white" style="text-align: center;">Staff Portal by UPTS/PMSS</h3>
+        <h4 class="text-white text-uppercase" style="text-align: center;">Welcome {{username}}</h4>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+<div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0" style="text-align: center;" >
+          </div>
+           <div class="card-body">            
+    <div class="card">
+      <button type="button" class="btn bg-primary" style="margin-right: 0; width: 100%;" (click)="click()"
+        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+        <span class="text-white"><span class="fa fa-coins"></span> <b> Balance Amount</b> </span>
+        <br />
+      </button>
+      <br />
+    </div>
+    <div class="card">
+      <button type="button" class="btn bg-primary" style="margin-right: 0; width: 100%;" (click)="click2()"
+        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+        <span class="text-white"><span class="fa fa-rupee-sign"></span> <b> Add Expense</b> </span>
+        <br />
+      </button>
+    </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>

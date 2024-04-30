@@ -1,0 +1,259 @@
+<div class="header bg-gradient-info pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col" (click)="projects()" style="cursor: pointer;">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Projects</h5>
+                  <span class="h2 font-weight-bold mb-0">{{numofprojects}}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>Projects</span>
+                <span class="text-nowrap">Since last month</span>
+              </p> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col" (click)="employees()" style="cursor: pointer;">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Employees</h5>
+                  <span class="h2 font-weight-bold mb-0">{{numofemployees}}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                    <i class="fas fa-users"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-danger mr-2"><i class="fas fa-arrow-down"></i></span>
+                <span class="text-nowrap">Since last week</span>
+              </p> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Total Balance</h5>
+                  <span class="h2 font-weight-bold mb-0">{{totalbalance}}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                    <i class="fa fa-coins"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-warning mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
+                <span class="text-nowrap">Since yesterday</span>
+              </p> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Total Expenses</h5>
+                  <span class="h2 font-weight-bold mb-0">{{totalexpense}}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                    <i class="fa fa-rupee-sign"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"><i class="fas fa-arrow-up"></i> 12%</span>
+                <span class="text-nowrap">Since last month</span>
+              </p> [defaultExcelExportParams]="defaultExcelExportParams"-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-8 mb-5 mb-xl-0">
+      <div class="card bg-gradient-primary shadow">
+        <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col-6">
+              <h6 class="text-uppercase text-white ls-1 mb-1">Check Expense By Employee Id</h6>
+              <h2 class="text-white mb-0">Expenses</h2>
+            </div>
+            <div *ngIf="expbtn===true" class="col-6 text-right">
+              <button id="exportButton" class="btn-sm btn-warning" (click)="expclick()">
+                Export to Excel</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-secondary">
+            <div class="form-group">
+              <label class="form-control-label" for="input-employee">Employee:  </label>
+          <select (change)="onexpvalueChange()" [(ngModel)]="expId" class="btn btn-pill"
+                      style="background: white;padding:4px !important;margin-left:10px;">
+                      <option value="undefined" disabled selected>Select Employee</option>
+                      <option *ngFor="let emp of empres" [value]="emp._id">{{emp.empNo}} : {{emp.firstname}}</option>
+          </select>
+            </div>
+            <!-- //class="ag-theme-quartz" -->
+        <ag-grid-angular class="ag-theme-quartz" 
+        style="width: 100%; height: 300px;" [columnDefs]="colDefs" [gridOptions]="gridOptions"
+        [rowData]="rowData" [pagination]="true" [autoSizeStrategy]="autoSizeStrategy"
+        [suppressExcelExport]="true">
+        </ag-grid-angular>
+      </div>
+      </div>
+    </div>
+    <div class="col-xl-4">
+      <div class="card bg-gradient-primary shadow">
+        <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase text-white ls-1 mb-1">Update Balance</h6>
+              <h2 class="text-white mb-0">Add Balance</h2>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-secondary">
+          <div class="form-group">
+            <label class="form-control-label text-dark" >Employee:  &nbsp;</label>
+        <select (change)="onemplvalueChange()" [(ngModel)]="emplId" class="btn btn-pill"
+                    style="background: white;padding:4px !important">
+                    <option value="undefined" disabled selected>Select Employee</option>
+                    <option *ngFor="let emp of empres" [value]="emp._id">{{emp.empNo}} : {{emp.firstname}}</option>
+        </select>
+          </div>
+          <div *ngIf="nobal===false">
+            <label class="form-control-label text-dark">Available Balance: {{empbalamt}}</label>
+          </div>
+          <div *ngIf="nobal===true">
+            <label class="form-control-label text-dark">Bal Not Yet Updated</label>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="text-dark"><b>Add</b></th>
+                  <th scope="col" class="text-dark"><b>Amount</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                          <label class="text-dark" style="font-weight: bold;" for="input-balance">Balance</label>
+                  </td>
+                  <td>
+                          <input [(ngModel)]="balanceamt" type="number" id="input-balance" class="" placeholder="Add Balance" >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <button title="add-balance" class="btn btn-success my-4" ng-model="submit" (click)="addbalance()">
+                Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card bg-gradient-primary shadow">
+        <div class= "card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col-6">
+              <h6 class="text-uppercase text-white ls-1 mb-1">Check Expense By Project</h6>
+              <h2 class="text-white mb-0">Expenses</h2>
+            </div>
+            <!-- <div class="col">
+              <ul class="nav nav-pills justify-content-end">
+                <li class="nav-item mr-2 mr-md-0">
+                  <a href="javascript:void(0)" class="nav-link py-2 px-3">
+                    <span class="d-none d-md-block">{{ test | date: "dd/MM/yyyy" }} </span>
+                  </a>
+                </li>
+              </ul>
+            </div> -->
+            <div *ngIf="projbtn===true" class="col-6 text-right">
+              <button id="exportButton" class="btn-sm btn-warning" (click)="projclick()">
+                Export to Excel</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-secondary">
+          <!-- Chart [defaultExcelExportParams]="defaultExcelExportParamsProj" -->
+          <div class="form-group">
+            <label class="form-control-label" for="input-employee">Project:  </label>
+        <select (change)="onprojvalueChange()" [(ngModel)]="expprojectId" class="btn btn-pill"
+                    style="background: white;padding:4px !important;margin-left:10px;">
+                    <option value="undefined" disabled selected>Select Project</option>
+                    <option *ngFor="let emp of projectresponse" [value]="emp.projectNumber">{{emp.projectName}}</option>
+        </select>
+          </div>
+          <ag-grid-angular class="ag-theme-quartz"
+        style="width: 100%; height: 300px;" [columnDefs]="colDefsProj"
+        (cellClicked)="onCellClicked($event)" [gridOptions]="gridOptionsProj"
+        [rowData]="rowDataProj" [pagination]="true"  [autoSizeStrategy]="autoSizeStrategy">
+        </ag-grid-angular>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card bg-gradient-primary shadow">
+        <div class= "card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase text-white ls-1 mb-1">Check Employee Updates</h6>
+              <h2 class="text-white mb-0">Balance, Gratuity & Bonus</h2>
+            </div>
+            <div *ngIf="empbtn===true" class="col-6 text-right">
+              <button id="exportButton" class="btn-sm btn-warning" (click)="empclick()">
+                Export to Excel</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-secondary">
+          <!-- Chart [defaultExcelExportParams]="defaultExcelExportParamsEmp" -->
+          <div class="form-group">
+            <label class="form-control-label">Employee: </label>
+        <select (change)="onempChange()" [(ngModel)]="empselected" class="btn btn-pill"
+                    style="background: white;padding:4px !important;margin-left:10px;">
+                    <option value="undefined" disabled selected>Select Employee</option>
+                    <option *ngFor="let emp of empres" [value]="emp._id">{{emp.empNo}} : {{emp.firstname}}</option>
+        </select>
+          </div>
+          <ag-grid-angular class="ag-theme-quartz"
+        style="width: 100%; height: 300px;" [columnDefs]="colDefsEmp" [gridOptions]="gridOptionsEmp"
+         [autoSizeStrategy]="autoSizeStrategy"
+        [rowData]="rowDataEmp" [pagination]="true">
+        </ag-grid-angular>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,68 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 200px;">
+  <!-- Mask -->
+  <!--background-image: url(assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top;-->
+  <span class="mask bg-gradient-info opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+      <div class="col-lg-7 col-md-10">
+        <div class="row">
+          <div class="col-3">
+            <a class="text-white" (click)="backtoMenu()" title="Back To Menu" style="cursor: pointer;"><i
+              class="fas fa-backward"></i><b> Back</b></a>
+          </div>
+          <div class="col-6">
+            <h3 class="text-white" style="text-align: center;">Balance Details</h3>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-12">
+              <h3 class="mb-0" style="text-align: center;">Balance Amount Till Today</h3>
+            </div>
+            <!-- <div class="col-4 text-right">
+              <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+            </div> -->
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card bg-red">
+            <div class="col-12">
+              <h3 class="mb-0" style="text-align: left; color: white;">Balance</h3>
+            </div>
+            <div class="col-12">
+              <h3 class="mb-0" style="text-align: right; color: white;">&#8377;{{empbalamt}}</h3>
+            </div>
+              <!-- <h3 class="text-white" style="text-align: right;">&#8377;10000</h3> -->
+        </div>
+      <br/>
+        <div class="card bg-primary">
+          <div class="col-12">
+            <h3 class="mb-0" style="text-align: left; color: white;">Gratuity</h3>
+          </div>
+          <div class="col-12">
+            <h3 class="mb-0" style="text-align: right; color: white;">&#8377;{{empgratuity}}</h3>
+          </div>
+            <!-- <h3 class="text-white" style="text-align: right;">&#8377;10000</h3> -->
+      </div>
+    <br/>
+      <div class="card bg-info">
+        <div class="col-12">
+          <h3 class="mb-0" style="text-align: left; color: white;">Bonus</h3>
+        </div>
+        <div class="col-12">
+          <h3 class="mb-0" style="text-align: right; color: white;">&#8377;{{empbonus}}</h3>
+        </div>
+          <!-- <h3 class="text-white" style="text-align: right;">&#8377;10000</h3> -->
+    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

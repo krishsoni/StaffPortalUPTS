@@ -1,0 +1,17 @@
+.ag-theme-alpine .custom-group-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .ag-theme-alpine .custom-group-header .group-expand-btn {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  .ag-theme-alpine .custom-group-header .group-expand-btn::after {
+    content: '+';
+  }
+  
+  .ag-theme-alpine .custom-group-header.collapsed .group-expand-btn::after {
+    content: '-';
+  }

@@ -1,0 +1,222 @@
+<div>
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 200px;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-gray opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="col-lg-7 col-md-10">
+      <div class="row align-items-center">
+        <a class="text-white" (click)="backtoMenu()"><i
+            class="fas fa-backward"></i><b> Back</b></a>
+        
+        <!-- <div class="col-6">
+          <a class="btn-sm text-white float-right"  title="Back To Menu" style="cursor: pointer;">
+            <i
+            class="fas fa-backward"></i><b> Back</b>
+          </a>
+      </div>
+      <div class="col-6">
+        <h3 class="mb-0 text-white text-uppercase">{{projectname}}</h3>
+      </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+                <div class="col-6">
+                  <h3 class="mb-0">Fill Expenses for</h3>
+                  <h5>{{projectName}}</h5>
+                </div>
+                <div class="col-6">
+                  <span class="btn-success btn-sm float-right">
+                    
+                  </span>
+              </div>
+            <!-- <div class="col-4 text-right">
+              <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+            </div> -->
+          </div>
+        </div>
+        <div>
+          <p> Selected Project : {{project}}</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col"><b>Expenses</b></th>
+                <th scope="col"><b>Amount</b></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                        <label class="" for="input-cashworker">Cash Worker</label>
+                </td>
+                <td>
+                        <input type="text" id="input-cashworker" class="" placeholder="Enter Amount" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-workerauto">Worker Auto</label>
+                </td>
+                <td>
+                        <input type="text" id="input-workerauto" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-workerfood">Worker Food</label>
+                </td>
+                <td>
+                        <input type="text" id="input-workerfood" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-engineerfood">Engineer Food</label>
+                </td>
+                <td>
+                        <input type="text" id="input-engineerfood" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-engineercab">Engineer Auto/Cab</label>
+                </td>
+                <td>
+                        <input type="text" id="input-engineercab" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-engineerhotel">Engineer Hotel</label>
+                </td>
+                <td>
+                        <input type="text" id="input-engineerhotel" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-workerhotel">Wrker Hotel</label>
+                </td>
+                <td>
+                        <input type="text" id="input-workerhotel" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-bustrainfare">Bus or Train Fare</label>
+                </td>
+                <td>
+                        <input type="text" id="input-bustrainfare" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-petroldiesel">Petrol/Diesel</label>
+                </td>
+                <td>
+                        <input type="text" id="input-petroldiesel" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-transport">Material Transportation</label>
+                </td>
+                <td>
+                        <input type="text" id="input-transport" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-printing">Printing/Stationary</label>
+                </td>
+                <td>
+                        <input type="text" id="input-printing" class="" placeholder="" >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                        <label class="" for="input-other">Other</label>
+                </td>
+                <td>
+                        <input type="text" id="input-other" class="" placeholder="" >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center">
+            <button title="Submit Expenses" type="button" class="btn btn-success my-4" ng-model="submit" (click)="submitexpenses()">
+              Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div *ngIf="submitexpensesdetails=== true">
+  <div class="header bg-gradient-success pb-8 pt-5">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="col-sm-8 text-center">
+          <h3 class="text-white">Staff Portal by UPTS/PMSS</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <h3 class="mb-0 text-center">Thankyou!</h3>
+          </div>
+          <div class="col-sm-4 text-center">
+            <span class="badge badge-primary">{{username}}</span>
+          </div>
+           <div class="card-body">
+            
+            <div style="width: 20rem;">
+              <div class="card card-stats mb-4 mb-lg-0">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-8 text-center">
+                      <span class="badge badge-primary text-center">Project: {{projectName}}</span>
+                    </div>
+                    
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <br/>
+                      <h5 class="card-title text-uppercase mb-0">Your raised Expense Amount</h5>
+                      <span class="h2 mb-0 text-right">₹{{total}}</span>
+                    </div>
+                    <!-- <div class="col text-right">
+                      <button type="button" class="btn btn-danger btn-sm">-</button>
+                      <input class="col-sm-1" type="number" value="1">
+                      <button type="button" class="btn btn-success btn-sm">+</button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-sm-8 text-center">
+          <span class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  
