@@ -3,7 +3,7 @@ export class updateProject {
         
         public state: String,
         public city: String,
-        public projectNumber: Number,
+        public projectNumber: String,
         public projectName: String,
         public floor: String,
         public pour: String,

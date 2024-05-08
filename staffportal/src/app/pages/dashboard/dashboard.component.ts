@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
   projectselected = false;
   test: Date = new Date();
   addBalance: Balance;
-  projectNumber: Number;
+  projectNumber: String;
   employeeName: string;
   employee: Employee;
   empId: Number;

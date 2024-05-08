@@ -78,7 +78,7 @@ gridOptions: GridOptions<Project> = {
   constructor(private http: HttpClient, private projectService: ProjectService, private toastr: ToastrService, private router : Router) { }
   state: String;	
   city:String;		
-  projectNumber:Number;	
+  projectNumber:String;	
   projectName:String;		
   floor:String;		
   pour:String;		

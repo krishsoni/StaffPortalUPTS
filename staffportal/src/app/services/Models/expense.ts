@@ -1,7 +1,7 @@
 export class Expense {
     constructor(
 
-        public projectNumber: Number,
+        public projectNumber: String,
         public empId: Number,
         public expenseType: String,
         public noofWorkers: Number,

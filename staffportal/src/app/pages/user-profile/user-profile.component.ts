@@ -21,7 +21,7 @@ export class UserProfileComponent implements OnInit {
   expenseList: any;
   explength: any;
   expData = [];
-  projectNumber: Number;
+  projectNumber: String;
   projExp: Number;
   projAmt: Number;
   projectCount: Number;

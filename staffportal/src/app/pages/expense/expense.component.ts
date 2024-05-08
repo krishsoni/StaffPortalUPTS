@@ -24,7 +24,7 @@ export class ExpenseComponent implements OnInit {
   Projects = [];
   state: string;
   selectedcity : string;
-  projectNumber : Number;
+  projectNumber : String;
   projectName : string;
   selectedProject = [];
   projectselected = false;
@@ -33,7 +33,7 @@ export class ExpenseComponent implements OnInit {
   sprojectpour: Number;
   sworktype: String;
   sexpensetype: String;
-  sprojectNumber: Number;
+  sprojectNumber: String;
   pours = [];
   floors = [];
   worktypes = [];

@@ -19,7 +19,7 @@ export interface UpdateOrderAction {
 
 export interface SelectedProject {
     projectName: string;
-    projectNumber: number;
+    projectNumber: string;
     state : string;
     selectedcity: string;
     sprojectfloor: number;
