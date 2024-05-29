@@ -64,7 +64,7 @@ export class ExpenseComponent implements OnInit {
   }
   expenseflag = false;
   exptype = "undefined";
-  noofworkers = 1;
+  noofworkers = 0;
   amount: number;
   remarks: string;
   projectdata : SelectedProject[] = [];
@@ -181,7 +181,7 @@ export class ExpenseComponent implements OnInit {
       this.file = tuple[4];
       // Do something with the values
       //console.log(this.exptype, this.noofworkers, this.amount,this.remarks);
-      if(this.exptype && this.noofworkers>0 && this.amount>0)
+      if(this.exptype && this.amount>0)
       {
         this.totalexpamt = 0;
         this.expense = new Expense(this.selectedProject['projectNumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
@@ -212,9 +212,10 @@ export class ExpenseComponent implements OnInit {
   }
   submitExp()
   {
+      this.expenseflag = false;
       if(this.exptype!="undefined")
       {
-        if(this.noofworkers>0 && this.amount>0)
+        if(this.amount>0)
         {
           this.expense = new Expense(this.selectedProject['projectNumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
           this.expenseService.createExpense(this.expense).subscribe(res=>{
@@ -231,14 +232,14 @@ export class ExpenseComponent implements OnInit {
           this.completeexp = true;
         console.log(this.exptype, this.noofworkers, this.amount, this.remarks, this.file);
         this.exptype = "undefined";
-        this.noofworkers = 1;
+        this.noofworkers = 0;
         this.amount= 0;
         this.remarks="";
         this.file = undefined;
         }
       if(!this.expenseflag)
         {
-          this.toastr.warning("No of Workers or Expense Amount cannot be 0");
+          this.toastr.warning("Expense Amount cannot be 0");
         }
       }
       else

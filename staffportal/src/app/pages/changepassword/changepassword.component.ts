@@ -24,6 +24,8 @@ export class ChangePasswordComponent implements OnInit {
   changePassword()
   {
     this.changedPassword = new Password(this.newpwd, true);
+    if(this.newpwd)
+    {
     if(this.currentpwd = "Welcome123")
     {
       if(this.newpwd == this.confirmnewpwd)
@@ -40,6 +42,10 @@ export class ChangePasswordComponent implements OnInit {
     else{
       this.toastr.warning("Please Enter Correct Password");
     }
+  }
+  else
+  this.toastr.warning("Please Enter Password");
+
   }
 
 }
