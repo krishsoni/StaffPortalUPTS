@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 
 const Expense = mongoose.Schema({
-    projectNumber:Number,		
+    projectNumber:String,		
     empId:Number,
     expenseType:String,
     noofWorkers:Number,
