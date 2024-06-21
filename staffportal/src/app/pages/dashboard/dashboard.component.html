@@ -209,7 +209,7 @@
         <select (change)="onprojvalueChange()" [(ngModel)]="expprojectId" class="btn btn-pill"
                     style="background: white;padding:4px !important;margin-left:10px;">
                     <option value="undefined" disabled selected>Select Project</option>
-                    <option *ngFor="let emp of projectresponse" [value]="emp.projectNumber">{{emp.projectName}}</option>
+                    <option *ngFor="let emp of projectresponse" [value]="emp.projectNumber">{{emp.projectNumber}} : {{emp.projectName}}</option>
         </select>
           </div>
           <ag-grid-angular class="ag-theme-quartz"

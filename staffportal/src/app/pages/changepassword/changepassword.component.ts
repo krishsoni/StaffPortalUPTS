@@ -26,7 +26,7 @@ export class ChangePasswordComponent implements OnInit {
     this.changedPassword = new Password(this.newpwd, true);
     if(this.newpwd)
     {
-    if(this.currentpwd = "Welcome123")
+    if(this.currentpwd = "Welcome@123")
     {
       if(this.newpwd == this.confirmnewpwd)
       {

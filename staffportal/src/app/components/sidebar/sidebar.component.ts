@@ -58,7 +58,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.username = sessionStorage.getItem('username');
-    if(this.username == 'admin')
+    if(sessionStorage.isadmin == 'true')
     {
       this.menuItems = ADMINUSERROUTES.filter(menuItem => menuItem);
       this.router.events.subscribe((event) => {
