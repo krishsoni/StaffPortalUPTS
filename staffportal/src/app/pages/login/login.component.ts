@@ -60,11 +60,20 @@ export class LoginComponent implements OnInit,OnDestroy {
             console.log(sessionStorage.getItem('token'));
           })
       }
-        if (this.response.isadmin && this.response.password == this.password) {
-          sessionStorage.setItem('username', this.response.username.toString());
-          this.router.navigate(['/dashboard']);
+      if(this.response.isadmin && this.response.password == this.password)
+      {
+        if(res[0].passwordChange)
+        {
+            sessionStorage.setItem('username', this.response.username.toString());
+            this.router.navigate(['/dashboard']);
         }
-        else if (this.response.isadmin == false) {
+        else {
+          sessionStorage.setItem('_id', res[0]._id);
+          this.router.navigate(['/changepassword']);
+        }
+      }
+      else if (this.response.isadmin == false) 
+        {
           sessionStorage.setItem('username', this.response.username.toString());
           if(res[0].passwordChange)
           {
@@ -75,7 +84,8 @@ export class LoginComponent implements OnInit,OnDestroy {
             this.router.navigate(['/changepassword']);
           }
         }
-        else {
+      else 
+        {
           this.errorMessage = "Invalid Credentials!";
         }
       }
