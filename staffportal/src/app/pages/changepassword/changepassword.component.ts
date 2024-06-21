@@ -21,6 +21,13 @@ export class ChangePasswordComponent implements OnInit {
   ngOnInit() {
     this.empId = sessionStorage.getItem('_id');
   }
+
+  onPasswordKeyDown(evt) {
+    if (evt.key === "Enter") {
+      this.changePassword();
+    }
+  }
+
   changePassword()
   {
     this.changedPassword = new Password(this.newpwd, true);
@@ -32,6 +39,11 @@ export class ChangePasswordComponent implements OnInit {
       {
         this.userService.changepassword(this.empId, this.changedPassword).subscribe(res=>{
           console.log(res);
+          if(sessionStorage.isadmin == 'true')
+          {
+          this.router.navigate(['./dashboard']);
+          }
+          else
           this.router.navigate(['./home']);
         });
       }
