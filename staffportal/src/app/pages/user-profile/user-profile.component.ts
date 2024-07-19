@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataService } from 'src/app/data.service';
 import { Employee } from 'src/app/services/Models/employee';
 import { EmployeeService } from 'src/app/services/employee-service/employee-service';
 import { ExpenseService } from 'src/app/services/expense-service/expense-service';
@@ -25,11 +26,13 @@ export class UserProfileComponent implements OnInit {
   projExp: Number;
   projAmt: Number;
   projectCount: Number;
-  constructor(private employeeService : EmployeeService, private expenseService: ExpenseService) { }
+  constructor(private employeeService : EmployeeService, private expenseService: ExpenseService,
+    private dataService: DataService) { }
 
   ngOnInit() {
-    this.empId = Number(sessionStorage.getItem('empId'));
-    this.employeeService.getEmpById(this.empId).subscribe(res=>{
+    //this.empId = Number(sessionStorage.getItem('empId'));
+        this.empId = this.dataService.getEmpId();
+       this.employeeService.getEmpById(this.empId).subscribe(res=>{
        this.employeeDetails = res;
        this.empNo = this.employeeDetails.empNo;
        this.username = this.employeeDetails.username;

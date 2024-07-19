@@ -12,6 +12,7 @@ import { BalanceService } from 'src/app/services/balance-service/balance-service
 import { Balance } from 'src/app/services/Models/balance';
 import { HttpClient } from '@angular/common/http';
 import { AttachmentService } from 'src/app/services/attachment-service/attachment-service';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-expense',
@@ -79,14 +80,24 @@ export class ExpenseComponent implements OnInit {
   completeexp = false;
   constructor(private http: HttpClient, private router : Router, private projectService: ProjectService, private lookupService: LookupService, 
     private expenseService: ExpenseService, private toastr: ToastrService,private balanceService: BalanceService, private elRef: ElementRef,
-    private attachmentService: AttachmentService
+    private attachmentService: AttachmentService, private dataservice: DataService
     )
      { }
   
   
   ngOnInit() {
-    this.username = sessionStorage.getItem('username');
-    this.empId = Number(sessionStorage.getItem('empId'));
+    //this.username = sessionStorage.getItem('username');
+    this.username = this.dataservice.getUsername();
+    //this.empId = Number(sessionStorage.getItem('empId'));
+    this.empId = Number(this.dataservice.getEmpId());
+    if(this.empId == 0)
+    {
+      this.toastr.warning("Session Expired - Please Login");
+      this.router.navigate(['/login']);
+    }
+    else{
+      console.log("EmpId is not null now"+this.dataservice.getEmpId());
+    }
     this.getallProjects();
   }
   backtoMenu() {
@@ -96,7 +107,8 @@ export class ExpenseComponent implements OnInit {
   {
     this.createexpense = false;
     this.submit = true;
-    sessionStorage.setItem('selectedprojectname',this.projectName);
+    //sessionStorage.setItem('selectedprojectname',this.projectName);
+    this.dataservice.setselectedProject(this.projectName);
 
   }
   getallProjects()

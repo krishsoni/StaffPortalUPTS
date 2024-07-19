@@ -22,6 +22,6 @@ module.exports = (app) => {
 
     app.post('/user/getuserbyUserName', user.getuserbyUserName);
 
-    app.post('/user/getuserbyName', user.getuserbyName);
+    app.get('/user/getuserbyName/:username', user.getuserbyName);
 
 }

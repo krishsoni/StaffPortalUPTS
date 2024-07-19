@@ -1,16 +1,17 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-//const baseUrl = 'http://localhost:3000/';
-const baseUrl = 'https://142.93.222.221:443/'
+const baseUrl = 'http://localhost:3000/';
+//const baseUrl = 'https://142.93.222.221:443/'
 //const baseUrl = 'https://staffportalupts1.onrender.com/';
+//const baseUrl = 'http://142.93.222.221:3000/';
 
 export const environment = {
   production: false,
   apis:{
     getAllUsers: `${baseUrl}user`,
     getUserbyUserName: `${baseUrl}user/getuserbyUserName`,
-    getUserbyName: `${baseUrl}user/getuserbyName`,
+    getUserbyName: `${baseUrl}user/getuserbyName/`,
     generateToken:`${baseUrl}user/generateToken`,
     createuser: `${baseUrl}user`,
     createproject: `${baseUrl}project`,

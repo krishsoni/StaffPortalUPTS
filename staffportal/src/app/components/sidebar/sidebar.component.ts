@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService } from 'src/app/data.service';
 import { User } from 'src/app/services/Models/user';
 
 declare interface RouteInfo {
@@ -27,6 +28,7 @@ export const ADMINUSERROUTES : AdminRouteInfo [] = [
   { path: '/dashboard', title: 'Dashboard',  icon: 'ni-tv-2 text-primary', class: '' },
   { path: '/projects', title: 'Projects',  icon:'ni-bullet-list-67 text-red', class: '' },
   { path: '/employees', title: 'Employees',  icon:'ni-badge text-danger', class:''},
+  { path: '/home', title: 'Home',icon:'fa fa-home', class:''},
 ];
 
 declare interface UserRouteInfo {
@@ -54,10 +56,12 @@ export class SidebarComponent implements OnInit {
   isadmin: boolean;
   user: User;
   noadmin = false;
-  constructor(private router: Router) { }
+  constructor(private router: Router, private dataService:DataService) { }
 
   ngOnInit() {
-    this.username = sessionStorage.getItem('username');
+    //this.username = sessionStorage.getItem('username');
+    this.username = this.dataService.getUsername();
+
     if(sessionStorage.isadmin == 'true')
     {
       this.menuItems = ADMINUSERROUTES.filter(menuItem => menuItem);
@@ -75,7 +79,8 @@ export class SidebarComponent implements OnInit {
   }
      logout() {
       // clear session
-      sessionStorage.clear();
+      //sessionStorage.clear();
+      this.dataService.clear();
       this.router.navigate(['/login']);
     }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { ROUTES } from '../sidebar/sidebar.component';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { Router } from '@angular/router';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,13 +14,14 @@ export class NavbarComponent implements OnInit {
   public listTitles: any[];
   public location: Location;
   username: string;
-  constructor(location: Location,  private element: ElementRef, private router: Router) {
+  constructor(location: Location,  private element: ElementRef, private router: Router, private dataService:DataService) {
     this.location = location;
   }
 
   ngOnInit() {
     this.listTitles = ROUTES.filter(listTitle => listTitle);
-    this.username = sessionStorage.getItem('username');
+    //this.username = sessionStorage.getItem('username');
+    this.username = this.dataService.getUsername();
   }
   getTitle(){
     var titlee = this.location.prepareExternalUrl(this.location.path());

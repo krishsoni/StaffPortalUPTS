@@ -32,6 +32,9 @@ import { ExpenseComponent } from './pages/expense/expense.component';
 import { BalanceComponent } from './pages/balance/balance.component';
 import { AttachmentService } from './services/attachment-service/attachment-service';
 import { AuditTrailService } from './services/audittrail-service/audittrail-service';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
+import { NgIdleModule } from '@ng-idle/core';
+import { IdleService } from './services/idle-service/idle-service';
 
 @NgModule({
   imports: [
@@ -53,6 +56,8 @@ import { AuditTrailService } from './services/audittrail-service/audittrail-serv
     NgbRatingModule,
     AgGridModule,
     AgGridAngular,
+    NgIdleModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot(),
   ],
   declarations: [
     AppComponent,
@@ -62,7 +67,7 @@ import { AuditTrailService } from './services/audittrail-service/audittrail-serv
     ExpenseComponent,
     BalanceComponent,
   ],
-  providers: [AuthenticationService, UserService, ProjectService, EmployeeService, BalanceService, ExpenseService, AttachmentService, AuditTrailService, ToastrService],
+  providers: [AuthenticationService, UserService, ProjectService, EmployeeService, BalanceService, ExpenseService, AttachmentService, AuditTrailService, ToastrService, IdleService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

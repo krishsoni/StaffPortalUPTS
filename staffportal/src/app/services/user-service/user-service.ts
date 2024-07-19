@@ -22,9 +22,9 @@ export class UserService {
     return this.http.post(environment.apis.getUserbyUserName,user);
   }
 
-  getUserbyName(user :User): Observable<any>
+  getUserbyName(user :String): Observable<any>
   {
-    return this.http.post(environment.apis.getUserbyName,user);
+    return this.http.get(environment.apis.getUserbyName+user);
   }
 
   generateToken(user: User): Observable<any>

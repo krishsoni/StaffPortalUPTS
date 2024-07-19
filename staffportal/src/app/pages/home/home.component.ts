@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/services/user-service/user-service';
 import { User } from 'src/app/services/Models/user';
+import { DataService } from 'src/app/data.service';
 
 @Component({
     selector: 'app-home',
@@ -23,10 +24,11 @@ export class HomeComponent implements OnInit {
     isadmin:boolean;
     response : User;
     constructor(private activatedRoute: ActivatedRoute,
-        private toastr: ToastrService, private router:Router, private userService:UserService) { }
+        private toastr: ToastrService, private router:Router, private userService:UserService, private dataService: DataService) { }
 
     ngOnInit() {
-        this.username = sessionStorage.getItem('username');
+        //this.username = sessionStorage.getItem('username');
+        this.username = this.dataService.getUsername();
         console.log(this.username);
 
     }

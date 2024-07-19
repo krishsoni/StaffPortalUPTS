@@ -30,6 +30,7 @@ import { AttachmentService } from 'src/app/services/attachment-service/attachmen
 import { AuditTrailService } from 'src/app/services/audittrail-service/audittrail-service';
 import { ClientSideRowModelModule } from "ag-grid-community";
 import { CsvExportModule } from "ag-grid-community";
+import { DataService } from 'src/app/data.service';
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   CsvExportModule,
@@ -230,12 +231,14 @@ export class DashboardComponent implements OnInit {
 
   constructor(private userService: UserService, private router: Router, private employeeService: EmployeeService,
     private projectService: ProjectService, private expenseService: ExpenseService, private attachmentService: AttachmentService,
-    private balanceService: BalanceService, private auditService: AuditTrailService, private toastr: ToastrService) {
+    private balanceService: BalanceService, private auditService: AuditTrailService, private toastr: ToastrService,
+    private dataService: DataService) {
   }
 
   ngOnInit() {
 
-    if (sessionStorage.getItem('isadmin') == 'true') {
+    //if (sessionStorage.getItem('isadmin') == 'true') {
+      if (this.dataService.getisAdmin() == true) {
       this.router.navigate(['/dashboard']);
       this.userService.getAllUsers().subscribe(res => {
         this.response = res;
@@ -452,8 +455,9 @@ export class DashboardComponent implements OnInit {
   }
   onempChange() {
     this.empbtn = true;
-    sessionStorage.setItem('empch', this.empselected.toString());
-    console.log(sessionStorage.getItem('empch'))
+    //sessionStorage.setItem('empch', this.empselected.toString());
+    this.dataService.setempch(this.empselected.toString());
+    //console.log(sessionStorage.getItem('empch'))
     this.auditService.getEmployeeUpdates().subscribe(res => {
       this.temp = res;
       this.rowDataEmp = [];
@@ -486,8 +490,9 @@ export class DashboardComponent implements OnInit {
   onexpvalueChange() {
     console.log(this.expId);
     this.expbtn = true;
-    sessionStorage.setItem('expEmp', this.expId.toString());
-    console.log(sessionStorage.getItem('expEmp'));
+    //sessionStorage.setItem('expEmp', this.expId.toString());
+    this.dataService.setexpEmp(this.expId.toString());
+    //console.log(sessionStorage.getItem('expEmp'));
     this.expenseService.getExpenseByEmpId(this.expId).subscribe(res => {
       this.totalexpofemp = 0;
       this.expenseList = res;
@@ -538,8 +543,9 @@ export class DashboardComponent implements OnInit {
     this.rowDataProj = [];
     for (var i = 0; i < this.expensedetails.length; i++) {
       if (this.expprojectId == this.expensedetails[i].projectNumber) {
-        sessionStorage.setItem('expProject', this.expensedetails[i].projectNumber);
-        console.log(sessionStorage.getItem('expProject'));
+        //sessionStorage.setItem('expProject', this.expensedetails[i].projectNumber);
+        this.dataService.setexpProject(this.expensedetails[i].projectNumber);
+        //console.log(sessionStorage.getItem('expProject'));
         //this.expprojlist.push(this.expense[i]);
         this.projtotalamt = this.projtotalamt + this.expensedetails[i].amount;
         // this.rowDataProj.push(

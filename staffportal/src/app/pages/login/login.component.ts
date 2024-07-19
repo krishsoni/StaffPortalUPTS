@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/Models/user';
 import { UserService } from 'src/app/services/user-service/user-service';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit,OnDestroy {
   response: User;
   token: string;
 
-  constructor(private router: Router, private userService:UserService) {}
+  constructor(private router: Router, private userService:UserService, private dataservice: DataService) {}
 
   ngOnInit() {
     var html = document.getElementsByTagName("html")[0];
@@ -49,38 +50,46 @@ export class LoginComponent implements OnInit,OnDestroy {
       else
       {
         if (this.response != null) {
-          sessionStorage.setItem('empId', res[0].empId);
-          sessionStorage.setItem('isadmin', res[0].isadmin.toString());
-          console.log(sessionStorage.getItem('empId'));
+          //sessionStorage.setItem('empId', res[0].empId);
+          this.dataservice.setEmpId(res[0].empId);
+          //sessionStorage.setItem('isadmin', res[0].isadmin.toString());
+          this.dataservice.setisAdmin(res[0].isadmin.toString());
+          //console.log(sessionStorage.getItem('empId'));
+          //console.log(this.dataservice.getEmpId());
           // -- generatetoken
           this.userService.generateToken(this.user).subscribe(res => {
             this.token = res;
-            console.log('token-->' + this.token);
-            sessionStorage.setItem('token', this.token);
-            console.log(sessionStorage.getItem('token'));
+            //console.log('token-->' + this.token);
+            //sessionStorage.setItem('token', this.token);
+            this.dataservice.setToken(this.token);
+            //console.log(sessionStorage.getItem('token'));
           })
       }
       if(this.response.isadmin && this.response.password == this.password)
       {
         if(res[0].passwordChange)
         {
-            sessionStorage.setItem('username', this.response.username.toString());
+            //sessionStorage.setItem('username', this.response.username.toString());
+            this.dataservice.setUsername(this.response.username.toString());
             this.router.navigate(['/dashboard']);
         }
         else {
-          sessionStorage.setItem('_id', res[0]._id);
+          //sessionStorage.setItem('_id', res[0]._id);
+          this.dataservice.setId(res[0]._id);
           this.router.navigate(['/changepassword']);
         }
       }
       else if (this.response.isadmin == false) 
         {
-          sessionStorage.setItem('username', this.response.username.toString());
+          this.dataservice.setUsername(this.response.username.toString());
+          //sessionStorage.setItem('username', this.response.username.toString());
           if(res[0].passwordChange)
           {
             this.router.navigate(['/home']);
           }
           else{
-            sessionStorage.setItem('_id', res[0]._id);
+            //sessionStorage.setItem('_id', res[0]._id);
+            this.dataservice.setId(res[0]._id);
             this.router.navigate(['/changepassword']);
           }
         }
@@ -93,6 +102,10 @@ export class LoginComponent implements OnInit,OnDestroy {
   }
   error() {
     this.errorMessage = "Please Enter Name and Password";
+  }
+  resetpassword()
+  {
+    this.router.navigate(['/resetpassword']);
   }
 
 }

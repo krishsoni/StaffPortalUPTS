@@ -98,11 +98,11 @@ exports.getuserbyUserName = (req,res) => {
 
 exports.getuserbyName = (req,res) => {
 
-    User.find({"username": req.body.username})
+    User.find({"username": req.params.username})
     .then(user => {
         if(!user) {
             return res.status(404).send({
-                message: "Invalid Username" + req.body.username
+                message: "Invalid Username" + req.params.username
             });            
         }
         res.send(user);

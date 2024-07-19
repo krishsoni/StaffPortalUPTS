@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { DataService } from 'src/app/data.service';
 import { Password } from 'src/app/services/Models/password';
 import { UserService } from 'src/app/services/user-service/user-service';
 
@@ -16,10 +17,11 @@ export class ChangePasswordComponent implements OnInit {
   confirmnewpwd: String;
   changedPassword: Password;
   empId: String;
-  constructor(private userService: UserService, private toastr: ToastrService, private router: Router) { }
+  constructor(private userService: UserService, private toastr: ToastrService, private router: Router, private dataService:DataService) { }
 
   ngOnInit() {
-    this.empId = sessionStorage.getItem('_id');
+    //this.empId = sessionStorage.getItem('_id');
+    this.empId = this.dataService.getId();
   }
 
   onPasswordKeyDown(evt) {
@@ -39,7 +41,8 @@ export class ChangePasswordComponent implements OnInit {
       {
         this.userService.changepassword(this.empId, this.changedPassword).subscribe(res=>{
           console.log(res);
-          if(sessionStorage.isadmin == 'true')
+          //if(sessionStorage.isadmin == 'true')
+          if(this.dataService.getisAdmin)
           {
           this.router.navigate(['./dashboard']);
           }
