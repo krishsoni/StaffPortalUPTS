@@ -50,46 +50,46 @@ export class LoginComponent implements OnInit,OnDestroy {
       else
       {
         if (this.response != null) {
-          //sessionStorage.setItem('empId', res[0].empId);
-          this.dataservice.setEmpId(res[0].empId);
-          //sessionStorage.setItem('isadmin', res[0].isadmin.toString());
-          this.dataservice.setisAdmin(res[0].isadmin.toString());
-          //console.log(sessionStorage.getItem('empId'));
+          sessionStorage.setItem('empId', res[0].empId);
+          //this.dataservice.setEmpId(res[0].empId);
+          sessionStorage.setItem('isadmin', res[0].isadmin.toString());
+          //this.dataservice.setisAdmin(res[0].isadmin);
+          console.log(sessionStorage.getItem('empId'));
           //console.log(this.dataservice.getEmpId());
           // -- generatetoken
           this.userService.generateToken(this.user).subscribe(res => {
             this.token = res;
             //console.log('token-->' + this.token);
-            //sessionStorage.setItem('token', this.token);
-            this.dataservice.setToken(this.token);
-            //console.log(sessionStorage.getItem('token'));
+            sessionStorage.setItem('token', this.token);
+            //this.dataservice.setToken(this.token);
+            console.log(sessionStorage.getItem('token'));
           })
       }
       if(this.response.isadmin && this.response.password == this.password)
       {
         if(res[0].passwordChange)
         {
-            //sessionStorage.setItem('username', this.response.username.toString());
-            this.dataservice.setUsername(this.response.username.toString());
+            sessionStorage.setItem('username', this.response.username.toString());
+            //this.dataservice.setUsername(this.response.username.toString());
             this.router.navigate(['/dashboard']);
         }
         else {
-          //sessionStorage.setItem('_id', res[0]._id);
-          this.dataservice.setId(res[0]._id);
+          sessionStorage.setItem('_id', res[0]._id);
+          //this.dataservice.setId(res[0]._id);
           this.router.navigate(['/changepassword']);
         }
       }
       else if (this.response.isadmin == false) 
         {
-          this.dataservice.setUsername(this.response.username.toString());
-          //sessionStorage.setItem('username', this.response.username.toString());
+          //this.dataservice.setUsername(this.response.username.toString());
+          sessionStorage.setItem('username', this.response.username.toString());
           if(res[0].passwordChange)
           {
             this.router.navigate(['/home']);
           }
           else{
-            //sessionStorage.setItem('_id', res[0]._id);
-            this.dataservice.setId(res[0]._id);
+            sessionStorage.setItem('_id', res[0]._id);
+            //this.dataservice.setId(res[0]._id);
             this.router.navigate(['/changepassword']);
           }
         }

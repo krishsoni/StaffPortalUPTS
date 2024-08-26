@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { DataService } from 'src/app/data.service';
 import { Employee } from 'src/app/services/Models/employee';
 import { EmployeeService } from 'src/app/services/employee-service/employee-service';
@@ -27,11 +29,19 @@ export class UserProfileComponent implements OnInit {
   projAmt: Number;
   projectCount: Number;
   constructor(private employeeService : EmployeeService, private expenseService: ExpenseService,
-    private dataService: DataService) { }
+    private dataService: DataService, private router: Router, private toastr:ToastrService) { }
 
   ngOnInit() {
-    //this.empId = Number(sessionStorage.getItem('empId'));
-        this.empId = this.dataService.getEmpId();
+    this.empId = Number(sessionStorage.getItem('empId'));
+    //this.empId = this.dataService.getEmpId();
+    if(this.empId == 0)
+    {
+      this.toastr.warning("Session Expired - Please Login");
+      this.router.navigate(['/login']);
+    }
+    else{
+      //console.log("EmpId is not null: User Profile Component"+this.dataService.getEmpId());
+      console.log("EmpId is not null: User Profile Component"+ sessionStorage.getItem('empId'));
        this.employeeService.getEmpById(this.empId).subscribe(res=>{
        this.employeeDetails = res;
        this.empNo = this.employeeDetails.empNo;
@@ -40,6 +50,7 @@ export class UserProfileComponent implements OnInit {
         this.manager = this.employeeDetails.manager;
         this.phonenumber = this.employeeDetails.mobilenumber;
     });
+  }
     this.expenseService.getExpenseByEmpId(this.empId).subscribe(res => {
       this.totalexpofemp = 0;
       this.expenseList = res;

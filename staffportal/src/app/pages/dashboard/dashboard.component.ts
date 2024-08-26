@@ -237,8 +237,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
 
-    //if (sessionStorage.getItem('isadmin') == 'true') {
-      if (this.dataService.getisAdmin() == true) {
+    if (sessionStorage.getItem('isadmin') == 'true') {
+     //if (this.dataService.getisAdmin() == true) {
       this.router.navigate(['/dashboard']);
       this.userService.getAllUsers().subscribe(res => {
         this.response = res;
@@ -439,6 +439,7 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/dashboard']).then(() => {
         setTimeout(() => window.location.reload(), 700);
       });
+      //this.router.navigate(['/dashboard']);
     });
   }
 
@@ -455,8 +456,8 @@ export class DashboardComponent implements OnInit {
   }
   onempChange() {
     this.empbtn = true;
-    //sessionStorage.setItem('empch', this.empselected.toString());
-    this.dataService.setempch(this.empselected.toString());
+    sessionStorage.setItem('empch', this.empselected.toString());
+    //this.dataService.setempch(this.empselected.toString());
     //console.log(sessionStorage.getItem('empch'))
     this.auditService.getEmployeeUpdates().subscribe(res => {
       this.temp = res;
@@ -490,8 +491,8 @@ export class DashboardComponent implements OnInit {
   onexpvalueChange() {
     console.log(this.expId);
     this.expbtn = true;
-    //sessionStorage.setItem('expEmp', this.expId.toString());
-    this.dataService.setexpEmp(this.expId.toString());
+    sessionStorage.setItem('expEmp', this.expId.toString());
+    //this.dataService.setexpEmp(this.expId.toString());
     //console.log(sessionStorage.getItem('expEmp'));
     this.expenseService.getExpenseByEmpId(this.expId).subscribe(res => {
       this.totalexpofemp = 0;
@@ -543,8 +544,8 @@ export class DashboardComponent implements OnInit {
     this.rowDataProj = [];
     for (var i = 0; i < this.expensedetails.length; i++) {
       if (this.expprojectId == this.expensedetails[i].projectNumber) {
-        //sessionStorage.setItem('expProject', this.expensedetails[i].projectNumber);
-        this.dataService.setexpProject(this.expensedetails[i].projectNumber);
+        sessionStorage.setItem('expProject', this.expensedetails[i].projectNumber);
+        //this.dataService.setexpProject(this.expensedetails[i].projectNumber);
         //console.log(sessionStorage.getItem('expProject'));
         //this.expprojlist.push(this.expense[i]);
         this.projtotalamt = this.projtotalamt + this.expensedetails[i].amount;

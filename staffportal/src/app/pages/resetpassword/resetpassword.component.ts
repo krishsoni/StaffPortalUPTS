@@ -25,8 +25,10 @@ export class ResetPasswordComponent implements OnInit {
   constructor(private userService: UserService, private toastr: ToastrService, private router: Router, private dataService: DataService) { }
 
   ngOnInit() {
-    this.empId = this.dataService.getEmpId();
-    this.rusername = this.dataService.getUsername();
+    //this.empId = this.dataService.getEmpId();
+    this.empId = Number(sessionStorage.getItem('empId'));
+    //this.rusername = this.dataService.getUsername();
+    this.rusername = sessionStorage.getItem('username');
   }
 
   onPasswordKeyDown(evt) {

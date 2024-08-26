@@ -86,17 +86,17 @@ export class ExpenseComponent implements OnInit {
   
   
   ngOnInit() {
-    //this.username = sessionStorage.getItem('username');
-    this.username = this.dataservice.getUsername();
-    //this.empId = Number(sessionStorage.getItem('empId'));
-    this.empId = Number(this.dataservice.getEmpId());
+    this.username = sessionStorage.getItem('username');
+    //this.username = this.dataservice.getUsername();
+    this.empId = Number(sessionStorage.getItem('empId'));
+    //this.empId = Number(this.dataservice.getEmpId());
     if(this.empId == 0)
     {
       this.toastr.warning("Session Expired - Please Login");
       this.router.navigate(['/login']);
     }
     else{
-      console.log("EmpId is not null now"+this.dataservice.getEmpId());
+      console.log("EmpId is not null now "+ sessionStorage.getItem('empId'));
     }
     this.getallProjects();
   }
@@ -107,8 +107,8 @@ export class ExpenseComponent implements OnInit {
   {
     this.createexpense = false;
     this.submit = true;
-    //sessionStorage.setItem('selectedprojectname',this.projectName);
-    this.dataservice.setselectedProject(this.projectName);
+    sessionStorage.setItem('selectedprojectname',this.projectName);
+    //this.dataservice.setselectedProject(this.projectName);
 
   }
   getallProjects()

@@ -26,8 +26,8 @@ export class AuthenticationService {
 
   logout() {
     // clear session
-    //sessionStorage.clear();
-    this.dataService.clear();
+    sessionStorage.clear();
+    //this.dataService.clear();
     this.router.navigate(['/login']);
   }
 

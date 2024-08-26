@@ -20,8 +20,8 @@ export class ChangePasswordComponent implements OnInit {
   constructor(private userService: UserService, private toastr: ToastrService, private router: Router, private dataService:DataService) { }
 
   ngOnInit() {
-    //this.empId = sessionStorage.getItem('_id');
-    this.empId = this.dataService.getId();
+    this.empId = sessionStorage.getItem('_id');
+    //this.empId = this.dataService.getId();
   }
 
   onPasswordKeyDown(evt) {
@@ -41,8 +41,8 @@ export class ChangePasswordComponent implements OnInit {
       {
         this.userService.changepassword(this.empId, this.changedPassword).subscribe(res=>{
           console.log(res);
-          //if(sessionStorage.isadmin == 'true')
-          if(this.dataService.getisAdmin)
+          if(sessionStorage.isadmin == 'true')
+          //if(this.dataService.getisAdmin)
           {
           this.router.navigate(['./dashboard']);
           }

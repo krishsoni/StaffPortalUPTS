@@ -58,8 +58,8 @@ export class IdleService {
         console.log('User idle');
         this.userInactive.next(true);
         this.toastr.warning("Due to inactivity, You've been Logged Out. Please Login again!")
-        this.dataService.clear();
-        //sessionStorage.clear();
+        //this.dataService.clear();
+        sessionStorage.clear();
         this.router.navigate(['/login']); // Redirect to login page
       }
     }, 1000);

@@ -59,10 +59,10 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router, private dataService:DataService) { }
 
   ngOnInit() {
-    //this.username = sessionStorage.getItem('username');
-    this.username = this.dataService.getUsername();
-
+    this.username = sessionStorage.getItem('username');
+    //this.username = this.dataService.getUsername();
     if(sessionStorage.isadmin == 'true')
+    //if(this.dataService.getisAdmin() == true)
     {
       this.menuItems = ADMINUSERROUTES.filter(menuItem => menuItem);
       this.router.events.subscribe((event) => {
@@ -79,8 +79,8 @@ export class SidebarComponent implements OnInit {
   }
      logout() {
       // clear session
-      //sessionStorage.clear();
-      this.dataService.clear();
+      sessionStorage.clear();
+      //this.dataService.clear();
       this.router.navigate(['/login']);
     }
 

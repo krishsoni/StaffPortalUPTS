@@ -27,10 +27,10 @@ export class BalanceComponent implements OnInit {
   constructor(private router : Router, private balanceService: BalanceService, private employeeService : EmployeeService, private dataService:DataService) { }
 
   ngOnInit() {
-    //this.username = sessionStorage.getItem('username');
-    this.username = this.dataService.getUsername();
-    //this.empId = Number(sessionStorage.getItem('empId'));
-    this.empId = this.dataService.getEmpId();
+    this.username = sessionStorage.getItem('username');
+    //this.username = this.dataService.getUsername();
+    this.empId = Number(sessionStorage.getItem('empId'));
+    //this.empId = this.dataService.getEmpId();
     this.balanceService.getbalbyId(this.empId).subscribe(res=>{
       if(res[0]!==undefined)
       this.empbalamt = res[0].netAmount;

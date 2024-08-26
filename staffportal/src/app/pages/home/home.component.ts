@@ -27,8 +27,8 @@ export class HomeComponent implements OnInit {
         private toastr: ToastrService, private router:Router, private userService:UserService, private dataService: DataService) { }
 
     ngOnInit() {
-        //this.username = sessionStorage.getItem('username');
-        this.username = this.dataService.getUsername();
+        this.username = sessionStorage.getItem('username');
+        //this.username = this.dataService.getUsername();
         console.log(this.username);
 
     }

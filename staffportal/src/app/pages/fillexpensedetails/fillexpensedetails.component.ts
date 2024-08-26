@@ -19,10 +19,10 @@ export class FillExpenseDetailsComponent implements OnInit {
   constructor(private router : Router, private toastr: ToastrService, private dataService: DataService) { }
 
   ngOnInit() {
-    //this.username = sessionStorage.getItem('username');
-    this.username = this.dataService.getUsername();
-    //this.projectName = sessionStorage.getItem('selectedprojectname');
-    this.projectName = this.dataService.getselectedProject();
+    this.username = sessionStorage.getItem('username');
+    //this.username = this.dataService.getUsername();
+    this.projectName = sessionStorage.getItem('selectedprojectname');
+    //this.projectName = this.dataService.getselectedProject();
   }
   backtoMenu() {
     this.router.navigate(['/expense']);
