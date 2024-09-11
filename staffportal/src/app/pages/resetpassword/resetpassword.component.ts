@@ -53,7 +53,7 @@ export class ResetPasswordComponent implements OnInit {
           this.changedPassword = new Password(this.newpwd, true);
           this.userService.changepassword(res[0]._id, this.changedPassword).subscribe(res => {
             console.log(res);
-            this.toastr.success("Password Changed Succeesfully. Please Login");
+            this.toastr.success("Password Changed Successfully. Please Login");
             this.router.navigate(['./login']);
           });
         }
