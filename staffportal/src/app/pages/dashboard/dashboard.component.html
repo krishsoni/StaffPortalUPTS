@@ -102,7 +102,7 @@
               <h2 class="text-white mb-0">Expenses</h2>
             </div>
             <div *ngIf="expbtn===true" class="col-6 text-right">
-              <button id="exportButton" class="btn-sm btn-warning" (click)="expclick()">
+              <button id="exportButton" class="btn btn-warning" (click)="expclick()">
                 Export to Excel</button>
             </div>
           </div>
@@ -197,7 +197,7 @@
               </ul>
             </div> -->
             <div *ngIf="projbtn===true" class="col-6 text-right">
-              <button id="exportButton" class="btn-sm btn-warning" (click)="projclick()">
+              <button id="exportButton" class="btn btn-warning" (click)="projclick()">
                 Export to Excel</button>
             </div>
           </div>
@@ -226,12 +226,16 @@
       <div class="card bg-gradient-primary shadow">
         <div class= "card-header bg-transparent">
           <div class="row align-items-center">
-            <div class="col">
+            <div class="col-xl-6">
               <h6 class="text-uppercase text-white ls-1 mb-1">Check Employee Updates</h6>
               <h2 class="text-white mb-0">Balance, Gratuity & Bonus</h2>
             </div>
-            <div *ngIf="empbtn===true" class="col-6 text-right">
-              <button id="exportButton" class="btn-sm btn-warning" (click)="empclick()">
+            <div class="col-xl-4 text-right">
+              <button id="exportBtn" class="btn btn-info" (click)="allempbalclick()">
+                Export All Employee Bal to Excel</button>
+            </div>
+            <div *ngIf="empbtn===true" class="col-xl-2 text-right">
+              <button id="exportButton" class="btn btn-warning" (click)="empclick()">
                 Export to Excel</button>
             </div>
           </div>

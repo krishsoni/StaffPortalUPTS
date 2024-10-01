@@ -24,4 +24,8 @@ export class BalanceService {
   {
     return this.http.get(environment.apis.getbalbyId+employeeid);
   }
+  getallEmpBalance(): Observable<any>
+  {
+    return this.http.get(environment.apis.getallEmpBalance);
+  }
 }

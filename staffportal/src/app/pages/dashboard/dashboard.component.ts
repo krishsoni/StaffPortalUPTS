@@ -102,9 +102,11 @@ export class DashboardComponent implements OnInit {
   expbtn = false;
   empbtn = false;
   projbtn = false;
+  allEmpBal = [];
   colNames = ['Group', 'Date', 'Project No', 'Expense Type', 'Remarks', 'Amount'];
   colNamesEmp = ['Group','Type', 'Date', 'Old Value', 'New Value'];
   colNamesProj = ['Group','Project No', 'Date', 'EmpName', 'Worktype', 'Slab', 'Pour', 'Expense Type','No Of Workers', 'Remarks', 'Amount'];
+  colNamesBal = ['EmpName','Total Credit','Total Debit', 'Net Balance']
   colDefs: ColDef[] = [
     { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter },
     // { headerName: "EmpId", field: "empId" },
@@ -269,6 +271,14 @@ export class DashboardComponent implements OnInit {
       this.expenseService.getExpenseDetails().subscribe(res => {
         this.expensedetails = res;
       });
+      this.balanceService.getallEmpBalance().subscribe(res=>
+        {
+          for(var i=0;i<res.length; i++)
+          {
+            this.allEmpBal.push([res[i].firstName,res[i].totalCredit, res[i].totalDebit, res[i].netBalance]);
+          }
+          console.log(this.allEmpBal);
+        })
     }
     else {
       this.router.navigate(['/home']);
@@ -283,6 +293,10 @@ export class DashboardComponent implements OnInit {
   }
   projclick() {
     this.exporttoExcelProj(this.flattenedDataProj, this.colNamesProj)
+  }
+  allempbalclick()
+  {
+    this.exporttoExcelAllEmpBal(this.allEmpBal, this.colNamesBal)
   }
   exporttoExcel(data, columnNames) {
     try {
@@ -419,6 +433,34 @@ export class DashboardComponent implements OnInit {
 
         // Add worksheet to workbook
         XLSX.utils.book_append_sheet(wb, ws, 'Project Expense Data');
+
+        // Save workbook to Excel file
+        XLSX.writeFile(wb, this.fileName + '.xlsx');
+      }
+      else {
+        this.toastr.warning("No Data to Export");
+      }
+    } catch (error) {
+      console.error('Error exporting data to Excel:', error);
+    }
+  }
+  exporttoExcelAllEmpBal(data, columnNames) {
+    try {
+      if (data.length > 0) {
+       this.fileName = "";
+       this.fileName = 'All-Employee-Balance--' + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');;
+        // Create a new workbook
+        const wb = XLSX.utils.book_new();
+
+        // Add a header row with custom column names
+        const header = columnNames.map(name => ({ v: name }));
+        const wsData = [header, ...this.allEmpBal];
+
+        // Convert data to worksheet
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'All Employee Balance');
 
         // Save workbook to Excel file
         XLSX.writeFile(wb, this.fileName + '.xlsx');

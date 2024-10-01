@@ -78,6 +78,9 @@ export class ExpenseComponent implements OnInit {
   expId: any;
   expenseDetails = [];
   completeexp = false;
+  filteredProjects: any[] = []; // Filtered projects for the dropdown
+  searchQuery: string = '';
+  showDropdown: boolean = false;
   constructor(private http: HttpClient, private router : Router, private projectService: ProjectService, private lookupService: LookupService, 
     private expenseService: ExpenseService, private toastr: ToastrService,private balanceService: BalanceService, private elRef: ElementRef,
     private attachmentService: AttachmentService, private dataservice: DataService
@@ -316,21 +319,46 @@ export class ExpenseComponent implements OnInit {
           this.projectslists.push(this.Projects[j]);
           //console.log(this.projectslists);
         }
+        this.filteredProjects = this.projectslists;
     }
   }
-  onvalueChange()
-  {
+  filterProjects() {
+    // Filter the projects based on the search query
+    this.filteredProjects = this.projectslists.filter(project => 
+      project.projectName.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+  }
+  selectProject(projectName: string) {
     this.projectselected = true;
+    this.projectName = projectName;
     for(var k=0;k<this.projectslists.length;k++)
     {
       if(this.projectName == this.projectslists[k].projectName)
       this.selectedProject = this.projectslists[k];
     }
     this.getlookupValues();
-    
-    //this.getProjectByName();
     console.log(this.selectedProject);
+    //this.projectName = projectName; // Set the selected project
+    this.searchQuery = projectName; // Update the input field
+    this.showDropdown = false; // Hide the dropdown
   }
+
+  hideDropdown() {
+    setTimeout(() => this.showDropdown = false, 200); // Delay to allow click event
+  }
+  // onvalueChange()
+  // {
+  //   this.projectselected = true;
+  //   for(var k=0;k<this.projectslists.length;k++)
+  //   {
+  //     if(this.projectName == this.projectslists[k].projectName)
+  //     this.selectedProject = this.projectslists[k];
+  //   }
+  //   this.getlookupValues();
+    
+  //   //this.getProjectByName();
+  //   console.log(this.selectedProject);
+  // }
   onworktypechange()
   {
     console.log("came Here"+this.exptype);

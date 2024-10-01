@@ -41,14 +41,38 @@
                     <option *ngFor="let city of citylist" [value]="city">{{city}}</option>
         </select>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label class="form-control-label " for="input-project">Project: &nbsp;</label>
         <select (change)="onvalueChange()" [(ngModel)]="projectName" class="btn btn-pill"
                     style="background: white;padding:4px !important" >
                     <option [ngValue]="undefined" disabled>Select Project</option>
                     <option *ngFor="let project of projectslists" [value]="project.projectName">{{project.projectName}}</option>
         </select>
+          </div> -->
+        <div class="form-group">
+          <label class="form-control-label " for="input-project">Project: &nbsp;</label>
+        <div class="dropdown label">
+          <input 
+            type="text" 
+            placeholder="Search Projects" 
+            [(ngModel)]="searchQuery" 
+            (focus)="showDropdown = true" 
+            (input)="filterProjects()" 
+            (blur)="hideDropdown()" 
+            style="width: 100%; padding: 4px; margin-bottom: 4px;"
+          />
+        
+          <div class="dropdown-list" *ngIf="showDropdown">
+            <div 
+              *ngFor="let project of filteredProjects" 
+              (click)="selectProject(project.projectName)" 
+              class="dropdown-item"
+            >
+              {{ project.projectName }}
+            </div>
           </div>
+        </div>
+        </div>
         <div *ngIf="projectselected===true" class="form-group">
           <form #expForm="ngForm">
             <div class="pl-lg-4">

@@ -35,6 +35,7 @@ export const environment = {
     getEmpUpdates: `${baseUrl}audittrail/updates/employees`,
     getEmpId : `${baseUrl}employee/getbyempName`,
     getByLookupType: `${baseUrl}lookup/getByLookupType`,
+    getallEmpBalance : `${baseUrl}getallEmpBalance`
   }
 };
 
