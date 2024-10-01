@@ -16,4 +16,6 @@ module.exports = (app) => {
     // get net balance for an employee
     app.get('/balance/getBalancebyEmpId/:id',balance.getBalancebyEmpId);
 
+    app.get('/getallEmpBalance',balance.getBalanceAllEmp);
+
 }

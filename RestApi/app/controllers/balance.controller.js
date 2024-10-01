@@ -146,4 +146,64 @@ Balance.aggregate([
 
 
 };
-
+exports.getBalanceAllEmp=(req, res) => {
+  
+  console.log('Came here -----1---->');
+  
+  Balance.aggregate([
+    {
+      $group: {
+          _id: '$empId', // Group by empId
+          totalCredit: {
+              $sum: {
+                  $cond: [{ $eq: ['$operation', 'C'] }, '$amount', 0],
+              },
+          },
+          totalDebit: {
+              $sum: {
+                  $cond: [{ $eq: ['$operation', 'D'] }, '$amount', 0],
+              },
+          },
+      },
+  },
+  {
+      $project: {
+          empId: '$_id', // Project empId
+          totalCredit: 1, // Include totalCredit for debugging
+          totalDebit: 1, // Include totalDebit for debugging
+          netBalance: { $subtract: ['$totalCredit', '$totalDebit'] }, // Calculate net balance
+      },
+  },
+  {
+      $lookup: {
+          from: 'employees', // Name of the Employee collection
+          localField: 'empId', // Field from the Balance collection
+          foreignField: '_id', // Match with the _id field in the Employee collection
+          as: 'employeeDetails', // Output array field
+      },
+  },
+  {
+      $unwind: {
+          path: '$employeeDetails', // Unwind to flatten the array
+          preserveNullAndEmptyArrays: true, // Keep balances even if no matching employee
+      },
+  },
+  {
+      $project: {
+          empId: 1,
+          totalCredit: 1, // Include totalCredit in the output for debugging
+          totalDebit: 1, // Include totalDebit in the output for debugging
+          netBalance: 1,
+          firstName: '$employeeDetails.firstname', // Use firstName from employeeDetails
+      },
+  },
+   
+  ], function(err, results) {
+        console.log(results);
+         res.send(results);
+     });
+  
+  
+  
+  
+  };
