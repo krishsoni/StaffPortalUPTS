@@ -620,7 +620,7 @@ export class DashboardComponent implements OnInit {
       let action = params.event.target.dataset.action;
 
       if (action === "download") {
-        this.attachmentService.getAttachmentByExpId(params.data._id).subscribe(res => {
+        this.attachmentService.getAttachmentByExpId(params.data.expenseId).subscribe(res => {
           console.log(res);
           if (res.length == 0) {
             this.toastr.warning("No Attachment for this expense");
