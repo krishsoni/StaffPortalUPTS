@@ -240,6 +240,7 @@ export class ExpenseComponent implements OnInit {
             this.getExpId(res._id);
             this.totalexpamt = this.totalexpamt + res.amount;
             this.addbalance(res.amount);
+            this.files = [];
             this.toastr.success("Expense Added Successfully");
           });
           this.expnum = this.expnum+1;
@@ -251,6 +252,8 @@ export class ExpenseComponent implements OnInit {
         this.amount= 0;
         this.remarks="";
         this.file = undefined;
+        //this.files = [];
+        this.fileDetails = [];
         }
       if(!this.expenseflag)
         {
@@ -378,14 +381,15 @@ export class ExpenseComponent implements OnInit {
     console.log(this.sworktype);
   }
 
-  onFileSelected(event) {
+onFileSelected(event) {
 
     const selectedFiles: FileList = event.target.files;
     for (let i = 0; i < selectedFiles.length; i++) {
         const file: File = selectedFiles[i];
-        this.files.push(file);
-        // Example: capture additional details like file name and size
-        this.fileDetails.push({ name: file.name, size: file.size });
+        if (!this.files.some(existingFile => existingFile.name === file.name)) {
+          this.files.push(file);
+          this.fileDetails.push({ name: file.name, size: file.size });
+        }
     }
 }
 readFileContents(file: File, expenseId:Number): void {
@@ -406,11 +410,5 @@ uploadFile(base64Content: string, name: string, expenseId: Number): void {
       console.log("Uploaded Successfully");
     }
   });
-  // this.http.post('http://example.com/upload', { data: base64Content })
-  //     .subscribe(response => {
-  //         console.log('File uploaded successfully:', response);
-  //     }, error => {
-  //         console.error('Error uploading file:', error);
-  //     });
 }
 }

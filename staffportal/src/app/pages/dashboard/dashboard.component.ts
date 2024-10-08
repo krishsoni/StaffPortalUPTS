@@ -626,7 +626,9 @@ export class DashboardComponent implements OnInit {
             this.toastr.warning("No Attachment for this expense");
           }
           else {
-            var byteCharacters = atob(res[0].data);
+            for(var k=0;k<res.length;k++)
+            {
+            var byteCharacters = atob(res[k].data);
             var byteNumbers = new Array(byteCharacters.length);
             for (var i = 0; i < byteCharacters.length; i++) {
               byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -636,10 +638,11 @@ export class DashboardComponent implements OnInit {
             var url = window.URL.createObjectURL(blob);
             var link = document.createElement('a');
             link.href = url;
-            link.download = 'Proj' + '-' + params.data.projectNumber + '-' + params.data.worktype + '-' + 'Dt' + '-' + formatDate(params.data.createdAt, 'dd-MM-yyyy', 'en')+'.'+res[0].name.substring(res[0].name.indexOf(".") + 1);
+            link.download = 'Proj' + '-' + params.data.projectNumber + '-' + params.data.worktype + '-' + 'Dt' + '-' + formatDate(params.data.createdAt, 'dd-MM-yyyy', 'en')+'.'+res[k].name.substring(res[k].name.indexOf(".") + 1);
             link.click();
 
             window.URL.revokeObjectURL(url);
+          }
           }
         })
       }
