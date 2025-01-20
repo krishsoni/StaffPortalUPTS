@@ -16,6 +16,7 @@ import {
   SizeColumnsToFitGridStrategy,
   SizeColumnsToFitProvidedWidthStrategy,
 } from "ag-grid-community";
+import { QueryService } from 'src/app/services/query-service/query-service';
 @Component({
   selector: 'app-projects',
   templateUrl: './projects.component.html',
@@ -75,7 +76,7 @@ gridOptions: GridOptions<Project> = {
     // and perform further actions as needed
 }
 
-  constructor(private http: HttpClient, private projectService: ProjectService, private toastr: ToastrService, private router : Router) { }
+  constructor(private http: HttpClient, private projectService: ProjectService, private toastr: ToastrService, private router : Router, private queryService: QueryService) { }
   state: String;	
   city:String;		
   projectNumber:String;	
@@ -90,7 +91,7 @@ gridOptions: GridOptions<Project> = {
   Projects = [];
   project : Project;
   updateproject : Project;
-  
+  projectexists = false;
   ngOnInit() {
     this.getallProjects();
   }
@@ -124,15 +125,36 @@ gridOptions: GridOptions<Project> = {
 
   submitproject()
   {
-    this.project = new Project(this.state,this.city, this.projectNumber, this.projectName, this.floor, this.pour, this.workType, this.remarks, this.supervisor, "InProgress");
-    this.projectService.createProject(this.project).subscribe(res =>{
-      this.addbtn = true;
-      this.addproject = false;
-      this.getallProjects();      
-      this.toastr.success("Project Added Successfully");
-    });
+    this.project = new Project(this.state,this.city, this.projectNumber.trim(), this.projectName, this.floor, this.pour, this.workType, this.remarks, this.supervisor, "InProgress");
+    const query = {
+      "collectionName": "projects",
+      "filter": { "projectNumber": this.projectNumber.trim()},      
+    }
+    this.queryService.query(query).subscribe(res=>{
+      console.log(res);
+      if(res.length = 0)
+      {
+      this.projectexists = true;    
+      }
+      else
+      this.toastr.error("Project "+this.projectNumber+" already exists.")
+    })
+    if(this.projectexists)
+    {
+      this.projectService.createProject(this.project).subscribe(res =>{
+        this.addbtn = true;
+        this.addproject = false;
+        this.getallProjects();      
+        this.toastr.success("Project Added Successfully");
+      });  
+    }
   }
-
+  onFilterTextBoxChanged() {
+    this.gridApi!.setGridOption(
+      "quickFilterText",
+      (document.getElementById("filter-text-box") as HTMLInputElement).value,
+    );
+  }
   actionCellRenderer(params) {
     if (params.data.status === 'Completed') {
       return null; // Hide the button for group rows

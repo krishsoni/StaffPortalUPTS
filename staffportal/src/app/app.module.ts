@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -35,6 +35,7 @@ import { AuditTrailService } from './services/audittrail-service/audittrail-serv
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 import { NgIdleModule } from '@ng-idle/core';
 import { IdleService } from './services/idle-service/idle-service';
+import { QueryService } from './services/query-service/query-service';
 
 @NgModule({
   imports: [
@@ -67,7 +68,8 @@ import { IdleService } from './services/idle-service/idle-service';
     ExpenseComponent,
     BalanceComponent,
   ],
-  providers: [AuthenticationService, UserService, ProjectService, EmployeeService, BalanceService, ExpenseService, AttachmentService, AuditTrailService, ToastrService, IdleService],
-  bootstrap: [AppComponent]
+  providers: [AuthenticationService, UserService, ProjectService, EmployeeService, BalanceService, ExpenseService, AttachmentService, AuditTrailService, ToastrService, IdleService, QueryService],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

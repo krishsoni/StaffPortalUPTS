@@ -10,7 +10,8 @@ const Expense = mongoose.Schema({
     floor :Number,
     worktype: String,
     amount:Number,
-    remarks:String
+    remarks:String,
+    status: String
     }, {
         timestamps: true
     });

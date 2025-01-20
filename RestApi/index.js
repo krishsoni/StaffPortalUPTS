@@ -49,7 +49,8 @@ require('./app/routes/expense.routes.js')(app);
 require('./app/routes/lookup.routes.js')(app);
 require('./app/routes/attachment.routes.js')(app);
 require('./app/routes/auditTrail.routes.js')(app);
-
+require('./app/routes/balanceRequests.routes.js')(app);
+require('./app/routes/query.routes.js')(app);
 
 // listen for requests
 app.listen(3000, () => {

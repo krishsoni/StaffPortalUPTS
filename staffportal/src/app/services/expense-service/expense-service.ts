@@ -20,6 +20,10 @@ export class ExpenseService {
   {
     return this.http.get(environment.apis.getExpenseByEmpId+empId);
   }
+  getExpensesByEmpId(empId: Number): Observable<any>
+  {
+    return this.http.get(environment.apis.getExpensesByEmpId+empId);
+  }
   createExpense(expense: Expense):Observable<any>
   {
     return this.http.post(environment.apis.createExpense, expense);
@@ -27,6 +31,14 @@ export class ExpenseService {
   getExpenseDetails(): Observable<any>
   {
     return this.http.get(environment.apis.getExpenseDetails);
+  }
+  updateExpenseStatusById(expId:Number, body: any): Observable<any>
+  {
+    return this.http.put(environment.apis.updateexprequest+expId, body);
+  }
+  getunApprovedCount() : Observable<any>
+  {
+    return this.http.get(environment.apis.getunApprovedcount);
   }
   // uploadAttachment(data:string, name:string, expenseId: Number):Observable<any>
   // {

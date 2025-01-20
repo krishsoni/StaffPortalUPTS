@@ -15,6 +15,10 @@ module.exports = (app) => {
 
     app.get('/expense/getByEmpId/:id', expense.getExpenseByEmpId);
 
-    app.get('/expenseDetails/GetView',expense.getExpenseView)
+    app.get('/expenseDetails/GetView',expense.getExpenseView);
+
+    app.get('/expense/getExpensesByEmpId/:id', expense.getLastExpensesByEmpId);
+
+    app.get('/getUnApprovedCount', expense.getUnApprovedRequestCount);
 
 }

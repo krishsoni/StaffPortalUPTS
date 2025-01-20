@@ -280,6 +280,37 @@
           </div>
           <div class="col">
             <h5>No of Expenses Submitted:{{expnum}}</h5>
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="text-dark"><b>Exp Type</b></th>
+                    <th scope="col" class="text-dark"><b>Amt</b></th>
+                    <th scope="col" class="text-dark"><b>Workers</b></th>
+                    <th scope="col" class="text-dark"><b>Remarks</b></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let exp of expenseDetailsList">
+                    <td class="text-center">
+                      <label class="text-dark"  for="">{{exp.expenseType}}</label>
+                    </td>
+                    <td class="text-center">
+                      <label class="text-dark" for="">{{exp.amount}}</label>
+                    </td>
+                    <td class="text-center">
+                      <label class="text-dark"  for="">{{exp.noofWorkers}}</label>
+                    </td>
+                    <td class="text-center">
+                      <label class="text-dark" for="">{{exp.remarks}}</label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- <div class="text-center">
+                <span style="cursor: pointer;" class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
+              </div> -->
+            </div>
           </div>
             <div class="row align-items-center">
               <div class="col-6 text-center">

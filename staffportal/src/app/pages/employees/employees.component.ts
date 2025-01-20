@@ -114,6 +114,12 @@ gridOptions: GridOptions<Employee> = {
       console.log(this.Employees);
     });
   }
+  onFilterTextBoxChanged() {
+    this.gridApi!.setGridOption(
+      "quickFilterText",
+      (document.getElementById("filter-text-box") as HTMLInputElement).value,
+    );
+  }
   addEmployeeBtn()
   {
     this.addemployee = true;

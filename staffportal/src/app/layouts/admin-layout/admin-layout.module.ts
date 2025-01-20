@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';import { RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +21,7 @@ import { EmployeeService } from 'src/app/services/employee-service/employee-serv
 import { LookupService } from 'src/app/services/lookup-service/lookup-service';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 import { AuditTrailService } from 'src/app/services/audittrail-service/audittrail-service';
+import { RequestsComponent } from 'src/app/pages/requests/requests.component';
 
 @NgModule({
   imports: [
@@ -42,8 +43,11 @@ import { AuditTrailService } from 'src/app/services/audittrail-service/audittrai
     MapsComponent,
     EmployeesComponent,
     ProjectsComponent,
+    RequestsComponent
   ],
-providers: [ProjectService, EmployeeService, LookupService, AuditTrailService]
+providers: [ProjectService, EmployeeService, LookupService, AuditTrailService],
+schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
 })
 
 export class AdminLayoutModule {}

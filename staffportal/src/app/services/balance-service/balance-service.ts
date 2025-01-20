@@ -28,4 +28,32 @@ export class BalanceService {
   {
     return this.http.get(environment.apis.getallEmpBalance);
   }
+  createbalanceRequests(body : any) : Observable<any>
+  {
+    return this.http.post(environment.apis.createbalrequest,body);
+  }
+  getbalanceRequests() : Observable<any>
+  {
+    return this.http.get(environment.apis.getbalrequest);
+  }
+  getsubbalanceRequests() : Observable<any>
+  {
+    return this.http.get(environment.apis.getsubmittedbalreq);
+  }
+  updatebalanceRequests(id:number, body: any) : Observable<any>
+  {
+    return this.http.put(environment.apis.updatebalrequest+id, body);
+  }
+  getbalanceRequestsbyEmpid(empId : Number) : Observable<any>
+  {
+    return this.http.get(environment.apis.getbalrequestbyempid+empId);
+  }
+  getlastbalRequest(empId : Number) : Observable<any>
+  {
+    return this.http.get(environment.apis.getlastrequestbyempid+empId);
+  }
+  getsubmittedCount() : Observable<any>
+  {
+    return this.http.get(environment.apis.getsubmittedcount);
+  }
 }
