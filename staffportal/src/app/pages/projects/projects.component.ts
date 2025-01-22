@@ -130,24 +130,32 @@ gridOptions: GridOptions<Project> = {
       "collectionName": "projects",
       "filter": { "projectNumber": this.projectNumber.trim()},      
     }
-    this.queryService.query(query).subscribe(res=>{
-      console.log(res);
-      if(res.length = 0)
-      {
-      this.projectexists = true;    
+    this.queryService.query(query).subscribe(
+      (res) => {
+        console.log(res); // Log the response
+        if (res.length === 0) {
+          // If the project doesn't exist, create it
+          this.projectService.createProject(this.project).subscribe(
+            (res) => {
+              this.addbtn = true;
+              this.addproject = false;
+              this.getallProjects(); // Refresh the projects list
+              this.toastr.success("Project Added Successfully");
+            },
+            (error) => {
+              console.error('Error creating project:', error);
+              this.toastr.error('An error occurred while creating the project.');
+            }
+          );
+        } else {
+          this.toastr.error(`Project ${this.projectNumber} already exists.`);
+        }
+      },
+      (error) => {
+        console.error('Error fetching project data:', error);
+        this.toastr.error('An error occurred while checking project existence.');
       }
-      else
-      this.toastr.error("Project "+this.projectNumber+" already exists.")
-    })
-    if(this.projectexists)
-    {
-      this.projectService.createProject(this.project).subscribe(res =>{
-        this.addbtn = true;
-        this.addproject = false;
-        this.getallProjects();      
-        this.toastr.success("Project Added Successfully");
-      });  
-    }
+    );
   }
   onFilterTextBoxChanged() {
     this.gridApi!.setGridOption(
