@@ -40,6 +40,10 @@ export class ExpenseService {
   {
     return this.http.get(environment.apis.getunApprovedcount);
   }
+  updateexpenseattachCount(expId:Number, body: any): Observable<any>
+  {
+    return this.http.put(environment.apis.updateattachCount+expId, body);
+  }
   // uploadAttachment(data:string, name:string, expenseId: Number):Observable<any>
   // {
   //   return this.http.post(environment.apis.uploadAttachment, {data:data, name:name, expenseId:expenseId});

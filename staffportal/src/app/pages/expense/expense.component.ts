@@ -379,5 +379,8 @@ uploadFile(base64Content: string, name: string, expenseId: Number): void {
       console.log("Uploaded Successfully");
     }
   });
+  this.expenseService.updateexpenseattachCount(expenseId, {attachmentCount:1}).subscribe(res=>{
+    console.log("Attachment Count: "+res);    
+  });
 }
 }

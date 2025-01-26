@@ -111,6 +111,35 @@ Expense.findByIdAndUpdate(req.params.id, {
     });
 });};
 
+exports.updateattachmentCount = (req, res) => {
+  if(!req.params.id) {
+    return res.status(400).send({
+        message: "Request id can not be empty"
+    });
+}  
+// Find note and update it with the request body
+Expense.findByIdAndUpdate(req.params.id, {
+   attachmentCount: req.body.attachmentCount
+}, {new: true})
+.then(expense => {
+    if(!expense) {
+        return res.status(404).send({
+            message: "Request not found with id " + req.params.id
+        });
+    }
+    res.send(expense);
+}).catch(err => {
+    console.log(err);
+    if(err.kind === 'ObjectId') {
+        return res.status(404).send({
+            message: "Request not found with id " + req.params.id
+        });                
+    }
+    return res.status(500).send({
+        message: "Error updating Request with id " + req.params.id
+    });
+});};
+
 // Delete a User with the specified UserId in the request
 exports.delete = (req, res) => {
 
@@ -198,14 +227,14 @@ exports.getExpenseView = (req, res) => {
         $unwind: '$employee', // Unwind the employee array
       },
       // Lookup for attachment details
-      {
-        $lookup: {
-          from: 'attachments',
-          localField: '_id',
-          foreignField: 'expenseId',
-          as: 'attachments',
-        },
-      },
+      // {
+      //   $lookup: {
+      //     from: 'attachments',
+      //     localField: '_id',
+      //     foreignField: 'expenseId',
+      //     as: 'attachments',
+      //   },
+      // },
       // Project fields with attachment count
       {
         $project: {
@@ -222,8 +251,7 @@ exports.getExpenseView = (req, res) => {
           noofWorkers: 1,
           worktype: 1,
           remarks: 1,
-          status:1,
-          attachmentCount: { $size: '$attachments' }, // Count attachments
+          status:1
         },
       },
     ])

@@ -11,7 +11,8 @@ const Expense = mongoose.Schema({
     worktype: String,
     amount:Number,
     remarks:String,
-    status: String
+    status: String,
+    attachmentCount: Number
     }, {
         timestamps: true
     });

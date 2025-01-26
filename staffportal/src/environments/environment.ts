@@ -45,6 +45,7 @@ export const environment = {
     getlastrequestbyempid : `${baseUrl}balanceRequest/getLastRequestByEmpId/`,
     getsubmittedcount : `${baseUrl}getSubmittedCount`,
     updateexprequest : `${baseUrl}expense/`,
+    updateattachCount : `${baseUrl}expense/updateattachCount/`,
     getunApprovedcount : `${baseUrl}getUnApprovedCount`,
     query : `${baseUrl}query`,
   }

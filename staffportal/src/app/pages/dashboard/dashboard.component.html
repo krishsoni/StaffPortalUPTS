@@ -155,14 +155,6 @@
           </div>
         </div>
         <div class="card-body bg-secondary">
-            <!-- <div class="form-group">
-              <label class="form-control-label" for="input-employee">Employee:  </label>
-          <select (change)="onexpvalueChange()" [(ngModel)]="expId" class="btn btn-pill"
-                      style="background: white;padding:4px !important;margin-left:10px;">
-                      <option value="undefined" disabled selected>Select Employee</option>
-                      <option *ngFor="let emp of empres" [value]="emp._id">{{emp.empNo}} : {{emp.firstname}}</option>
-          </select>
-            </div> -->
             <div class="row">
               <div class="col">
             <div class="form-group">
@@ -360,7 +352,7 @@
               type="text" 
               placeholder="Search Project" 
               [(ngModel)]="searchProject" 
-              (focus)="showDropdown = true" 
+              (focus)="showprojDropdown = true" 
               (input)="filterProjects()" 
               (blur)="hideProjDropdown()" 
               class="search-input"
@@ -369,13 +361,13 @@
               <span *ngIf="searchProject" class="clear-btn" (click)="clearProject()">
                 &times;
               </span>
-            <div class="dropdown-list" *ngIf="showDropdown">
+            <div class="dropdown-list" *ngIf="showprojDropdown">
               <div 
-                *ngFor="let emp of filteredProjects" 
-                (click)="onprojChange(emp._id, emp.projectNumber, emp.projectName)" 
+                *ngFor="let proj of filteredProjects" 
+                (click)="onprojChange(proj._id, proj.projectNumber, proj.projectName)" 
                 class="dropdown-item"
               >
-              {{emp.projectNumber}} : {{emp.projectName}}
+              {{proj.projectNumber}} : {{proj.projectName}}
 
               </div>
             </div>
@@ -383,7 +375,7 @@
           </div>
           <ag-grid-angular class="ag-theme-quartz"
         style="width: 100%; height: 300px;" [columnDefs]="colDefsProj"
-        (cellClicked)="onCellClicked($event)" [gridOptions]="gridOptionsProj"
+        (cellClicked)="onCellClicked($event)" [gridOptions]="gridOptionsProj" (gridReady)="onGridReady($event)"
         [rowData]="rowDataProj" [pagination]="true"  [autoSizeStrategy]="autoSizeStrategy">
         </ag-grid-angular>
         </div>
@@ -437,7 +429,7 @@
               </span>
             <div class="dropdown-list" *ngIf="showDropdown2">
               <div 
-                *ngFor="let emp of filteredEmployees1" 
+                *ngFor="let emp of filteredEmployees2" 
                 (click)="onempChange(emp._id,emp.firstname, emp.empNo)" 
                 class="dropdown-item"
               >

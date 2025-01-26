@@ -32,6 +32,7 @@ import { ClientSideRowModelModule } from "ag-grid-community";
 import { CsvExportModule } from "ag-grid-community";
 import { DataService } from 'src/app/data.service';
 import { QueryService } from 'src/app/services/query-service/query-service';
+import { forkJoin } from 'rxjs';
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   CsvExportModule,
@@ -129,6 +130,7 @@ export class DashboardComponent implements OnInit {
   showDropdown: boolean = false;
   showDropdown1: boolean = false;
   showDropdown2: boolean = false;
+  showprojDropdown: boolean = false;
   sempId : Number;
   type: string;
   colNames = ['Group', 'Date', 'Project No', 'Expense Type', 'Remarks','Status', 'Amount'];
@@ -316,6 +318,7 @@ export class DashboardComponent implements OnInit {
         this.numofemployees = res.length;
         this.filteredEmployees = this.empres;
         this.filteredEmployees1 = this.empres;
+        this.filteredEmployees2 = this.empres;
       });
       this.projectService.getAllProjects().subscribe(res => {
         this.projectresponse = res;
@@ -370,25 +373,22 @@ export class DashboardComponent implements OnInit {
         {
           this.texpense = res[0].totalExpense;
         });
-        this.oneMonthChange(this.getCurrentMonth());
+        this.oneMonthChange(this.getCurrentMonth());      
 
 
-      this.expenseService.getExpenseDetails().subscribe(res => {
-        this.expensedetails = res;
-      });
-      this.balanceService.getallEmpBalance().subscribe(res=>
-        {
-          for(var i=0;i<res.length; i++)
-          {
-            this.allEmpBal.push([res[i].firstName,res[i].totalCredit, res[i].totalDebit, res[i].netBalance]);
-          }
-          //console.log(this.allEmpBal);
-        })
+        // this.expenseService.getExpenseDetails().subscribe(res => {
+        //   this.expensedetails = res;
+        // });
     }
     else {
       this.router.navigate(['/home']);
     }
   }
+
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+    // Additional initialization code...
+}
   // Get current month in 'YYYY-MM' format
   private getCurrentMonth(): string {
     const today = new Date();
@@ -515,14 +515,14 @@ getexpenses()
               }
             }
           },
-          {
-            "$lookup": {
-              "from": "attachments",
-              "localField": "_id",
-              "foreignField": "expenseId",
-              "as": "attachments"
-            }
-          },
+          // {
+          //   "$lookup": {
+          //     "from": "attachments",
+          //     "localField": "_id",
+          //     "foreignField": "expenseId",
+          //     "as": "attachments"
+          //   }
+          // },
           {
             "$project": {
               "projectNumber": 1,
@@ -532,9 +532,7 @@ getexpenses()
               "remarks": 1,
               "createdAt": 1,
               "status":1,
-              "attachmentCount": {
-                "$size": "$attachments"
-              }
+              "attachmentCount": 1
             }
           }
         ]
@@ -558,20 +556,6 @@ getexpenses()
         console.log(this.flattenedData);
       });
     }
-    // this.expenseService.getExpenseByEmpId(this.sempId).subscribe(res => {
-    //   this.totalexpofemp = 0;
-    //   this.expenseList = res;
-    //   console.log(this.expenseList);
-    //   this.rowData = [];
-    //   for (var i = 0; i < this.expenseList.length; i++) {
-    //     if(this.expenseList[i].createdAt >= this.fdate && this.expenseList[i].createdAt <= this.tdate)
-    //     {
-    //       this.totalexpofemp = this.totalexpofemp + this.expenseList[i].amount;
-    //       this.rowData.push(res[i]);
-    //     }
-    //   }
-    //   console.log(this.rowData);
-
     this.searchQuery = employeeNo+ " : " + employeeName; // Update the input field
     this[dropdownKey] = false; // Hide the dropdown
   }
@@ -588,17 +572,32 @@ getexpenses()
   projclick() {
     this.exporttoExcelProj(this.flattenedDataProj, this.colNamesProj)
   }
-  allempbalclick()
-  {
-    this.exporttoExcelAllEmpBal(this.allEmpBal, this.colNamesBal)
+  allempbalclick() {
+    this.balanceService.getallEmpBalance().subscribe(
+      (res) => {
+        this.allEmpBal = res.map((item) => [
+          item.firstName,
+          item.totalCredit,
+          item.totalDebit,
+          item.netBalance,
+        ]);
+        
+        // Proceed with exporting to Excel only after data is ready
+        this.exporttoExcelAllEmpBal(this.allEmpBal, this.colNamesBal);
+      },
+      (error) => {
+        console.error('Error fetching employee balances:', error);
+      }
+    );
   }
+  
   hideDropdown(dropdownKey: string) {
     setTimeout(() => {
       this[dropdownKey] = false;
     }, 200); // Delay to allow click event
   }
   hideProjDropdown() {
-    setTimeout(() => this.showDropdown = false, 200); // Delay to allow click event
+    setTimeout(() => this.showprojDropdown = false, 200); // Delay to allow click event
   }
   exporttoExcel(data, columnNames, employeeName) {
     try {
@@ -695,16 +694,17 @@ getexpenses()
 
   exporttoExcelProj(data, columnNames) {
     try {
-      let projName = "";
+      let projName = this.searchProject;
+      let totalamt = 0;
       if (data.length > 0) {
         this.projList = [];
-        for(var k=0;k<this.projectresponse.length;k++)
-        {
-          if(this.projectresponse[k].projectNumber == this.expprojectId)
-          {
-            projName = this.projectresponse[k].projectName;
-          }
-        }
+        // for(var k=0;k<this.projectresponse.length;k++)
+        // {
+        //   if(this.projectresponse[k].projectNumber == this.expprojectId)
+        //   {
+        //     projName = this.projectresponse[k].projectName;
+        //   }
+        // }
         this.projList.push(['Project: '+ projName]);
         for (var i = 0; i < data.length; i++) {
           if(data[i].isGroupHeader)
@@ -713,8 +713,10 @@ getexpenses()
           }
           else{
           this.projList.push(["",data[i].projectNumber, formatDate(data[i].createdAt, "dd-MM-yyyy", "en"), data[i].empName, data[i].worktype, data[i].floor, data[i].pour, data[i].expenseType, data[i].noofWorkers, data[i].remarks, data[i].amount])
+          totalamt = totalamt + data[i].amount;
         }
       }
+      this.projList.push(['Total', null,null,null, null, null, null, null,null,null, totalamt]);
        this.fileName = "";
        this.fileName = 'Project-Expense-Data--' + projName + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');;
         // Create a new workbook
@@ -792,7 +794,7 @@ getexpenses()
       // this.fdate = null;
       // this.tdate = null;
       this.rowData = [];
-      this.filteredEmployees1 = [...this.empres];
+      this.filteredEmployees = [...this.empres];
   }
   clearSearch1(){
     this.searchQuery1 = ''; // Clear the search query
@@ -803,12 +805,13 @@ getexpenses()
     this.searchQuery2 = '';
     this.empbtn = false;
     this.rowDataEmp = [];
-    this.filteredEmployees2 = [...this.empres]
+    this.filteredEmployees2 = [...this.empres];
   }
   clearProject(){
     this.searchProject = '';
     this.projbtn = false;
     this.rowDataProj = [];
+    this.filteredProjects = [...this.projectresponse];
   }
   public updateOptions() {
     this.salesChart.data.datasets[0].data = this.data;
@@ -821,74 +824,81 @@ getexpenses()
   onempvalueChange() {
     console.log(this.empId);
   }
-  onempChange(empid:Number,empName:String, empNo:Number) {
+  onempChange(empid: number, empName: string, empNo: string) {
     this.empselected = empid;
     this.empbtn = true;
     sessionStorage.setItem('empch', this.empselected.toString());
-    //this.dataService.setempch(this.empselected.toString());
-    //console.log(sessionStorage.getItem('empch'))
-    this.auditService.getEmployeeUpdates().subscribe(res => {
-      this.temp = res;
-      this.rowDataEmp = [];
-      for (var i = 0; i < this.temp.length; i++) {
-        if (this.empselected == this.temp[i]._id && (this.temp[i].field !== "createdAt" && this.temp[i].field !== "updatedAt")) {
-          this.rowDataEmp.push(this.temp[i]);
+  
+    const getbalquery = {
+      collectionName: 'balances',
+      pipeline: [
+        {
+          $match: {
+            operation: 'C', // Filter documents where operation is "C"
+            empId: this.empselected,
+          },
+        },
+      ],
+    };
+  
+    // Make both service calls
+    const auditTrail$ = this.auditService.getEmployeeUpdates();
+    const balances$ = this.queryService.query(getbalquery);
+  
+    // Use forkJoin to wait for both service calls to complete
+    forkJoin([auditTrail$, balances$]).subscribe(
+      ([auditTrailResponse, balanceResponse]) => {
+        this.temp = auditTrailResponse;
+        this.balance = balanceResponse;
+  
+        // Process audit trail data
+        this.rowDataEmp = [];
+        for (let i = 0; i < this.temp.length; i++) {
+          if (
+            this.empselected === this.temp[i]._id &&
+            (this.temp[i].field === 'gratuity' || this.temp[i].field === 'bonus')
+          ) {
+            this.rowDataEmp.push(this.temp[i]);
+          }
         }
+  
+        // Process balance data
+        for (let k = 0; k < this.balance.length; k++) {
+          this.rowDataEmp.push({
+            field: 'Balance',
+            date: this.balance[k].createdAt,
+            oldValue: 0,
+            newValue: this.balance[k].amount,
+          });
+        }
+  
+        // Group and flatten data
+        const groupedData = this.rowDataEmp.reduce((groups, item) => {
+          const field = item.field;
+          const group = groups.find((group) => group.field === field);
+          if (group) {
+            group.items.push(item);
+          } else {
+            groups.push({ field, items: [item] });
+          }
+          return groups;
+        }, []);
+        this.flattenedDataEmp = groupedData.flatMap((group) => [
+          { Type: group.field, isGroupHeader: true },
+          ...group.items,
+        ]);
+  
+        console.log(this.flattenedDataEmp);
+      },
+      (error) => {
+        console.error('Error during service calls:', error);
       }
-      for (var k = 0; k < this.balance.length; k++) {
-        if (this.empselected == this.balance[k].empId && this.balance[k].operation == "C") {
-          this.rowDataEmp.push({ field: "Balance", date: this.balance[k].createdAt, oldValue: 0, newValue: this.balance[k].amount });
-        }
-      }
-      console.log(this.rowDataEmp);
-      const groupedData = this.rowDataEmp.reduce((groups, item) => {
-        const field = item.field;
-        const group = groups.find(group => group.field === field);
-        if (group) {
-          group.items.push(item);
-        } else {
-          groups.push({ field, items: [item] });
-        }
-        return groups;
-      }, []);
-      this.flattenedDataEmp = [];
-      this.flattenedDataEmp = groupedData.flatMap(group => [{ Type: group.field, isGroupHeader: true }, ...group.items]);
-      console.log(this.flattenedDataEmp);
-    });
-    this.searchQuery2 = empNo+ " : " + empName; 
+    );
+  
+    // Update search query
+    this.searchQuery2 = `${empNo} : ${empName}`;
   }
-  onexpvalueChange() {
-    console.log(this.expId);
-    this.expbtn = true;
-    sessionStorage.setItem('expEmp', this.expId.toString());
-    this.expenseService.getExpenseByEmpId(this.expId).subscribe(res => {
-      this.totalexpofemp = 0;
-      this.expenseList = res;
-      console.log(this.expenseList);
-      this.rowData = [];
-      for (var i = 0; i < this.expenseList.length; i++) {
-        this.totalexpofemp = this.totalexpofemp + this.expenseList[i].amount;
-        // this.rowData.push(
-        //   { EmployeeId: this.expenseList[i].empId, ProjectNo: this.expenseList[i].projectNumber, ExpenseType: this.expenseList[i].expenseType, Remarks:this.expenseList[i].remarks, Amount: this.expenseList[i].amount },
-        // );
-        this.rowData.push(res[i]);
-      }
-      console.log(this.rowData);
-      const groupedData = this.rowData.reduce((groups, item) => {
-        const projectNumber = item.projectNumber;
-        const group = groups.find(group => group.projectNumber === projectNumber);
-        if (group) {
-          group.items.push(item);
-        } else {
-          groups.push({ projectNumber, items: [item] });
-        }
-        return groups;
-      }, []);
-      this.flattenedData = [];
-      this.flattenedData = groupedData.flatMap(group => [{ projectNumber: group.projectNumber, isGroupHeader: true }, ...group.items]);
-      console.log(this.flattenedData);
-    });
-  }
+  
   onemplvalueChange() {
     console.log(this.emplId);
     if (this.emplId) {
@@ -903,44 +913,95 @@ getexpenses()
       this.fname = "Select Employee";
   }
 
-  onprojChange(expprojectId: Number, expProjNumber: string, expProjName:string) {
-    console.log(this.expprojectId);
-    this.projbtn = true;
-    this.expprojlist = [];
-    this.projtotalamt = 0;
-    this.rowDataProj = [];
-    for (var i = 0; i < this.expensedetails.length; i++) {
-      if (expProjNumber == this.expensedetails[i].projectNumber) {
-        sessionStorage.setItem('expProject', this.expensedetails[i].projectNumber);
-        //this.dataService.setexpProject(this.expensedetails[i].projectNumber);
-        //console.log(sessionStorage.getItem('expProject'));
-        //this.expprojlist.push(this.expense[i]);
-        this.projtotalamt = this.projtotalamt + this.expensedetails[i].amount;
-        // this.rowDataProj.push(
-        //   {  ProjectNo: this.expense[i].projectNumber, EmpId: this.expense[i].empId, ExpenseType: this.expense[i].expenseType, Floor: this.expense[i].floor, Pour: this.expense[i].pour,
-        //     NoofWorkers: this.expense[i].noofWorkers, Remarks:this.expense[i].remarks, Amount: this.expense[i].amount },
-        // );
-        this.rowDataProj.push(this.expensedetails[i]);
+  onprojChange(expprojectId: number, expProjNumber: string, expProjName: string) {
+    this.projbtn = true; // Enable project button
+    this.expprojlist = []; // Clear the project list
+    this.projtotalamt = 0; // Reset total amount
+    this.rowDataProj = []; // Reset grid data
+  
+    const projquery = {
+      collectionName: 'expenses',
+      pipeline: [
+        {
+          $match: {
+            projectNumber: expProjNumber,
+          },
+        },
+        {
+          $lookup: {
+            from: 'employees',
+            localField: 'empId',
+            foreignField: '_id',
+            as: 'employee',
+          },
+        },
+        {
+          $unwind: '$employee',
+        },
+        {
+          $project: {
+            _id: 0, // Exclude _id field
+            expenseId: '$_id',
+            amount: 1, // Include fields from expenses collection
+            createdAt: 1,
+            employeeId: '$employee._id',
+            empName: '$employee.firstname', // Include fields from employees collection
+            projectNumber: 1,
+            expenseType: 1,
+            floor: 1,
+            pour: 1,
+            noofWorkers: 1,
+            worktype: 1,
+            remarks: 1,
+          },
+        },
+      ],
+    };
+  
+    // Service call to fetch project data
+    this.queryService.query(projquery).subscribe(
+      (res) => {
+        this.expensedetails = res; // Assign response to expensedetails
+        sessionStorage.setItem('expProject', expProjNumber); // Save project number in session storage
+  
+        // Process response data
+        for (let i = 0; i < this.expensedetails.length; i++) {
+          this.projtotalamt += this.expensedetails[i].amount; // Calculate total amount
+          this.rowDataProj.push(this.expensedetails[i]); // Push data to grid array
+        }
+  
+        // Group and flatten data for display
+        const groupedData = this.rowDataProj.reduce((groups, item) => {
+          const worktype = item.worktype;
+          const group = groups.find((group) => group.worktype === worktype);
+          if (group) {
+            group.items.push(item);
+          } else {
+            groups.push({ worktype, items: [item] });
+          }
+          return groups;
+        }, []);
+  
+        this.flattenedDataProj = groupedData.flatMap((group) => [
+          { worktype: group.worktype, isGroupHeader: true },
+          ...group.items,
+        ]);
+  
+        // Update AG Grid data
+        this.gridApi.setRowData(this.rowDataProj);
+  
+        //console.log(this.flattenedDataProj); // Log grouped and flattened data
+      },
+      (error) => {
+        console.error('Error fetching project data:', error); // Handle errors
       }
-    }
-    console.log(this.rowDataProj);
-    const groupedData = this.rowDataProj.reduce((groups, item) => {
-      const worktype = item.worktype;
-      const group = groups.find(group => group.worktype === worktype);
-      if (group) {
-        group.items.push(item);
-      } else {
-        groups.push({ worktype, items: [item] });
-      }
-      return groups;
-    }, []);
-    this.flattenedDataProj = [];
-    this.flattenedDataProj = groupedData.flatMap(group => [{ worktype: group.worktype, isGroupHeader: true }, ...group.items]);
-    console.log(this.flattenedDataProj);
-    //console.log(this.expprojlist);
-    this.searchProject = expProjNumber+ " : " + expProjName; // Update the input field
-    this.showDropdown = false; // Hide the dropdown
+    );
+  
+    // Update the search project field and close dropdown
+    this.searchProject = `${expProjNumber} : ${expProjName}`;
+    this.showprojDropdown = false;
   }
+  
   onCellClicked(params) {
     // Handle click event for action cells
     if (params.column.colId === "download" && params.event.target.dataset.action) {
