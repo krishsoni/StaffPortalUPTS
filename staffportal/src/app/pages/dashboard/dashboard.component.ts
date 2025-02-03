@@ -133,6 +133,7 @@ export class DashboardComponent implements OnInit {
   showprojDropdown: boolean = false;
   sempId : Number;
   type: string;
+  reqcount : Number;
   colNames = ['Group', 'Date', 'Project No', 'Expense Type', 'Remarks','Status', 'Amount'];
   colNamesEmp = ['Group','Type', 'Date', 'Old Value', 'New Value'];
   colNamesProj = ['Group','Project No', 'Date', 'EmpName', 'Worktype', 'Slab', 'Pour', 'Expense Type','No Of Workers', 'Remarks', 'Amount'];
@@ -248,23 +249,7 @@ export class DashboardComponent implements OnInit {
       headerName: 'Type'
     }
   }
-
-
-  // getDynamicFileName(): string {
-  //   const dynamicId = sessionStorage.getItem('expEmp'); // Set your dynamic ID here
-  //   // Generate dynamic file name based on your logic
-  //   return 'Employee-Expense-Data-EmpId-' + dynamicId + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');
-  // }
-  // getProjFileName(): string {
-  //   const dynamicProjId = sessionStorage.getItem('expProject'); // Set your dynamic ID here
-  //   // Generate dynamic file name based on your logic
-  //   return 'Project-Expense-Data-ProjNo-' + dynamicProjId + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');
-  // }
-  // getEmpFileName(): string {
-  //   const dynamicProjId = sessionStorage.getItem('empch'); // Set your dynamic ID here
-  //   // Generate dynamic file name based on your logic
-  //   return 'Employee-Change-History' + dynamicProjId + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');
-  // }
+  
 
   constructor(private userService: UserService, private router: Router, private employeeService: EmployeeService,
     private projectService: ProjectService, private expenseService: ExpenseService, private attachmentService: AttachmentService,
@@ -375,7 +360,9 @@ export class DashboardComponent implements OnInit {
         });
         this.oneMonthChange(this.getCurrentMonth());      
 
-
+        const bcount = Number(sessionStorage.getItem('submittedRequestCount'));
+        const ecount = Number(sessionStorage.getItem('unApprovedCount'));
+        this.reqcount = bcount +  ecount;
         // this.expenseService.getExpenseDetails().subscribe(res => {
         //   this.expensedetails = res;
         // });

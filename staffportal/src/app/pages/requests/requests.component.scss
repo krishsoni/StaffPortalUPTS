@@ -1,0 +1,35 @@
+::ng-deep .ag-paging-row-summary-panel {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 12px !important;
+}
+
+@media (max-width: 600px) {
+  ::ng-deep .ag-paging-row-summary-panel {
+      font-size: 10px !important;
+      padding: 5px !important;
+  }
+
+  ::ng-deep .ag-paging-row-summary-panel .ag-paging-row-summary {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      gap: 10px !important;
+  }
+
+  ::ng-deep .ag-paging-row-summary-panel .ag-paging-row-summary span {
+      white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 480px) {
+  ::ng-deep .ag-paging-row-summary-panel {
+      font-size: 9px !important;
+      overflow: hidden !important;
+  }
+
+  ::ng-deep .ag-paging-row-summary-panel .ag-paging-row-summary span {
+      text-overflow: ellipsis !important;
+  }
+}

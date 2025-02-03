@@ -141,6 +141,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.balanceService.getsubmittedCount().subscribe(res=>
       {
         this.submittedRequestCount = res.count;
+        sessionStorage.setItem('submittedRequestCount', this.submittedRequestCount.toString());
       });
     }
     this.query = {
@@ -195,6 +196,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     this.queryService.query(this.query).subscribe(res=>{
       this.unApprovedCount = res.length;
+      sessionStorage.setItem('unApprovedCount', this.unApprovedCount.toString());
     });
   }
   ngOnDestroy() {
