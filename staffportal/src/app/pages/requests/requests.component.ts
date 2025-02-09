@@ -37,18 +37,34 @@ export class RequestsComponent implements OnInit,AfterViewInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   addBalance: Balance;
   isProcessingId: number | null = null;
+  isbalProcessingId: number | null = null;
   colDefs: ColDef[] = [
-    { headerName: "EmployeeNo", field: "empNo"},
-    { headerName: "Name", field: "empName"},
-    { headerName: "Amount", field: "Amount" },
-    { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter  },
-    { headerName: "Status",field: "Status" },
+    { headerName: "EmployeeNo", field: "empNo", minWidth: 80,},
+    { headerName: "Name", field: "empName", minWidth: 80,},
+    { headerName: "Amount", field: "Amount", minWidth: 80, },
+    // { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter, minWidth: 100,  },
+    // { headerName: "Status",field: "Status", minWidth: 100, },
     {
       headerName: "Action",
-      minWidth: 150,
-      cellRenderer: this.actionCellRenderer,
-      editable: false,
-      colId: "action"
+      field: "action",
+      minWidth: 80,
+      cellRenderer: (params: any) => {
+        const isDisabled = this.isbalProcessingId !== null && this.isbalProcessingId !== params.data._id;
+        const buttonId = `reviewbal-btn-${params.node.rowIndex}`;
+  
+        setTimeout(() => {
+          const button = document.getElementById(buttonId);
+          if (button) {
+            button.addEventListener("click", () => this.openbalSwal(params.data));
+          }
+        });
+  
+        return `
+          <button id="${buttonId}" class="btn btn-warning btn-sm" ${isDisabled ? "disabled" : ""}>
+          <i class="fa fa-eye"></i>
+          </button>
+        `;
+      },
     }
   ];
   colempDefs : ColDef[] = [
@@ -60,25 +76,8 @@ export class RequestsComponent implements OnInit,AfterViewInit, OnDestroy {
     { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter, minWidth: 100,  },
     { headerName: "Remarks",field: "remarks", minWidth: 150,},
     { headerName: "Status",field: "status", minWidth: 120, },
-    // {
-    //   headerName: "Download",
-    //   field:"attachmentCount",
-    //   cellRenderer: function (params) {
-    //     if (params.node.group) {
-    //       return null; // Hide the button for group rows
-    //     } else {
-    //       // Check if a file is available in the download column
-    //       const hasFile = params.data && params.data.attachmentCount; // Assuming `download` contains file information
-    //       const buttonClass = hasFile ? "btn-success" : "btn-danger"; // Change class based on file availability
-    //       const buttonText = hasFile ? "Yes" : "No"; // Update button text accordingly
-    //       return `<button class="btn ${buttonClass} btn-sm" data-action="download">${buttonText}</button>`;
-    //     }
-    //   },
-    //   editable: false,
-    //   colId: "download"
-    // },
     {
-      headerName: "Actions",
+      headerName: "Action",
       field: "actions",
       minWidth: 80,
       cellRenderer: (params: any) => {
@@ -115,18 +114,8 @@ dateFormatter(params) {
     return '';
   }
 }
-getRowStyle = params => {
-  if (params.data.Status === 'Completed') {
-      return { background: '#2dce89', 'pointer-events': 'none'};
-  }
-};
 gridOptions: GridOptions;
-balgridOptions = {
-  context: {
-    componentParent: this // Allows access to Angular component in cell renderer
-},
-columnDefs: this.colDefs,
-};
+balgridOptions : GridOptions;
     gridApi: GridApi<any>;
     expGridApi: GridApi<any>;
     username: string;
@@ -157,6 +146,15 @@ columnDefs: this.colDefs,
         },
         columnDefs: this.colempDefs,
         };
+        this.balgridOptions = {
+            paginationPageSize: 50,
+            pagination: true,
+            suppressPaginationPanel: false,
+            context: {
+            componentParent: this // Allows access to Angular component in cell renderer
+        },
+        columnDefs: this.colDefs,
+        }
       }
 
     ngOnInit() {
@@ -243,10 +241,11 @@ columnDefs: this.colDefs,
         }
     }
     ngAfterViewInit() {
-      this.adjustGridColumns();
+      this.adjustexpGridColumns();
+      this.adjustbalGridColumns();
     }
      // Function to show only relevant columns on mobile screens
-  adjustGridColumns() {
+  adjustexpGridColumns() {
     if (this.agGrid?.api) {
       const isMobile = window.innerWidth <= 768;
 
@@ -257,34 +256,47 @@ columnDefs: this.colDefs,
       this.agGrid.api.setColumnVisible("status", !isMobile);
       this.agGrid.api.setColumnVisible("download", !isMobile);
     }
-  }
-    actionCellRenderer(params) {
-      if (params.data.Status === 'Completed') {
-        return null; // Hide the buttons for completed rows
-      }
-      let eGui = document.createElement('div');
-      let isbalProcessing = params.context.componentParent.isbalProcessing;
-      let disabled = isbalProcessing ? 'disabled' : '';
-    
-      eGui.innerHTML = `
-          <button 
-            class="btn btn-success btn-sm"
-            data-action="approve" ${disabled}>
-              Approve
-          </button>
-          <button 
-            class="btn btn-danger btn-sm"
-            data-action="reject" ${disabled}>
-              Reject
-          </button>
-      `;
-      
-      return eGui;
+  } 
+  adjustbalGridColumns() {
+    if (this.agGrid?.api) {
+      const isMobile = window.innerWidth <= 768;
+
+      this.agGrid.api.setColumnVisible("createdAt", !isMobile);
+      this.agGrid.api.setColumnVisible("Status", !isMobile);
     }
-    
-    
-    onGridReady(params: GridReadyEvent) {
-      this.gridApi = params.api;
+  } 
+  //   onGridReady(params: GridReadyEvent) {
+  //     this.gridApi = params.api;
+  //      // Update grid with initial data
+  //      this.isadmin = sessionStorage.getItem('isadmin');
+  //      if(this.isadmin=="true")
+  //      {
+  //        this.balanceService.getsubbalanceRequests().subscribe(res=>{
+  //          console.log(res);
+  //          this.ballength = res.length;
+  //          this.rowData = res;
+  //          this.balancereq = true;
+  //        });
+  //      }
+  // }
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+    this.isadmin = sessionStorage.getItem('isadmin');
+  
+    if (this.isadmin === "true") {
+      this.subscription = interval(300000).pipe(
+        startWith(0),
+        switchMap(() => this.balanceService.getsubbalanceRequests()),
+        tap(res => {
+          const rowData = Array.isArray(res) ? res : [];
+          this.gridApi.setRowData(rowData);
+          this.rowData = rowData;
+          this.ballength = rowData.length;
+          this.balancereq = true;
+          console.log(this.rowData);
+        })
+      ).subscribe();
+    }
   }
 
   onexpGridReady(params: GridReadyEvent) {
@@ -420,23 +432,59 @@ openSwal(rowData) {
 
   onCellClicked(params) {
     if (params.column.colId === "action" && params.event.target.dataset.action) {
-      const action = params.event.target.dataset.action;
-      const rowIndex = params.node.rowIndex;
-      const rowData = params.data;
-  
-      if (action === "approve") {
-        // Logic for approve action
-        this.approveRequest(rowIndex, rowData);
-      }
-  
-      if (action === "reject") {
-        // Logic for reject action
-        this.rejectRequest(rowIndex, rowData);
-      }
+      this.openbalSwal(params.data);
     }
   }
-  approveRequest(rowIndex: number, rowData: any) {
-    this.isbalProcessing = true; // Disable other buttons
+  openbalSwal(rowData) {
+    if (this.isbalProcessingId !== null) return;
+    Swal.fire({
+      title: 'Balance Request Details',
+      html: `
+      <table class="table align-items-center table-flush">
+      <tr>
+        <td style="text-align:left; font-weight:bold; padding:5px;">Employee No:</td>
+        <td style="text-align:left; padding:5px;">${rowData.empNo}</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; font-weight:bold; padding:5px;">Name:</td>
+        <td style="text-align:left; padding:5px;">${rowData.empName}</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; font-weight:bold; padding:5px;">Amount:</td>
+        <td style="text-align:left; padding:5px;">${rowData.Amount}</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; font-weight:bold; padding:5px;">Date:</td>
+        <td style="text-align:left; padding:5px;">${new Date(rowData.createdAt).toLocaleDateString()}</td>
+      </tr>
+      <tr>
+        <td style="text-align:left; font-weight:bold; padding:5px;">Status:</td>
+        <td style="text-align:left; padding:5px;">${rowData.Status}</td>
+      </tr>
+    </table>
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Approve",
+      cancelButtonText: "Reject",
+      showCloseButton: true,
+      icon: "info",
+      customClass: {
+        confirmButton: "btn-success",
+        cancelButton: "btn-danger"
+      },
+      preConfirm: () => {
+        return 'approve'; // Identify the action
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.approveRequest(rowData);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.rejectRequest(rowData);
+      }
+    });
+  }
+  approveRequest(rowData: any) {
+    this.isbalProcessingId = rowData._id; // Disable other buttons
     this.gridApi.refreshCells({ force: true }); // Refresh grid to update button state
 
     this.balanceService.updatebalanceRequests(rowData._id, {Status:"Completed"}).subscribe(
@@ -446,9 +494,11 @@ openSwal(rowData) {
         setTimeout(() => {
           this.addBalance = new Balance(rowData.empId, rowData.amount, "C");
           this.addbalance();
-          this.isbalProcessing = false; // Re-enable buttons
-          this.gridApi.refreshCells({ force: true }); // Refresh grid
-        }, 2000);
+          // Remove the approved/rejected row
+          this.rowData = this.rowData.filter(item => item._id !== rowData._id);
+          this.gridApi.setRowData([...this.rowData]); // Update grid data
+          this.isbalProcessingId = null;
+        }, 1000);
       });
   }
 
@@ -456,25 +506,28 @@ openSwal(rowData) {
     this.balanceService.addBalance(this.addBalance).subscribe(res => {
       console.log(res);
       this.toastr.warning("Balance Updated Successfully");
-      setTimeout(() => window.location.reload(), 700);
     });
   }
   
-  rejectRequest(rowIndex: number, rowData: any) {
-    this.isbalProcessing = true; // Disable other buttons
+  rejectRequest(rowData: any) {
+    this.isbalProcessingId = rowData._id; // Disable other buttons
     this.gridApi.refreshCells({ force: true }); // Refresh grid to update button state
     
     this.balanceService.updatebalanceRequests(rowData._id, {Status:"Rejected"}).subscribe(
       response => {
         console.log(response);
         this.toastr.error('Request Rejected Successfully.');
-        // Delay re-enabling the buttons by 2 seconds
-    setTimeout(() => {
-      this.isbalProcessing = false; // Re-enable buttons
-      this.gridApi.refreshCells({ force: true }); // Refresh grid
-      window.location.reload();
-    }, 2000);
-    });
+      setTimeout(() => {
+         // Remove the approved/rejected row
+         this.rowData = this.rowData.filter(item => item._id !== rowData._id);
+         this.gridApi.setRowData([...this.rowData]); // Update grid data
+         this.isbalProcessingId = null;
+    }, 1000);
+  },
+    (error) => {
+      this.isbalProcessingId = null; // Unlock buttons on error
+      this.gridApi.refreshCells({ force: true });
+  });
   }
 
 
@@ -531,13 +584,15 @@ openSwal(rowData) {
       setTimeout(() => {
         this.addBalance = new Balance(rowData.empId, rowData.amount, "D");
         this.addbalance();
-        this.isProcessingId = null; // Unlock the buttons
-        this.expGridApi.refreshCells({ force: true });
+        // Remove the approved/rejected row
+        this.rowexpData = this.rowexpData.filter(item => item.expId !== rowData.expId);
+        this.expGridApi.setRowData([...this.rowexpData]); // Update grid data
+        this.isProcessingId = null; // Re-enable buttons // Unlock the buttons
       }, 1000);
     },
     (error) => {
-      this.isProcessingId = null; // Unlock the buttons on error
       this.expGridApi.refreshCells({ force: true });
+      this.isProcessingId = null; // Unlock the buttons on error
     }
   );
   }
@@ -551,9 +606,10 @@ openSwal(rowData) {
       this.toastr.error('Request Rejected Successfully.');
   
       setTimeout(() => {
-        this.isProcessingId = null; // Unlock buttons
-        this.expGridApi.refreshCells({ force: true });
-        window.location.reload();
+        // Remove the approved/rejected row
+        this.rowexpData = this.rowexpData.filter(item => item.expId !== rowData.expId);
+        this.expGridApi.setRowData([...this.rowexpData]); // Update grid data
+        this.isProcessingId = null; // Re-enable buttons // Unlock the buttons
       }, 1000);
     },
     (error) => {
