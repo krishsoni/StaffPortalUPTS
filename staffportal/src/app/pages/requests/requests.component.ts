@@ -492,7 +492,7 @@ openSwal(rowData) {
         console.log(response);
         this.toastr.success('Request Approved Successfully.');
         setTimeout(() => {
-          this.addBalance = new Balance(rowData.empId, rowData.amount, "C");
+          this.addBalance = new Balance(rowData.empId, rowData.Amount, "C");
           this.addbalance();
           // Remove the approved/rejected row
           this.rowData = this.rowData.filter(item => item._id !== rowData._id);
