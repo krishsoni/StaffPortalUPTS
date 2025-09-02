@@ -1,0 +1,373 @@
+<div *ngIf="createrecord=== true">
+    <div class="header pb-8 pt-lg-8 d-flex align-items-center" style="min-height: 50px;">
+      <!-- Mask -->
+      <span class="mask bg-gradient-info opacity-8"></span>
+      
+    </div>
+    <div class="container-fluid mt--7">
+      <div class="row">
+        <div class="col-xl-8 order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-4">
+                  <a class="text-dark text-center" (click)="backtoMenu()"><i
+                    class="fas fa-backward"></i><b> Back</b></a>
+                </div>
+                    <div class="col-4">
+                      <h5 class="mb-0">Add Labour Record</h5>
+                    </div>
+                    <div class="col-4">
+                      <span class="btn-warning btn-sm float-right">
+                        {{ date | date: "dd-MM-yyyy" }}
+                      </span>
+                  </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-control-label " for="input-state">State: &nbsp;</label>
+            <select (change)="onstateChange()" [(ngModel)]="state" class="btn btn-pill"
+                        style="background: white;padding:4px !important">
+                        <option [ngValue]="undefined" disabled>Select State</option>
+                        <option *ngFor="let state of stateslist" [value]="state">{{state}}</option>
+            </select>
+              </div>
+              <div class="form-group">
+                <label class="form-control-label " for="input-city">City: &nbsp;</label>
+            <select (change)="oncityChange()" [(ngModel)]="selectedcity" class="btn btn-pill"
+                        style="background: white;padding:4px !important">
+                        <option [ngValue]="undefined" disabled>Select City</option>
+                        <option *ngFor="let city of citylist" [value]="city">{{city}}</option>
+            </select>
+              </div>
+            <div class="form-group">
+              <label class="form-control-label " for="input-project">Project: &nbsp;</label>
+            <div class="dropdown label">
+              <input 
+                type="text" 
+                placeholder="Search Projects" 
+                [(ngModel)]="searchQuery" 
+                (focus)="showDropdown = true" 
+                (input)="filterProjects()" 
+                (blur)="hideDropdown()" 
+                style="width: 100%; padding: 4px; margin-bottom: 4px;"
+              />
+            
+              <div class="dropdown-list" *ngIf="showDropdown">
+                <div 
+                  *ngFor="let project of filteredProjects" 
+                  (click)="selectProject(project.projectname)" 
+                  class="dropdown-item"
+                >
+                  {{ project.projectname }}
+                </div>
+              </div>
+            </div>
+            </div>
+            <div *ngIf="projectselected===true" class="form-group">
+              <form #expForm="ngForm">
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label " for="input-projectNo">Project No: &nbsp;</label>
+                        <label class="form-control-label " for="input-projectNumber">{{selectedProject.projectnumber}}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label " for="sprojectfloor">Slab: &nbsp;</label>
+                        <select id="sprojectfloor" name="sprojectfloor"  (change)="onfloorChange()"  class="btn btn-pill" [(ngModel)]="sprojectfloor"
+                         style="background: white;padding:4px !important" required #sprojectfloorcontrol="ngModel">
+                          <option value="undefined" disabled>Select Slab</option>
+                          <option *ngFor="let floor of floors" >{{floor}}</option>
+                        </select>
+                        <span class="text-danger" *ngIf="sprojectfloorcontrol.touched && sprojectfloorcontrol.invalid">
+                          Select Slab
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label " for="sprojectpour">Pour: &nbsp;</label>
+                        <select id="sprojectpour" name="sprojectpour" (change)="onpourChange()"  class="btn btn-pill" [(ngModel)]="sprojectpour"
+                         style="background: white;padding:4px !important" required #sprojectpourcontrol="ngModel">
+                          <option [ngValue]="undefined" disabled>Select Pour</option>
+                          <option *ngFor="let pour of pours">{{pour}}</option>
+                        </select>
+                        <span class="text-danger" *ngIf="sprojectpourcontrol.touched && sprojectpourcontrol.invalid">
+                          Select Pour
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label " for="sworktype">Work: &nbsp;</label>
+                        <select id="sworktype" name="sworktype" (change)="onworkChange()"  class="btn btn-pill" [(ngModel)]="sworktype"
+                         style="background: white;padding:4px !important" required #sprojectwpcontrol="ngModel">
+                        <option [ngValue]="undefined" disabled>Select WorkType</option>
+                        <option *ngFor="let worktype of worktypes">{{worktype}}</option>
+                        </select>
+                        <span class="text-danger" *ngIf="sprojectwpcontrol.touched && sprojectwpcontrol.invalid">
+                          Select WorkType
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div>
+                  Form : {{expForm.invalid }}
+                </div> -->
+                <div class="text-center">
+                  <button title="Fill Expenses" [disabled]="expForm.invalid"  type="button" class="btn btn-success my-4" (click)="fillrecord()">
+                    Fill Labour Record</button>
+                </div>
+                <!-- Address <span class="badge badge-pill badge-success">Fill Expenses</span> -->
+              </form>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div *ngIf="submit=== true">
+      <div class="header pb-8 pt-lg-8 d-flex align-items-center" style="min-height: 50px;">
+        <span class="mask bg-gradient-info opacity-8"></span>
+        
+      </div>
+      <div class="container-fluid mt--7">
+        <div class="row">
+          <div class="col-xl-8 order-xl-1">
+            <div class="card bg-secondary shadow">
+              <div class="card-header bg-white border-0">
+                <div class="row align-items-center">
+                  <div class="col-4">
+                    <a class="text-dark" (click)="backtoMenu()"><i
+                      class="fas fa-backward"></i><b> Back</b></a>
+                  </div>
+                      <div class="col-4">
+                        <h5 class="mb-0">Add Record</h5>
+                      </div>
+                      <div class="col-4">
+                        <span class="btn-warning btn-sm float-right">
+                          {{ date | date: "dd-MM-yyyy" }}
+                        </span>
+                    </div>
+                  <!-- <div class="col-4 text-right">
+                    <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                  </div> -->
+                </div>
+              </div>
+              <!-- <div class="col-xl-4"> -->
+                <div class="card bg-secondary shadow">
+                  <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <h5>Project: {{projectName}}</h5>
+                        <h5>Slab: {{sprojectfloor}}</h5>
+                        <h5>Pour: {{sprojectpour}}</h5>
+                        <h5>Worktype: {{sworktype}}</h5>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="table-responsive">
+                <table mobileTable>
+                  <thead>
+                    <tr>
+                      <th scope=""><b>Worker Type</b></th>
+                      <th scope=""><b>Worker Name</b></th>
+                      <th scope=""><b>In-Time</b></th>
+                      <th scope=""><b>Out-Time</b></th>
+                      <th scope=""><b>No of Workers</b></th>
+                      <th scope=""><b>Attachment</b></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td label="Worker:-">
+                        <select (change)="onworkertypechange()" [(ngModel)]="sworkertype" class="btn btn-pill"
+                          style="background: white;padding:4px !important">
+                          <option value="undefined" disabled selected>Select Worker Type</option>
+                          <option *ngFor="let workertype of workerTypes" [value]="workertype">{{workertype}}</option>
+                        </select>
+                      </td>
+                      <td label="Worker Name:">
+                        <div>
+                          <input style="width: 100%" type="text" [(ngModel)]="workername" [ngModelOptions]="{standalone: true}" class="" placeholder="Enter Worker Name" >
+                        </div>
+                    </td>
+                    <td label="In-Time:">
+                      <input style="width: 30%;" type="time" [(ngModel)]="intime" [[ngModelOptions]="{standalone: true}" class="" placeholder="" >
+                    </td>
+                    <td label="Out-Time:">
+                      <input style="width: 30%;" type="time" [(ngModel)]="outime" [[ngModelOptions]="{standalone: true}" class="" placeholder="" >
+                    </td>
+                      <td label="No of workers:">
+                        <input style="width: 30%;" type="number" [(ngModel)]="noofworkers" [[ngModelOptions]="{standalone: true}" class="" placeholder="" >
+                      </td>
+                      <td label="Attachment:">
+                        <div class="d-flex align-items-center flex-wrap">
+                          <!-- Choose File Button -->
+                          <label class="btn btn-primary btn-sm mb-0 mr-2">
+                            Choose File
+                            <input 
+                              type="file" 
+                              hidden 
+                              (change)="onFileSelected($event)" 
+                              accept="image/*,.pdf"
+                            >
+                          </label>
+                      
+                          <!-- Selected File Name + Remove Button -->
+                          <ng-container *ngIf="fileDetails.length > 0">
+                            <span class="text-muted small mr-2 file-name">
+                              {{ fileDetails[0].name }} ({{ (fileDetails[0].size / 1024).toFixed(1) }} KB)
+                            </span>
+                            <button 
+                              type="button" 
+                              class="btn btn-sm btn-danger" 
+                              (click)="removeFile(0)"
+                            >
+                              Remove
+                            </button>
+                          </ng-container>
+                        </div>
+                      </td>
+                      
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col">
+                <h5>No of Labour Records Submitted:{{expnum}}</h5>
+                <div class="table-responsive">
+                  <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col" class="text-dark"><b>Worker Type</b></th>
+                        <th scope="col" class="text-dark"><b>Name</b></th>
+                        <th scope="col" class="text-dark"><b>No Of Workers</b></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let rec of recordDetailsList">
+                        <td class="text-center">
+                          <label class="text-dark"  for="">{{rec.workertype}}</label>
+                        </td>
+                        <td class="text-center">
+                          <label class="text-dark" for="">{{rec.workername}}</label>
+                        </td>
+                        <td class="text-center">
+                          <label class="text-dark"  for="">{{rec.noofworkers}}</label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!-- <div class="text-center">
+                    <span style="cursor: pointer;" class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
+                  </div> -->
+                </div>
+              </div>
+                <div class="row align-items-center">
+                  <div class="col-6 text-center">
+                    <button title="Submit Expenses" type="button" class="btn btn-success my-4" ng-model="submit" (click)="recordlabour()">
+                      Submit</button>
+                  </div>
+                  <div class="col-6 text-center" *ngIf="completerecord=== true">
+                    <button title="Submit Expenses" type="button" class="btn btn-warning my-4" ng-model="submit" (click)="completeRecord()">
+                      Complete</button>
+                  </div>
+                </div>
+                </div>
+              <!-- </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    <div *ngIf="submitrecorddetails=== true">
+      <div class="header bg-gradient-info pb-8 pt-5">
+        <div class="container-fluid">
+          <div class="header-body">
+            <div class="col-sm-8 text-center">
+              <h3 class="text-white">Staff Portal by UPTS/PMSS</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <h3 class="mb-0 text-center">Submission Summary</h3>
+          </div>
+          <div class="col-sm-4 text-center">
+            <span class="badge badge-primary">{{username}}</span>
+          </div>
+           <div class="card-body">
+            
+            <div style="width: 20rem;">
+              <div class="card card-stats mb-4 mb-lg-0">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <h5>Project: {{projectName}}</h5>
+                        <h5>Slab: {{sprojectfloor}}</h5>
+                        <h5>Pour: {{sprojectpour}}</h5>
+                        <h5>Worktype: {{sworktype}}</h5>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+                    <!-- Workers List -->
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <strong>Worker Details</strong>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="text-dark"><b>Worker Type</b></th>
+                  <th scope="col" class="text-dark"><b>Name</b></th>
+                  <th scope="col" class="text-dark"><b>No Of Workers</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let worker of workerEntries">
+                  <td class="text-center">
+                    <label class="badge badge-info">{{worker.type}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark">{{worker.name}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark">{{worker.count}}</label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+        <div class="col-sm-8 text-center">
+          <span style="cursor: pointer;" class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+      </div>

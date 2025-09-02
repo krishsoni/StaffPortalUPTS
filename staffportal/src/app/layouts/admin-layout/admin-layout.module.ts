@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';import { RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +21,9 @@ import { EmployeeService } from 'src/app/services/employee-service/employee-serv
 import { LookupService } from 'src/app/services/lookup-service/lookup-service';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 import { AuditTrailService } from 'src/app/services/audittrail-service/audittrail-service';
+import { RequestsComponent } from 'src/app/pages/requests/requests.component';
+import { RecordComponent } from 'src/app/pages/record/record.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
@@ -32,18 +35,26 @@ import { AuditTrailService } from 'src/app/services/audittrail-service/audittrai
     ClipboardModule,
     AgGridModule,
     ToastrModule,
-    DatePipe
+    DatePipe,
+    NgChartsModule
   ],
   declarations: [
     DashboardComponent,
-    UserProfileComponent,
     TablesComponent,
     IconsComponent,
     MapsComponent,
     EmployeesComponent,
     ProjectsComponent,
+    RequestsComponent,
+    RecordComponent,
+    UserProfileComponent
   ],
-providers: [ProjectService, EmployeeService, LookupService, AuditTrailService]
+  exports: [
+    // UserProfileComponent // <-- export it
+  ],
+providers: [ProjectService, EmployeeService, LookupService, AuditTrailService],
+schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
 })
 
 export class AdminLayoutModule {}

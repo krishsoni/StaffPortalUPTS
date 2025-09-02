@@ -12,18 +12,24 @@ import { BalanceComponent } from 'src/app/pages/balance/balance.component';
 import { ExpenseComponent } from 'src/app/pages/expense/expense.component';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 import { FillExpenseDetailsComponent } from 'src/app/pages/fillexpensedetails/fillexpensedetails.component';
+import { RequestsComponent } from 'src/app/pages/requests/requests.component';
+import { RecordComponent } from 'src/app/pages/record/record.component';
 
 export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',      component: DashboardComponent },
     { path: 'user-profile',   component: UserProfileComponent },
     { path: 'employees',      component: EmployeesComponent },
-    { path: 'projects',      component: ProjectsComponent },
+    { path: 'projects',       component: ProjectsComponent },
     { path: 'home',           component:HomeComponent},
     { path: 'balance',        component:BalanceComponent},
     { path: 'expense',        component:ExpenseComponent},
     { path: 'icons',          component: IconsComponent },
     { path: 'maps',           component: MapsComponent },
-    {path: 'fillexp', component:FillExpenseDetailsComponent},
+    { path: 'fillexp',        component:FillExpenseDetailsComponent},
+    { path: 'requests',       component:RequestsComponent},
+    { path: 'labourrecord',       component:RecordComponent},
+
+
 
 
 ];

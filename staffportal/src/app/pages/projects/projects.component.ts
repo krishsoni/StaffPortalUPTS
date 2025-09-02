@@ -16,6 +16,7 @@ import {
   SizeColumnsToFitGridStrategy,
   SizeColumnsToFitProvidedWidthStrategy,
 } from "ag-grid-community";
+import { QueryService } from 'src/app/services/query-service/query-service';
 @Component({
   selector: 'app-projects',
   templateUrl: './projects.component.html',
@@ -25,8 +26,8 @@ export class ProjectsComponent implements OnInit {
   editvalue: boolean = false;
   rowData = [];
   colDefs: ColDef[] = [
-    { headerName: "ProjectNo", field: "projectNumber", editable: false  },
-    { headerName: "ProjectName", field: "projectName", editable: true },
+    { headerName: "ProjectNo", field: "projectnumber", editable: false  },
+    { headerName: "ProjectName", field: "projectname", editable: true },
     { headerName: "State", field: "state", editable: true  },
     { headerName: "City", field: "city", editable: true  },
     { headerName: "Project Coordinator", field: "supervisor", editable: true },
@@ -75,7 +76,7 @@ gridOptions: GridOptions<Project> = {
     // and perform further actions as needed
 }
 
-  constructor(private http: HttpClient, private projectService: ProjectService, private toastr: ToastrService, private router : Router) { }
+  constructor(private http: HttpClient, private projectService: ProjectService, private toastr: ToastrService, private router : Router, private queryService: QueryService) { }
   state: String;	
   city:String;		
   projectNumber:String;	
@@ -90,7 +91,7 @@ gridOptions: GridOptions<Project> = {
   Projects = [];
   project : Project;
   updateproject : Project;
-  
+  projectexists = false;
   ngOnInit() {
     this.getallProjects();
   }
@@ -124,15 +125,45 @@ gridOptions: GridOptions<Project> = {
 
   submitproject()
   {
-    this.project = new Project(this.state,this.city, this.projectNumber, this.projectName, this.floor, this.pour, this.workType, this.remarks, this.supervisor, "InProgress");
-    this.projectService.createProject(this.project).subscribe(res =>{
-      this.addbtn = true;
-      this.addproject = false;
-      this.getallProjects();      
-      this.toastr.success("Project Added Successfully");
-    });
+    this.project = new Project(this.state,this.city, this.projectNumber.trim(), this.projectName, this.floor, this.pour, this.workType, this.remarks, this.supervisor, "InProgress");
+    // const query = {
+    //   "collectionName": "projects",
+    //   "filter": { "projectNumber": this.projectNumber.trim()},      
+    // }
+    const query = `Select * from projects where projectnumber='`+this.projectNumber.trim()+`'`;
+    this.queryService.query(query).subscribe(
+      (res) => {
+        console.log(res); // Log the response
+        if (res.data.length === 0) {
+          // If the project doesn't exist, create it
+          this.projectService.createProject(this.project).subscribe(
+            (res) => {
+              this.addbtn = true;
+              this.addproject = false;
+              this.getallProjects(); // Refresh the projects list
+              this.toastr.success("Project Added Successfully");
+            },
+            (error) => {
+              console.error('Error creating project:', error);
+              this.toastr.error('An error occurred while creating the project.');
+            }
+          );
+        } else {
+          this.toastr.error(`Project ${this.projectNumber} already exists.`);
+        }
+      },
+      (error) => {
+        console.error('Error fetching project data:', error);
+        this.toastr.error('An error occurred while checking project existence.');
+      }
+    );
   }
-
+  onFilterTextBoxChanged() {
+    this.gridApi!.setGridOption(
+      "quickFilterText",
+      (document.getElementById("filter-text-box") as HTMLInputElement).value,
+    );
+  }
   actionCellRenderer(params) {
     if (params.data.status === 'Completed') {
       return null; // Hide the button for group rows
@@ -220,7 +251,7 @@ gridOptions: GridOptions<Project> = {
   onRowEditingStopped(params) {
     if(this.editvalue)
     {
-      this.projectService.updateProject(params.data._id, params.data).subscribe(res=>{
+      this.projectService.updateProject(params.data.id, params.data).subscribe(res=>{
         this.toastr.success("Project Updated Successfully");
         this.editvalue = false;
       });

@@ -77,6 +77,7 @@ export class ExpenseComponent implements OnInit {
   expenseId = 0;
   expId: any;
   expenseDetails = [];
+  expenseDetailsList = [];
   completeexp = false;
   filteredProjects: any[] = []; // Filtered projects for the dropdown
   searchQuery: string = '';
@@ -185,46 +186,6 @@ export class ExpenseComponent implements OnInit {
             console.log(this.data);
       })
   }
-  submitexpenses()
-  {
-    this.data.forEach(tuple => {
-      // Access each value in the tuple
-      this.exptype = tuple[0];
-      this.noofworkers = tuple[1];
-      this.amount = tuple[2];
-      this.remarks = tuple[3];
-      this.file = tuple[4];
-      // Do something with the values
-      //console.log(this.exptype, this.noofworkers, this.amount,this.remarks);
-      if(this.exptype && this.amount>0)
-      {
-        this.totalexpamt = 0;
-        this.expense = new Expense(this.selectedProject['projectNumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
-        this.expenseService.createExpense(this.expense).subscribe(res=>{
-          console.log("Expense created" + res);
-          this.expenseDetails = res;
-          console.log(this.expenseDetails);
-          this.getExpId(res._id);
-          this.totalexpamt = this.totalexpamt + res.amount;
-          this.addbalance(res.amount);
-        });
-        this.expenseflag = true;
-      }
-      else 
-      this.toastr.warning("Please select Expense Type");
-    });
-    
-    if(!this.expenseflag)
-      {
-        this.toastr.warning("No of Workers or Expense Amount cannot be 0");
-      }
-    if(this.expenseflag)
-    {
-      this.submit = false;
-      this.toastr.success("Expenses Raised Successfully");
-      this.submitexpensesdetails = true;
-    }
-  }
   submitExp()
   {
       this.expenseflag = false;
@@ -232,14 +193,15 @@ export class ExpenseComponent implements OnInit {
       {
         if(this.amount>0)
         {
-          this.expense = new Expense(this.selectedProject['projectNumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
+          this.expense = new Expense(this.selectedProject['projectnumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
           this.expenseService.createExpense(this.expense).subscribe(res=>{
             console.log("Expense created" + res);
             this.expenseDetails = res;
             console.log(this.expenseDetails);
-            this.getExpId(res._id);
+            this.expenseDetailsList.push(res);
+            this.getExpId(res.id);
             this.totalexpamt = this.totalexpamt + res.amount;
-            this.addbalance(res.amount);
+            //this.addbalance(res.amount);
             this.files = [];
             this.toastr.success("Expense Added Successfully");
           });
@@ -327,16 +289,23 @@ export class ExpenseComponent implements OnInit {
   }
   filterProjects() {
     // Filter the projects based on the search query
-    this.filteredProjects = this.projectslists.filter(project => 
-      project.projectName.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
+    // this.filteredProjects = this.projectslists.filter(project => 
+    //   project.projectName.toLowerCase().includes(this.searchQuery.toLowerCase())
+    // );
+    if (this.searchQuery) {
+      this.filteredProjects = this.projectslists.filter(project =>
+        project.projectname.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else {
+      this.filteredProjects = this.projectslists;
+    }
   }
   selectProject(projectName: string) {
     this.projectselected = true;
     this.projectName = projectName;
     for(var k=0;k<this.projectslists.length;k++)
     {
-      if(this.projectName == this.projectslists[k].projectName)
+      if(this.projectName == this.projectslists[k].projectname)
       this.selectedProject = this.projectslists[k];
     }
     this.getlookupValues();
@@ -404,11 +373,14 @@ reader.readAsDataURL(file);
 }
 uploadFile(base64Content: string, name: string, expenseId: Number): void {
   // Send Base64-encoded file contents to server using HttpClient
-  this.attachmentService.uploadAttachment(base64Content, name, expenseId).subscribe(res=>{
+  this.attachmentService.uploadAttachment(base64Content, name,'expense', expenseId).subscribe(res=>{
     if(res)
     {
       console.log("Uploaded Successfully");
     }
+  });
+  this.expenseService.updateexpenseattachCount(expenseId, {attachmentCount:1}).subscribe(res=>{
+    console.log("Attachment Count: "+res.attachmentcount);    
   });
 }
 }

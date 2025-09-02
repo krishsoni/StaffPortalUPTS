@@ -3,8 +3,8 @@ export class Project {
 
         public state: String,
         public city: String,
-        public projectNumber: String,
-        public projectName: String,
+        public projectnumber: String,
+        public projectname: String,
         public floor: String,
         public pour: String,
         public workType: String,

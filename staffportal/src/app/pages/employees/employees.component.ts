@@ -26,7 +26,7 @@ export class EmployeesComponent implements OnInit {
   editvalue: boolean = false;
   rowData = [];
   colDefs: ColDef[] = [
-    { headerName: "EmpNo", field: "empNo", editable: false  },
+    { headerName: "EmpNo", field: "empno", editable: false  },
     { headerName: "EmpName", field: "firstname", editable: true },
     { headerName: "MobileNo", field: "mobilenumber", editable: true  },
     { headerName: "Username", field: "username", editable: true  },
@@ -114,6 +114,12 @@ gridOptions: GridOptions<Employee> = {
       console.log(this.Employees);
     });
   }
+  onFilterTextBoxChanged() {
+    this.gridApi!.setGridOption(
+      "quickFilterText",
+      (document.getElementById("filter-text-box") as HTMLInputElement).value,
+    );
+  }
   addEmployeeBtn()
   {
     this.addemployee = true;
@@ -130,11 +136,11 @@ gridOptions: GridOptions<Employee> = {
   {
     this.employee = new Employee(this.empNo,this.firstname, "lastname", this.mobilenumber, "", this.city, "India", "", "admin", this.gratuity,this.bonus,"", this.username, this.manager)
     this.employeeservice.createEmployee(this.employee).subscribe(res=>{
-      console.log(res._id);
+      console.log(res.id);
       this.addbtn = true;
       this.addemployee = false;
-      this.empId = res._id;
-      this.newUser = new NewUser(this.firstname, "lastname", this.mobilenumber, "", this.city, "India", "", "admin", "Welcome123",false,"", this.username, this.manager,this.empId)
+      this.empId = res.id;
+      this.newUser = new NewUser(this.firstname, "lastname", this.mobilenumber, "", this.city, "India", "", "admin", "Welcome@123",false,"", this.username, this.manager,this.empId)
       this.newuserservice.createNewUser(this.newUser).subscribe(res=>{
         console.log("User Created" +res);
       })
@@ -227,7 +233,7 @@ cellValueChanged(event)
   onRowEditingStopped(params) {
     if(this.editvalue)
     {
-    this.employeeservice.updateEmployee(params.data._id, params.data).subscribe(res=>{
+    this.employeeservice.updateEmployee(params.data.id, params.data).subscribe(res=>{
       this.toastr.success("Employee Updated Successfully");
     });
     }

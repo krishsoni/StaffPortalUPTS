@@ -12,7 +12,7 @@ import { UserService } from 'src/app/services/user-service/user-service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  currentpwd: String;
+  currentpwd: String = 'Welcome@123';
   newpwd: String;
   confirmnewpwd: String;
   changedPassword: Password;
@@ -20,7 +20,7 @@ export class ChangePasswordComponent implements OnInit {
   constructor(private userService: UserService, private toastr: ToastrService, private router: Router, private dataService:DataService) { }
 
   ngOnInit() {
-    this.empId = sessionStorage.getItem('_id');
+    this.empId = sessionStorage.getItem('id');
     //this.empId = this.dataService.getId();
   }
 
@@ -41,13 +41,9 @@ export class ChangePasswordComponent implements OnInit {
       {
         this.userService.changepassword(this.empId, this.changedPassword).subscribe(res=>{
           console.log(res);
-          if(sessionStorage.isadmin == 'true')
-          //if(this.dataService.getisAdmin)
-          {
-          this.router.navigate(['./dashboard']);
-          }
-          else
-          this.router.navigate(['./home']);
+          this.toastr.success("Password Changed Successfully");
+          this.toastr.warning("Please Login using Your New Credentials");
+          this.router.navigate(['./login']);
         });
       }
       else{

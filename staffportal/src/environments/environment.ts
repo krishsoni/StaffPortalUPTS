@@ -1,11 +1,11 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const baseUrl = 'http://localhost:3000/';
+//const baseUrl = 'http://localhost:3000/api/';
 //const baseUrl = 'https://142.93.222.221:443/'
 //const baseUrl = 'https://staffportalupts1.onrender.com/';
 //const baseUrl = 'http://142.93.222.221:3000/';
-
+const baseUrl = 'https://api.unifiedpmss.com/apiapi/';
 export const environment = {
   production: false,
   apis:{
@@ -27,6 +27,7 @@ export const environment = {
     addBalance : `${baseUrl}balance`,
     getbalbyId : `${baseUrl}balance/getBalancebyEmpId/`,
     getExpenseByEmpId:`${baseUrl}expense/getByEmpId/`,
+    getExpensesByEmpId: `${baseUrl}expense/getExpensesByEmpId/`,
     getExpense : `${baseUrl}expense`,
     getExpenseDetails:`${baseUrl}expenseDetails/GetView/`,
     createExpense : `${baseUrl}expense`,
@@ -35,7 +36,23 @@ export const environment = {
     getEmpUpdates: `${baseUrl}audittrail/updates/employees`,
     getEmpId : `${baseUrl}employee/getbyempName`,
     getByLookupType: `${baseUrl}lookup/getByLookupType`,
-    getallEmpBalance : `${baseUrl}getallEmpBalance`
+    getallEmpBalance : `${baseUrl}balance/getallEmpBalance`,
+    createbalrequest : `${baseUrl}balanceRequest`,
+    getbalrequest : `${baseUrl}balanceRequest`,
+    getsubmittedbalreq: `${baseUrl}balanceRequest/submitted`,
+    updatebalrequest : `${baseUrl}balanceRequest/`,
+    getbalrequestbyempid : `${baseUrl}balanceRequest/getRequestbyUserName/`,
+    getlastrequestbyempid : `${baseUrl}balanceRequest/getLastRequestByEmpId/`,
+    getsubmittedcount : `${baseUrl}balanceRequest/getSubmittedCount`,
+    updateexprequest : `${baseUrl}expense/`,
+    updateattachCount : `${baseUrl}expense/updateattachCount/`,
+    getunApprovedcount : `${baseUrl}getUnApprovedCount`,
+    query : `${baseUrl}query`,
+    approveWithBalance: `${baseUrl}expense/approveWithBalance`,
+    createLabourRecord : `${baseUrl}labourrecord`,
+    getLabourRecordByProject : `${baseUrl}labourrecord/getrecordbyproject`,
+    downloadAttachment : `${baseUrl}attachment/download/`,
+    updaterecordattachCount : `${baseUrl}labourrecord/updateattachCount/`,
   }
 };
 

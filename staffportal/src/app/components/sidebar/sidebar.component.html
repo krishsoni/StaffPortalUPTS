@@ -97,7 +97,15 @@
               <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
                   <i class="ni {{menuItem.icon}}"></i>
                   {{menuItem.title}}
-              </a>
+                  &nbsp;
+                  <span *ngIf="menuItem.title === 'Requests'" class="badge badge-danger">{{submittedRequestCount + unApprovedCount}}</span>
+                  <!-- <span *ngIf="menuItem.title === 'Requests'">
+                    <ng-container *ngIf="(submittedRequestCount + unApprovedCount) > 0; else noNewRequests">
+                      <span class="badge badge-success">NEW</span>
+                    </ng-container>
+                    <ng-template #noNewRequests></ng-template>
+                  </span> -->
+                </a>
           </li>
       </ul>
       <!-- Divider -->

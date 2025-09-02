@@ -1,7 +1,7 @@
 export class Balance {
     constructor(
 
-        public empId: Number,
+        public empid: Number,
         public amount: Number,
         public operation: String
         

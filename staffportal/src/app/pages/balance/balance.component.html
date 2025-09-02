@@ -61,8 +61,75 @@
         </div>
           <!-- <h3 class="text-white" style="text-align: right;">&#8377;10000</h3> -->
     </div>
+    <br/>
+
         </div>
       </div>
     </div>
+  </div>
+  <div class="col-xl-8">
+      <div class="card bg-gradient-primary shadow">
+        <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase text-white ls-1 mb-1">Request Balance</h6>
+              <h2 class="text-white mb-0"></h2>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-secondary">
+          <div class="">
+            <label class="text-dark" for="input-balance">Amount</label>
+            <input [(ngModel)]="balanceamt" type="number" id="input-balance" class="" placeholder="Add Balance" >
+            <div class="text-center">
+              <button title="add-balance" class="btn btn-success my-4" ng-model="submit" (click)="addbalance()">
+                Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br/>
+      <br/>
+          <div class="text-center border-0 pt-md-4 pb-0 pb-md-4">
+            <h5>Last 3 Requests Raised</h5>
+        </div>
+        <div class="card-body pt-0 pt-md-4">
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="text-dark"><b>Date</b></th>
+                  <th scope="col" class="text-dark"><b>Amount</b></th>
+                  <th scope="col" class="text-dark"><b>Status</b></th>
+                  <th scope="col" class="text-dark"><b>Action</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let bal of lastbalrequests">
+                  <td class="text-center">
+                    <label class="text-dark"  for="">{{bal.createdat | date: "dd-MM-yyyy"}}</label>
+                  </td>
+                  <td class="text-center">
+                    <label class="text-dark" for="">{{bal.amount}}</label>
+                  </td>
+                  <td class="text-center" style="font-weight: 800;" [ngClass]="{'text-success': bal.status === 'Completed', 'text-warning' : bal.status === 'Submitted', 'text-danger' : bal.status === 'Rejected'}">
+                    <label for="">{{bal.status}}</label>
+                  </td>
+                  <td class="text-center">
+                    <!-- Show button only if Status is "Submitted" -->
+                    <button *ngIf="bal.status === 'Submitted'" 
+                            class="btn btn-whatsapp btn-icon-only btn-sm text-success"
+                            (click)="redirectToWhatsApp(bal)">
+                            <i class="fab fa-whatsapp" style="font-size:25px"></i>
+                    </button>
+                    <span *ngIf="bal.status === 'Completed'" class="text-success">
+                      ✔
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
   </div>
 </div>

@@ -12,12 +12,21 @@ export class AttachmentService {
 
   constructor(private http: HttpClient) { }
 
-  uploadAttachment(data:string, name:string, expenseId: Number):Observable<any>
+  uploadAttachment(data:string, name:string, type:string, refid: Number):Observable<any>
   {
-    return this.http.post(environment.apis.uploadAttachment, {data:data, name:name, expenseId:expenseId});
+    return this.http.post(environment.apis.uploadAttachment, {data:data, name:name, type:type, refid:refid});
   }
-  getAttachmentByExpId(expenseId: Number):Observable<any>
+  getAttachmentByExpId(expenseId: Number, type: string):Observable<any>
   {
-    return this.http.post(environment.apis.getAttachment, {"expenseId":expenseId});
+    return this.http.post(environment.apis.getAttachment, {"id":expenseId, type:type});
+  }
+  getAttachmentByRecordId(recordId: Number, type: string):Observable<any>
+  {
+    return this.http.post(environment.apis.getAttachment, {"id":recordId, type:type});
+  }
+  downloadAttachment(id: number): Observable<Blob> {
+    return this.http.get(environment.apis.downloadAttachment+id, {
+      responseType: 'blob'
+    });
   }
 }
