@@ -193,13 +193,13 @@ export class ExpenseComponent implements OnInit {
       {
         if(this.amount>0)
         {
-          this.expense = new Expense(this.selectedProject['projectNumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
+          this.expense = new Expense(this.selectedProject['projectnumber'], this.empId,this.exptype,this.noofworkers,this.sprojectpour,this.sprojectfloor,this.sworktype,this.amount, this.remarks);
           this.expenseService.createExpense(this.expense).subscribe(res=>{
             console.log("Expense created" + res);
             this.expenseDetails = res;
             console.log(this.expenseDetails);
             this.expenseDetailsList.push(res);
-            this.getExpId(res._id);
+            this.getExpId(res.id);
             this.totalexpamt = this.totalexpamt + res.amount;
             //this.addbalance(res.amount);
             this.files = [];
@@ -294,7 +294,7 @@ export class ExpenseComponent implements OnInit {
     // );
     if (this.searchQuery) {
       this.filteredProjects = this.projectslists.filter(project =>
-        project.projectName.toLowerCase().includes(this.searchQuery.toLowerCase())
+        project.projectname.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     } else {
       this.filteredProjects = this.projectslists;
@@ -305,7 +305,7 @@ export class ExpenseComponent implements OnInit {
     this.projectName = projectName;
     for(var k=0;k<this.projectslists.length;k++)
     {
-      if(this.projectName == this.projectslists[k].projectName)
+      if(this.projectName == this.projectslists[k].projectname)
       this.selectedProject = this.projectslists[k];
     }
     this.getlookupValues();
@@ -373,14 +373,14 @@ reader.readAsDataURL(file);
 }
 uploadFile(base64Content: string, name: string, expenseId: Number): void {
   // Send Base64-encoded file contents to server using HttpClient
-  this.attachmentService.uploadAttachment(base64Content, name, expenseId).subscribe(res=>{
+  this.attachmentService.uploadAttachment(base64Content, name,'expense', expenseId).subscribe(res=>{
     if(res)
     {
       console.log("Uploaded Successfully");
     }
   });
   this.expenseService.updateexpenseattachCount(expenseId, {attachmentCount:1}).subscribe(res=>{
-    console.log("Attachment Count: "+res);    
+    console.log("Attachment Count: "+res.attachmentcount);    
   });
 }
 }

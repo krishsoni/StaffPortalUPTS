@@ -14,6 +14,6 @@ export class QueryService {
 
   query(body : any) : Observable<any>
   {
-    return this.http.post(environment.apis.query,body);
+    return this.http.post(environment.apis.query,{'query':body});
   }
 }

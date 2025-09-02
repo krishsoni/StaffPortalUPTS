@@ -107,22 +107,22 @@
               <tbody>
                 <tr *ngFor="let bal of lastbalrequests">
                   <td class="text-center">
-                    <label class="text-dark"  for="">{{bal.createdAt | date: "dd-MM-yyyy"}}</label>
+                    <label class="text-dark"  for="">{{bal.createdat | date: "dd-MM-yyyy"}}</label>
                   </td>
                   <td class="text-center">
-                    <label class="text-dark" for="">{{bal.Amount}}</label>
+                    <label class="text-dark" for="">{{bal.amount}}</label>
                   </td>
-                  <td class="text-center" style="font-weight: 800;" [ngClass]="{'text-success': bal.Status === 'Completed', 'text-warning' : bal.Status === 'Submitted', 'text-danger' : bal.Status === 'Rejected'}">
-                    <label for="">{{bal.Status}}</label>
+                  <td class="text-center" style="font-weight: 800;" [ngClass]="{'text-success': bal.status === 'Completed', 'text-warning' : bal.status === 'Submitted', 'text-danger' : bal.status === 'Rejected'}">
+                    <label for="">{{bal.status}}</label>
                   </td>
                   <td class="text-center">
                     <!-- Show button only if Status is "Submitted" -->
-                    <button *ngIf="bal.Status === 'Submitted'" 
+                    <button *ngIf="bal.status === 'Submitted'" 
                             class="btn btn-whatsapp btn-icon-only btn-sm text-success"
                             (click)="redirectToWhatsApp(bal)">
                             <i class="fab fa-whatsapp" style="font-size:25px"></i>
                     </button>
-                    <span *ngIf="bal.Status === 'Completed'" class="text-success">
+                    <span *ngIf="bal.status === 'Completed'" class="text-success">
                       ✔
                     </span>
                   </td>

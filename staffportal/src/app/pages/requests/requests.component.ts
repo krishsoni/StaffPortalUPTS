@@ -39,9 +39,9 @@ export class RequestsComponent implements OnInit,AfterViewInit, OnDestroy {
   isProcessingId: number | null = null;
   isbalProcessingId: number | null = null;
   colDefs: ColDef[] = [
-    { headerName: "EmployeeNo", field: "empNo", minWidth: 80,},
-    { headerName: "Name", field: "empName", minWidth: 80,},
-    { headerName: "Amount", field: "Amount", minWidth: 80, },
+    { headerName: "EmployeeNo", field: "empno", minWidth: 80,},
+    { headerName: "Name", field: "empname", minWidth: 80,},
+    { headerName: "Amount", field: "amount", minWidth: 80, },
     // { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter, minWidth: 100,  },
     // { headerName: "Status",field: "Status", minWidth: 100, },
     {
@@ -49,7 +49,7 @@ export class RequestsComponent implements OnInit,AfterViewInit, OnDestroy {
       field: "action",
       minWidth: 80,
       cellRenderer: (params: any) => {
-        const isDisabled = this.isbalProcessingId !== null && this.isbalProcessingId !== params.data._id;
+        const isDisabled = this.isbalProcessingId !== null && this.isbalProcessingId !== params.data.id;
         const buttonId = `reviewbal-btn-${params.node.rowIndex}`;
   
         setTimeout(() => {
@@ -68,12 +68,12 @@ export class RequestsComponent implements OnInit,AfterViewInit, OnDestroy {
     }
   ];
   colempDefs : ColDef[] = [
-    { headerName: "EmpNo", field: "empNo", minWidth: 70,},
-    { headerName: "Name", field: "empName", minWidth: 80,},
-    { headerName: "ProjectNo", field: "projectNumber", minWidth: 80, },
-    { headerName: "ExpType", field: "expenseType", minWidth: 120, },
+    { headerName: "EmpNo", field: "empno", minWidth: 70,},
+    { headerName: "Name", field: "firstname", minWidth: 80,},
+    { headerName: "ProjectNo", field: "projectnumber", minWidth: 80, },
+    { headerName: "ExpType", field: "expensetype", minWidth: 120, },
     { headerName: "Amount", field: "amount", minWidth: 80, },
-    { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter, minWidth: 100,  },
+    { headerName: "Date", field: "createdat", valueFormatter: this.dateFormatter, minWidth: 100,  },
     { headerName: "Remarks",field: "remarks", minWidth: 150,},
     { headerName: "Status",field: "status", minWidth: 120, },
     {
@@ -81,7 +81,7 @@ export class RequestsComponent implements OnInit,AfterViewInit, OnDestroy {
       field: "actions",
       minWidth: 80,
       cellRenderer: (params: any) => {
-        const isDisabled = this.isProcessingId !== null && this.isProcessingId !== params.data.expId;
+        const isDisabled = this.isProcessingId !== null && this.isProcessingId !== params.data.id;
         const buttonId = `review-btn-${params.node.rowIndex}`;
   
         setTimeout(() => {
@@ -188,57 +188,28 @@ balgridOptions : GridOptions;
             this.balancereq = true;
           });
         }
-        this.query = {
-          "collectionName": "employees",
-          "pipeline": [
-            {
-              "$match": {
-                "manager": this.username
-              }
-            },
-            {
-              "$lookup": {
-                "from": "expenses",
-                "localField": "_id",
-                "foreignField": "empId",
-                "as": "employee_expenses"
-              }
-            },
-            {
-              "$unwind": {
-                "path": "$employee_expenses",
-                "preserveNullAndEmptyArrays": true
-              }
-            },
-            {
-              "$match": {
-                "employee_expenses.status": "UnApproved"
-              }
-            },
-            {
-              "$project": {
-                "_id": 0,
-                "empId": "$_id",
-                "empNo": "$empNo",
-                "empName": "$username",
-                "expId": "$employee_expenses._id",
-                "projectNumber": "$employee_expenses.projectNumber",
-                "expenseType": "$employee_expenses.expenseType",
-                "amount": "$employee_expenses.amount",
-                "noofWorkers": "$employee_expenses.noofWorkers",
-                "pour": "$employee_expenses.pour",
-                "floor": "$employee_expenses.floor",
-                "worktype": "$employee_expenses.worktype",
-                "remarks": "$employee_expenses.remarks",
-                "status": "$employee_expenses.status",
-                "attachmentCount": "$employee_expenses.attachmentCount",
-                "createdAt": "$employee_expenses.createdAt",
-                "updatedAt": "$employee_expenses.updatedAt",
-                "__v": "$employee_expenses.__v"
-              }
-            }
-          ]
-        }
+        this.query = `SELECT
+        e.id as empid,
+        e.empno,
+        e.firstname,
+        ex.id,
+        ex.projectnumber,
+        ex.expensetype,
+        ex.amount,
+        ex.noofworkers,
+        ex.pour,
+        ex.floor,
+        ex.worktype,
+        ex.remarks,
+        ex.status,
+        ex.attachmentcount,
+        ex.createdat,
+        ex.updatedat
+      FROM employees e
+      JOIN expenses ex ON e.id = ex.empid
+      WHERE e.manager = '${this.username}'
+      AND ex.status = 'UnApproved';
+      `;
     }
     ngAfterViewInit() {
       this.adjustexpGridColumns();
@@ -307,7 +278,7 @@ balgridOptions : GridOptions;
       startWith(0),
       switchMap(() => this.queryService.query(this.query)),
       tap(res => {
-        const rowData = Array.isArray(res) ? res : [];
+        const rowData = Array.isArray(res.data) ? res.data : [];
         this.expGridApi.setRowData(rowData);
         this.rowexpData = rowData;
         this.explength = this.rowexpData.length;
@@ -324,23 +295,23 @@ openSwal(rowData) {
     <table class="table align-items-center table-flush">
     <tr>
       <td style="text-align:left; font-weight:bold; padding:5px;">Employee No:</td>
-      <td style="text-align:left; padding:5px;">${rowData.empNo}</td>
+      <td style="text-align:left; padding:5px;">${rowData.empno}</td>
     </tr>
     <tr>
       <td style="text-align:left; font-weight:bold; padding:5px;">Name:</td>
-      <td style="text-align:left; padding:5px;">${rowData.empName}</td>
+      <td style="text-align:left; padding:5px;">${rowData.firstname}</td>
     </tr>
     <tr>
       <td style="text-align:left; font-weight:bold; padding:5px;">Project No:</td>
-      <td style="text-align:left; padding:5px;">${rowData.projectNumber}</td>
+      <td style="text-align:left; padding:5px;">${rowData.projectnumber}</td>
     </tr>
     <tr>
       <td style="text-align:left; font-weight:bold; padding:5px;">Expense Type:</td>
-      <td style="text-align:left; padding:5px;">${rowData.expenseType}</td>
+      <td style="text-align:left; padding:5px;">${rowData.expensetype}</td>
     </tr>
     <tr>
     <td style="text-align:left; font-weight:bold; padding:5px;">No of Workers:</td>
-    <td style="text-align:left; padding:5px;">${rowData.noofWorkers}</td>
+    <td style="text-align:left; padding:5px;">${rowData.noofworkers}</td>
   </tr>
     <tr>
       <td style="text-align:left; font-weight:bold; padding:5px;">Amount:</td>
@@ -348,7 +319,7 @@ openSwal(rowData) {
     </tr>
     <tr>
       <td style="text-align:left; font-weight:bold; padding:5px;">Date:</td>
-      <td style="text-align:left; padding:5px;">${new Date(rowData.createdAt).toLocaleDateString()}</td>
+      <td style="text-align:left; padding:5px;">${new Date(rowData.createdat).toLocaleDateString()}</td>
     </tr>
     ${rowData.remarks ? `
         <tr>
@@ -364,7 +335,7 @@ openSwal(rowData) {
       <td style="text-align:left; font-weight:bold; padding:5px;">Status:</td>
       <td style="text-align:left; padding:5px;">${rowData.status}</td>
     </tr>
-    ${rowData.attachmentCount ? `
+    ${rowData.attachmentcount ? `
         <tr>
           <td style="text-align:left; font-weight:bold; padding:5px;">Attachment:</td>
           <td style="text-align:left; padding:5px;">
@@ -388,33 +359,31 @@ openSwal(rowData) {
       cancelButton: "btn-danger"
     },
     didOpen: () => {
-      if (rowData.attachmentCount) {
+      if (rowData.attachmentcount) {
         document.getElementById("downloadAttachment").addEventListener("click", () => {
-        this.attachmentService.getAttachmentByExpId(rowData.expId).subscribe(res => {
-          console.log(res);
-          if (res.length == 0) {
-            this.toastr.warning("No Attachment for this expense");
-          }
-          else {
-            for(var k=0;k<res.length;k++)
-            {
-            var byteCharacters = atob(res[k].data);
-            var byteNumbers = new Array(byteCharacters.length);
-            for (var i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
+          this.attachmentService.getAttachmentByExpId(rowData.id,'expense').subscribe(res => {
+            if (!res || res.length === 0) {
+              this.toastr.warning("No Attachment for this expense");
+              return;
             }
-            var byteArray = new Uint8Array(byteNumbers);
-            var blob = new Blob([byteArray], { type: 'application/octet-stream' });
-            var url = window.URL.createObjectURL(blob);
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = 'Expense' + '-' + rowData.empNo + '-' + rowData.empName + '-' + rowData.projectNumber + '-' + rowData.expenseType + '-' + 'Dt' + '-' + formatDate(rowData.createdAt, 'dd-MM-yyyy', 'en')+'.'+res[k].name.substring(res[k].name.indexOf(".") + 1);
-            link.click();
-  
-            window.URL.revokeObjectURL(url);
-          }
-          }
-        });
+      
+            for (let k = 0; k < res.length; k++) {
+              const attachment = res[k];
+      
+              this.attachmentService.downloadAttachment(attachment.id).subscribe(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+      
+                link.href = url;
+                link.download = 'Expense' + '-' + rowData.empno + '-' + rowData.firstname + '-' + rowData.projectnumber + '-' + rowData.expensetype + '-' + 'Dt' + '-' + formatDate(rowData.createdat, 'dd-MM-yyyy', 'en')+'.'+res[k].filename.substring(res[k].filename.indexOf(".") + 1);
+                link.click();
+      
+                window.URL.revokeObjectURL(url);
+              }, error => {
+                this.toastr.error("Error downloading attachment");
+              });
+            }
+          });
       });
       }
     },
@@ -443,23 +412,23 @@ openSwal(rowData) {
       <table class="table align-items-center table-flush">
       <tr>
         <td style="text-align:left; font-weight:bold; padding:5px;">Employee No:</td>
-        <td style="text-align:left; padding:5px;">${rowData.empNo}</td>
+        <td style="text-align:left; padding:5px;">${rowData.empno}</td>
       </tr>
       <tr>
         <td style="text-align:left; font-weight:bold; padding:5px;">Name:</td>
-        <td style="text-align:left; padding:5px;">${rowData.empName}</td>
+        <td style="text-align:left; padding:5px;">${rowData.empname}</td>
       </tr>
       <tr>
         <td style="text-align:left; font-weight:bold; padding:5px;">Amount:</td>
-        <td style="text-align:left; padding:5px;">${rowData.Amount}</td>
+        <td style="text-align:left; padding:5px;">${rowData.amount}</td>
       </tr>
       <tr>
         <td style="text-align:left; font-weight:bold; padding:5px;">Date:</td>
-        <td style="text-align:left; padding:5px;">${new Date(rowData.createdAt).toLocaleDateString()}</td>
+        <td style="text-align:left; padding:5px;">${new Date(rowData.createdat).toLocaleDateString()}</td>
       </tr>
       <tr>
         <td style="text-align:left; font-weight:bold; padding:5px;">Status:</td>
-        <td style="text-align:left; padding:5px;">${rowData.Status}</td>
+        <td style="text-align:left; padding:5px;">${rowData.status}</td>
       </tr>
     </table>
       `,
@@ -484,18 +453,18 @@ openSwal(rowData) {
     });
   }
   approveRequest(rowData: any) {
-    this.isbalProcessingId = rowData._id; // Disable other buttons
+    this.isbalProcessingId = rowData.id; // Disable other buttons
     this.gridApi.refreshCells({ force: true }); // Refresh grid to update button state
 
-    this.balanceService.updatebalanceRequests(rowData._id, {Status:"Completed"}).subscribe(
+    this.balanceService.updatebalanceRequests(rowData.id, {status:"Completed"}).subscribe(
       response => {
         console.log(response);
         this.toastr.success('Request Approved Successfully.');
         setTimeout(() => {
-          this.addBalance = new Balance(rowData.empId, rowData.Amount, "C");
+          this.addBalance = new Balance(rowData.empid, rowData.amount, "C");
           this.addbalance();
           // Remove the approved/rejected row
-          this.rowData = this.rowData.filter(item => item._id !== rowData._id);
+          this.rowData = this.rowData.filter(item => item.id !== rowData.id);
           this.gridApi.setRowData([...this.rowData]); // Update grid data
           this.isbalProcessingId = null;
         }, 1000);
@@ -510,16 +479,16 @@ openSwal(rowData) {
   }
   
   rejectRequest(rowData: any) {
-    this.isbalProcessingId = rowData._id; // Disable other buttons
+    this.isbalProcessingId = rowData.id; // Disable other buttons
     this.gridApi.refreshCells({ force: true }); // Refresh grid to update button state
     
-    this.balanceService.updatebalanceRequests(rowData._id, {Status:"Rejected"}).subscribe(
+    this.balanceService.updatebalanceRequests(rowData.id, {status:"Rejected"}).subscribe(
       response => {
         console.log(response);
         this.toastr.error('Request Rejected Successfully.');
       setTimeout(() => {
          // Remove the approved/rejected row
-         this.rowData = this.rowData.filter(item => item._id !== rowData._id);
+         this.rowData = this.rowData.filter(item => item.id !== rowData.id);
          this.gridApi.setRowData([...this.rowData]); // Update grid data
          this.isbalProcessingId = null;
     }, 1000);
@@ -541,7 +510,7 @@ openSwal(rowData) {
     // }
     // if(event.data.attachmentCount)
     {
-      this.attachmentService.getAttachmentByExpId(params.data.expId).subscribe(res => {
+      this.attachmentService.getAttachmentByExpId(params.data.id,'expense').subscribe(res => {
         console.log(res);
         if (res.length == 0) {
           this.toastr.warning("No Attachment for this expense");
@@ -559,7 +528,7 @@ openSwal(rowData) {
           var url = window.URL.createObjectURL(blob);
           var link = document.createElement('a');
           link.href = url;
-          link.download = 'Expense:' + '-' + params.data.empNo + '-' + params.data.empName + '-' + params.data.projectNumber + '-' + params.data.expenseType + '-' + 'Dt' + '-' + formatDate(params.data.createdAt, 'dd-MM-yyyy', 'en')+'.'+res[k].name.substring(res[k].name.indexOf(".") + 1);
+          link.download = 'Expense:' + '-' + params.data.empno + '-' + params.data.firstname + '-' + params.data.projectnumber + '-' + params.data.expensetype + '-' + 'Dt' + '-' + formatDate(params.data.createdat, 'dd-MM-yyyy', 'en')+'.'+res[k].name.substring(res[k].filename.indexOf(".") + 1);
           link.click();
 
           window.URL.revokeObjectURL(url);
@@ -574,40 +543,34 @@ openSwal(rowData) {
   }
 }
 
-  approveexpRequest(rowData: any) {
-    this.isProcessingId = rowData.expId;
-    this.expGridApi.refreshCells({ force: true }); // Refresh grid to update button state
-  
-    this.expenseService.updateExpenseStatusById(rowData.expId, { status: "Approved" }).subscribe(res => {
-      console.log(res);
-      this.toastr.success('Request Approved Successfully.');
-      setTimeout(() => {
-        this.addBalance = new Balance(rowData.empId, rowData.amount, "D");
-        this.addbalance();
-        // Remove the approved/rejected row
-        this.rowexpData = this.rowexpData.filter(item => item.expId !== rowData.expId);
-        this.expGridApi.setRowData([...this.rowexpData]); // Update grid data
-        this.isProcessingId = null; // Re-enable buttons // Unlock the buttons
-      }, 1000);
-    },
-    (error) => {
-      this.expGridApi.refreshCells({ force: true });
-      this.isProcessingId = null; // Unlock the buttons on error
-    }
-  );
-  }
+approveexpRequest(rowData: any) {
+  this.isProcessingId = rowData.id;
+  this.expGridApi.refreshCells({ force: true });
+
+  this.expenseService.approveExpenseWithBalance(rowData.id, rowData.empid, rowData.amount)
+    .subscribe(res => {
+      this.toastr.success('Request Approved and Balance Updated Successfully.');
+
+      this.rowexpData = this.rowexpData.filter(item => item.id !== rowData.id);
+      this.expGridApi.setRowData([...this.rowexpData]);
+      this.isProcessingId = null; // ✅ move this here
+    }, error => {
+      this.toastr.error('Approval failed. Please try again.');
+      this.isProcessingId = null; // ✅ and here
+    });
+}
   
   rejectexpRequest(rowData: any) {
-    this.isProcessingId = rowData.expId;
+    this.isProcessingId = rowData.id;
     this.expGridApi.refreshCells({ force: true }); // Refresh grid to update button state
   
-    this.expenseService.updateExpenseStatusById(rowData.expId, { status: "Rejected" }).subscribe(res => {
+    this.expenseService.updateExpenseStatusById(rowData.id, { status: "Rejected" }).subscribe(res => {
       console.log(res);
       this.toastr.error('Request Rejected Successfully.');
   
       setTimeout(() => {
         // Remove the approved/rejected row
-        this.rowexpData = this.rowexpData.filter(item => item.expId !== rowData.expId);
+        this.rowexpData = this.rowexpData.filter(item => item.id !== rowData.id);
         this.expGridApi.setRowData([...this.rowexpData]); // Update grid data
         this.isProcessingId = null; // Re-enable buttons // Unlock the buttons
       }, 1000);

@@ -41,64 +41,44 @@ export class LoginComponent implements OnInit,OnDestroy {
   login() {
 
     this.user = new User(this.username, this.password, this.isadmin);
-    this.userService.getUserbyUserName(this.user).subscribe(res => {
-      this.response = res[0];
-      //console.log(this.response);
-      if (this.response == undefined) {
-        this.errorMessage = "Invalid Credentials!";
-      }
-      else
-      {
-        if (this.response != null) {
-          sessionStorage.setItem('empId', res[0].empId);
-          //this.dataservice.setEmpId(res[0].empId);
-          sessionStorage.setItem('isadmin', res[0].isadmin.toString());
-          //this.dataservice.setisAdmin(res[0].isadmin);
-          console.log(sessionStorage.getItem('empId'));
-          //console.log(this.dataservice.getEmpId());
-          // -- generatetoken
-          this.userService.generateToken(this.user).subscribe(res => {
-            this.token = res;
-            //console.log('token-->' + this.token);
-            sessionStorage.setItem('token', this.token);
-            //this.dataservice.setToken(this.token);
-            console.log(sessionStorage.getItem('token'));
-          })
-      }
-      if(this.response.isadmin && this.response.password == this.password)
-      {
-        if(res[0].passwordChange)
-        {
-            sessionStorage.setItem('username', this.response.username.toString());
-            //this.dataservice.setUsername(this.response.username.toString());
+
+    this.userService.getUserbyUserName(this.user).subscribe({
+      next: res => {
+        this.response = res;
+        console.log(this.response);
+    
+        if (!this.response) {
+          this.errorMessage = "Invalid Credentials!";
+          return;
+        }
+    
+        // Save session data
+        sessionStorage.setItem('empId', res.empid);
+        sessionStorage.setItem('isadmin', res.isadmin.toString());
+        sessionStorage.setItem('username', res.username);
+    
+        if (res.isadmin) {
+          if (res.passwordchange) {
             this.router.navigate(['/dashboard']);
-        }
-        else {
-          sessionStorage.setItem('_id', res[0]._id);
-          //this.dataservice.setId(res[0]._id);
-          this.router.navigate(['/changepassword']);
-        }
-      }
-      else if (this.response.isadmin == false) 
-        {
-          //this.dataservice.setUsername(this.response.username.toString());
-          sessionStorage.setItem('username', this.response.username.toString());
-          if(res[0].passwordChange)
-          {
-            this.router.navigate(['/home']);
+          } else {
+            sessionStorage.setItem('id', res.id);
+            this.router.navigate(['/changepassword']);
           }
-          else{
-            sessionStorage.setItem('_id', res[0]._id);
-            //this.dataservice.setId(res[0]._id);
+        } else {
+          if (res.passwordchange) {
+            this.router.navigate(['/home']);
+          } else {
+            sessionStorage.setItem('id', res.id);
             this.router.navigate(['/changepassword']);
           }
         }
-      else 
-        {
-          this.errorMessage = "Invalid Credentials!";
-        }
+      },
+      error: err => {
+        console.error("Login error:", err);
+        this.errorMessage = "Invalid Credentials!";
       }
     });
+    
   }
   error() {
     this.errorMessage = "Please Enter Name and Password";

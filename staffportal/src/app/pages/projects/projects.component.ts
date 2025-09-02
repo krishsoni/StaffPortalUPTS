@@ -26,8 +26,8 @@ export class ProjectsComponent implements OnInit {
   editvalue: boolean = false;
   rowData = [];
   colDefs: ColDef[] = [
-    { headerName: "ProjectNo", field: "projectNumber", editable: false  },
-    { headerName: "ProjectName", field: "projectName", editable: true },
+    { headerName: "ProjectNo", field: "projectnumber", editable: false  },
+    { headerName: "ProjectName", field: "projectname", editable: true },
     { headerName: "State", field: "state", editable: true  },
     { headerName: "City", field: "city", editable: true  },
     { headerName: "Project Coordinator", field: "supervisor", editable: true },
@@ -126,14 +126,15 @@ gridOptions: GridOptions<Project> = {
   submitproject()
   {
     this.project = new Project(this.state,this.city, this.projectNumber.trim(), this.projectName, this.floor, this.pour, this.workType, this.remarks, this.supervisor, "InProgress");
-    const query = {
-      "collectionName": "projects",
-      "filter": { "projectNumber": this.projectNumber.trim()},      
-    }
+    // const query = {
+    //   "collectionName": "projects",
+    //   "filter": { "projectNumber": this.projectNumber.trim()},      
+    // }
+    const query = `Select * from projects where projectnumber='`+this.projectNumber.trim()+`'`;
     this.queryService.query(query).subscribe(
       (res) => {
         console.log(res); // Log the response
-        if (res.length === 0) {
+        if (res.data.length === 0) {
           // If the project doesn't exist, create it
           this.projectService.createProject(this.project).subscribe(
             (res) => {
@@ -250,7 +251,7 @@ gridOptions: GridOptions<Project> = {
   onRowEditingStopped(params) {
     if(this.editvalue)
     {
-      this.projectService.updateProject(params.data._id, params.data).subscribe(res=>{
+      this.projectService.updateProject(params.data.id, params.data).subscribe(res=>{
         this.toastr.success("Project Updated Successfully");
         this.editvalue = false;
       });

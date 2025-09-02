@@ -10,7 +10,11 @@
         <div class="card-header bg-white border-0">
           <div class="row align-items-center">
             <div class="col-8">
-              <h3 class="mb-0">Profile Details : {{username}}</h3>
+              <h3 class="mb-0">Profile Details: </h3>
+            </div>
+            <div class="col-4">
+              <a class="text-dark text-center" [routerLink]="['/home']"><i
+                class="fas fa-backward"></i><b> Back</b></a>
             </div>
             <!-- <div class="col-4 text-right">
               <a href="#!" class="btn btn-sm btn-primary">Settings</a>
@@ -70,33 +74,54 @@
               </thead>
               <tbody>
                 <tr *ngFor="let exp of expData">
-                  <td class="text-center">
-                    <label class="text-dark"  for="">{{exp.projectNumber}}</label>
-                  </td>
-                  <td class="text-center">
-                    <label class="text-dark"  for="">{{exp.count}}</label>
-                  </td>
-                  <td class="text-center">
-                    <label class="text-dark" for="">{{exp.totalAmount}}</label>
-                  </td>
+                  <td class="text-center"><label class="text-dark">{{exp.projectNumber}}</label></td>
+                  <td class="text-center"><label class="text-dark">{{exp.count}}</label></td>
+                  <td class="text-center"><label class="text-dark">{{exp.totalAmount}}</label></td>
                 </tr>
                 <tr>
-                  <td class="text-center">
-                    <label class="text-dark" style="font-weight: bold;" for="">Total: {{projectCount}}</label>
-                  </td>
-                  <td class="text-center">
-                    <label class="text-dark" style="font-weight: bold;" for="">{{explength}}</label>
-                  </td>
-                  <td class="text-center">
-                    <label class="text-dark" style="font-weight: bold;" for="">{{totalexpofemp}}</label>
-                  </td>
+                  <td class="text-center"><label class="text-dark font-weight-bold">Total: {{projectCount}}</label></td>
+                  <td class="text-center"><label class="text-dark font-weight-bold">{{explength}}</label></td>
+                  <td class="text-center"><label class="text-dark font-weight-bold">{{totalexpofemp}}</label></td>
                 </tr>
               </tbody>
             </table>
-            <div class="text-center">
-              <span style="cursor: pointer;" class="badge badge-warning text-center" [routerLink]="['/home']">Back to Home</span>
-            </div>
           </div>
+          
+            <!-- Add summaries here -->
+            <div class="row mt-4">
+              <div class="col-md-6">
+                <h5 class="text-primary">Floor-wise Summary</h5>
+                <ul *ngFor="let item of floorSummary">
+                  <li class="text-dark">Floor {{item.floor}}: {{item.totalAmount}} ({{item.count}} expenses)</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h5 class="text-primary">Worktype-wise Summary</h5>
+                <ul *ngFor="let item of worktypeSummary">
+                  <li class="text-dark">{{item.worktype}}: {{item.totalAmount}} ({{item.count}} expenses)</li>
+                </ul>
+              </div>
+            </div>
+          
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <h5 class="text-primary">Expense Type Summary</h5>
+                <ul *ngFor="let item of expensetypeSummary">
+                  <li class="text-dark">{{item.expensetype}}: {{item.totalAmount}} ({{item.count}} expenses)</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h5 class="text-primary">Pour-wise Summary</h5>
+                <ul *ngFor="let item of pourSummary">
+                  <li class="text-dark">Pour {{item.pour}}: {{item.totalAmount}} ({{item.count}} expenses)</li>
+                </ul>
+              </div>
+            </div>
+<!--           
+            <div class="text-center mt-4">
+              <span style="cursor: pointer;" class="badge badge-warning" [routerLink]="['/home']">Back to Home</span>
+            </div> -->
+          
           <!-- <div class="">
             <h3>
               Jessica Jones<span class="font-weight-light">, 27</span>
@@ -113,6 +138,30 @@
             <hr class="my-4" />
             <a [routerLink]="['/home']">Go To Home</a>
           </div> -->
+          <div class="row mt-4">
+            <!-- Expense by Project -->
+            <div class="col-md-6">
+              <h5 class="text-primary">Expense by Project</h5>
+              <div>
+                <canvas baseChart
+                [datasets]="projectChartData"
+                [labels]="projectChartLabels"
+                [options]="chartOptions"
+                [type]="'bar'">
+              </canvas>
+              </div>
+            </div>
+          
+            <!-- Expense by Floor -->
+            <div class="col-md-6">
+              <h5 class="text-primary">Expense by Floor</h5>
+              <canvas baseChart
+                [datasets]="floorChartData"
+                [labels]="floorChartLabels"
+                [type]="'pie'">
+              </canvas>
+            </div>
+          </div>          
         </div>
       </div>
     </div>

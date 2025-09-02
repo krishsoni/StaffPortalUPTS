@@ -36,6 +36,13 @@ export class ExpenseService {
   {
     return this.http.put(environment.apis.updateexprequest+expId, body);
   }
+  approveExpenseWithBalance(expenseId: number, empid: number, amount: number): Observable<any> {
+    return this.http.post(`${environment.apis.approveWithBalance}`, {
+      expenseId,
+      empid,
+      amount
+    });
+  }
   getunApprovedCount() : Observable<any>
   {
     return this.http.get(environment.apis.getunApprovedcount);

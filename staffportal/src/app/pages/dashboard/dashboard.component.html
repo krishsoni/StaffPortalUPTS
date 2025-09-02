@@ -176,10 +176,10 @@
               <div class="dropdown-list" *ngIf="showDropdown">
                 <div 
                   *ngFor="let emp of filteredEmployees" 
-                  (click)="selectEmployee(emp._id, emp.firstname, emp.empNo, emp.status)" 
+                  (click)="selectEmployee(emp.id, emp.firstname, emp.empno, emp.status)" 
                   class="dropdown-item"
                 >
-                {{emp.empNo}} : {{emp.firstname}}
+                {{emp.empno}} : {{emp.firstname}}
 
                 </div>
               </div>
@@ -267,10 +267,10 @@
             <div class="dropdown-list" *ngIf="showDropdown1">
               <div 
                 *ngFor="let emp of filteredEmployees1" 
-                (click)="getbalbyId(emp._id,emp.firstname, emp.empNo)" 
+                (click)="getbalbyId(emp.id,emp.firstname, emp.empno)" 
                 class="dropdown-item"
               >
-              {{emp.empNo}} : {{emp.firstname}}
+              {{emp.empno}} : {{emp.firstname}}
 
               </div>
             </div>
@@ -353,7 +353,7 @@
               placeholder="Search Project" 
               [(ngModel)]="searchProject" 
               (focus)="showprojDropdown = true" 
-              (input)="filterProjects()" 
+              (input)="filterProjectsGeneric(searchProject, 'filteredProjects')"  
               (blur)="hideProjDropdown()" 
               class="search-input"
               />
@@ -364,10 +364,10 @@
             <div class="dropdown-list" *ngIf="showprojDropdown">
               <div 
                 *ngFor="let proj of filteredProjects" 
-                (click)="onprojChange(proj._id, proj.projectNumber, proj.projectName)" 
+                (click)="onprojChange(proj.id, proj.projectnumber, proj.projectname)" 
                 class="dropdown-item"
               >
-              {{proj.projectNumber}} : {{proj.projectName}}
+              {{proj.projectnumber}} : {{proj.projectname}}
 
               </div>
             </div>
@@ -430,10 +430,10 @@
             <div class="dropdown-list" *ngIf="showDropdown2">
               <div 
                 *ngFor="let emp of filteredEmployees2" 
-                (click)="onempChange(emp._id,emp.firstname, emp.empNo)" 
+                (click)="onempChange(emp.id,emp.firstname, emp.empno); showDropdown2 = false" 
                 class="dropdown-item"
               >
-              {{emp.empNo}} : {{emp.firstname}}
+              {{emp.empno}} : {{emp.firstname}}
 
               </div>
             </div>
@@ -445,6 +445,87 @@
         [rowData]="rowDataEmp" [pagination]="true">
         </ag-grid-angular>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card bg-gradient-primary shadow">
+        <div class= "card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col-xl-8">
+              <h6 class="text-uppercase text-white ls-1 mb-1">Check Labour Record By Project</h6>
+              <h2 class="text-white mb-0">Labour Record</h2>
+            </div>
+            <div *ngIf="projbtn1===true" class="col-xl-4 text-right">
+              <button id="exportButton" class="btn btn-warning" (click)="recordclick()">
+                Export to Excel</button>
+            </div>
+          </div>
+        </div>
+          <div class="card-body bg-secondary">
+            <div class="row align-items-end"> <!-- <-- Start a single row -->
+          
+              <div class="col-xl-8 col-md-6 mb-3"> <!-- Project -->
+                <div class="form-group">
+                  <label class="form-control-label">Project:</label>
+                  <div class="dropdown label" style="width: 100% !important;">
+                    <input 
+                      type="text" 
+                      placeholder="Search Project" 
+                      [(ngModel)]="searchProject1" 
+                      (focus)="showlRecordDropdown = true" 
+                      (input)="filterProjectsGeneric(searchProject1, 'filteredProjects1')"  
+                      (blur)="hidelRecordDropdown()" 
+                      class="search-input form-control"
+                    />
+                    <span *ngIf="searchProject1" class="clear-btn" (click)="clearProject1()">&times;</span>
+                    <div class="dropdown-list" *ngIf="showlRecordDropdown">
+                      <div 
+                        *ngFor="let proj of filteredProjects1" 
+                        (click)="onpChange(proj.id, proj.projectnumber, proj.projectname)" 
+                        class="dropdown-item"
+                      >
+                        {{proj.projectnumber}} : {{proj.projectname}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          
+              <div class="col-xl-2 col-md-3 mb-3"> <!-- From Date -->
+                <div class="form-group">
+                  <label class="form-control-label">From Date:</label>
+                  <input 
+                    [(ngModel)]="frdate" 
+                    class="datepicker form-control" 
+                    type="date" 
+                    (change)="getexpenses()" 
+                    placeholder="Select Date.."
+                  />
+                </div>
+              </div>
+          
+              <div class="col-xl-2 col-md-3 mb-3"> <!-- To Date -->
+                <div class="form-group">
+                  <label class="form-control-label">To Date:</label>
+                  <input 
+                    [(ngModel)]="trdate" 
+                    class="datepicker form-control" 
+                    type="date" 
+                    (change)="getexpenses()" 
+                    placeholder="Select Date.."
+                  />
+                </div>
+              </div>
+          
+            </div> <!-- end row -->
+            <ag-grid-angular class="ag-theme-quartz"
+            style="width: 100%; height: 300px;" [columnDefs]="colDefslRecord"
+            (cellClicked)="onrecordClicked($event)" (gridReady)="onGridReady1($event)"
+            [rowData]="rowDatalRecord" [pagination]="true"  [autoSizeStrategy]="autoSizeStrategy">
+            </ag-grid-angular>
+          </div>
       </div>
     </div>
   </div>

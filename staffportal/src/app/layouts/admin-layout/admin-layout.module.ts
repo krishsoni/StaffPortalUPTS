@@ -22,6 +22,8 @@ import { LookupService } from 'src/app/services/lookup-service/lookup-service';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 import { AuditTrailService } from 'src/app/services/audittrail-service/audittrail-service';
 import { RequestsComponent } from 'src/app/pages/requests/requests.component';
+import { RecordComponent } from 'src/app/pages/record/record.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
@@ -33,17 +35,22 @@ import { RequestsComponent } from 'src/app/pages/requests/requests.component';
     ClipboardModule,
     AgGridModule,
     ToastrModule,
-    DatePipe
+    DatePipe,
+    NgChartsModule
   ],
   declarations: [
     DashboardComponent,
-    UserProfileComponent,
     TablesComponent,
     IconsComponent,
     MapsComponent,
     EmployeesComponent,
     ProjectsComponent,
-    RequestsComponent
+    RequestsComponent,
+    RecordComponent,
+    UserProfileComponent
+  ],
+  exports: [
+    // UserProfileComponent // <-- export it
   ],
 providers: [ProjectService, EmployeeService, LookupService, AuditTrailService],
 schemas: [CUSTOM_ELEMENTS_SCHEMA]

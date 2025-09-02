@@ -13,6 +13,7 @@ import { ExpenseComponent } from 'src/app/pages/expense/expense.component';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 import { FillExpenseDetailsComponent } from 'src/app/pages/fillexpensedetails/fillexpensedetails.component';
 import { RequestsComponent } from 'src/app/pages/requests/requests.component';
+import { RecordComponent } from 'src/app/pages/record/record.component';
 
 export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',      component: DashboardComponent },
@@ -26,6 +27,8 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'maps',           component: MapsComponent },
     { path: 'fillexp',        component:FillExpenseDetailsComponent},
     { path: 'requests',       component:RequestsComponent},
+    { path: 'labourrecord',       component:RecordComponent},
+
 
 
 

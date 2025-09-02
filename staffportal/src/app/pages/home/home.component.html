@@ -62,19 +62,19 @@
                 <tbody>
                   <tr *ngFor="let exp of latestSixEntries">
                     <td class="text-center">
-                      <label class="text-dark"  for="">{{exp.projectNumber}}</label>
+                      <label class="text-dark"  for="">{{exp.projectnumber}}</label>
                     </td>
                     <td class="text-center">
-                      <label class="text-dark"  for="">{{exp.createdAt | date: "dd-MM-yyyy"}}</label>
+                      <label class="text-dark"  for="">{{exp.createdat | date: "dd-MM-yyyy"}}</label>
                     </td>
                     <td class="text-center">
-                      <label class="text-dark" for="">{{exp.amount}}</label>
+                      <label class="text-dark" for="">₹   {{exp.amount}}</label>
                     </td>
                     <td class="text-center">
                       <label class="text-dark" for="">{{exp.worktype}}</label>
                     </td>
                     <td class="text-center">
-                      <label class="text-dark" for="">{{exp.expenseType}}</label>
+                      <label class="text-dark" for="">{{exp.expensetype}}</label>
                     </td>
                     <td class="text-center" style="font-weight: 800;" [ngClass]="{'text-success': exp.status === 'Approved', 'text-warning' : exp.status === 'UnApproved', 'text-danger' : exp.status === 'Rejected'}">
                       <label class="" for="">{{exp.status}}</label>
@@ -87,4 +87,52 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header text-center border-0 pt-md-4 pb-0 pb-md-4">
+            <h5>Expenses by Type</h5>
+          </div>
+          <div class="card-body pt-0 pt-md-4">
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="text-dark"><b>Expense Type</b></th>
+                    <th scope="col" class="text-dark"><b>Amount</b></th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="expenseByType && objectKeys(expenseByType).length > 0; else noData">
+                  <tr *ngFor="let type of objectKeys(expenseByType)">
+                    <td class="text-center">
+                      <label class="text-dark"  for=""> {{ type }}</label>
+                    </td>
+                    <td class="text-center">
+                      <label class="text-dark"  for="">₹{{ expenseByType[type] }}</label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <ng-template #noData>
+                <p class="text-muted">No data available.</p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header text-center border-0 pt-md-4 pb-0 pb-md-4">
+            <h5>Expense Summary</h5>
+          </div>
+          <div class="card-body">
+            <h3><strong>Total Expense:</strong> ₹{{ totalExpense }}</h3>
+            <h3 *ngIf="highestExpense"><strong>Highest Expense:</strong> ₹{{ highestExpense.amount }} ({{ highestExpense.expensetype }})</h3>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>

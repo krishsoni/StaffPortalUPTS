@@ -36,6 +36,10 @@ import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 import { NgIdleModule } from '@ng-idle/core';
 import { IdleService } from './services/idle-service/idle-service';
 import { QueryService } from './services/query-service/query-service';
+import { LabourRecordService } from './services/labourrecord-service/labourrecord-service';
+import { NgChartsModule } from 'ng2-charts';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { AdminLayoutModule } from './layouts/admin-layout/admin-layout.module';
 
 @NgModule({
   imports: [
@@ -44,6 +48,7 @@ import { QueryService } from './services/query-service/query-service';
     HttpClientModule,
     ComponentsModule,
     NgbModule,
+    //NgChartsModule,
     RouterModule,
     AppRoutingModule,
     ToastrModule.forRoot({
@@ -59,6 +64,7 @@ import { QueryService } from './services/query-service/query-service';
     AgGridAngular,
     NgIdleModule.forRoot(),
     NgIdleKeepaliveModule.forRoot(),
+    AdminLayoutModule
   ],
   declarations: [
     AppComponent,
@@ -67,8 +73,9 @@ import { QueryService } from './services/query-service/query-service';
     HomeComponent,
     ExpenseComponent,
     BalanceComponent,
+    //UserProfileComponent
   ],
-  providers: [AuthenticationService, UserService, ProjectService, EmployeeService, BalanceService, ExpenseService, AttachmentService, AuditTrailService, ToastrService, IdleService, QueryService],
+  providers: [AuthenticationService, UserService, ProjectService, EmployeeService, BalanceService, ExpenseService, AttachmentService, AuditTrailService, ToastrService, IdleService, QueryService, LabourRecordService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

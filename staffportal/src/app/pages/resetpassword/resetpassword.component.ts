@@ -41,17 +41,17 @@ export class ResetPasswordComponent implements OnInit {
   {
     this.resetPassword = new ResetPassword(this.username, this.phoneNumber, this.newpwd, this.confirmnewpwd);
     this.userService.getUserbyName(this.username).subscribe(res => {
-      console.log(res[0]);
-      if(res[0] == undefined)
+      console.log(res);
+      if(res == undefined)
       {
         this.toastr.warning("Please Enter Correct Details");
       }
       else
       {
-      if (res[0].mobilenumber == this.phoneNumber) {
+      if (res.mobilenumber == this.phoneNumber) {
         if (this.newpwd == this.confirmnewpwd) {
           this.changedPassword = new Password(this.newpwd, true);
-          this.userService.changepassword(res[0]._id, this.changedPassword).subscribe(res => {
+          this.userService.changepassword(res.id, this.changedPassword).subscribe(res => {
             console.log(res);
             this.toastr.success("Password Changed Successfully. Please Login");
             this.router.navigate(['./login']);

@@ -22,6 +22,8 @@ export const ROUTES: RouteInfo[] = [
     { path: '/expense', title: 'Expense',icon:'', class:''},
     { path: '/home', title: 'Home',icon:'', class:''},
     { path: '/requests', title: 'Requests',icon:'', class:''},
+    { path: '/labourrecord', title: 'Labour Record',icon:'fa fa-microphone text-warning', class:''},
+
 
 ];
 
@@ -36,6 +38,7 @@ export const ADMINUSERROUTES : AdminRouteInfo [] = [
   { path: '/projects', title: 'Projects',  icon:'ni-bullet-list-67 text-red', class: '' },
   { path: '/employees', title: 'Employees',  icon:'ni-badge text-danger', class:''},
   { path: '/requests', title: 'Requests',icon:'fa fa-recycle text-warning', class:''},
+  { path: '/labourrecord', title: 'Labour Record',icon:'fa fa-microphone text-warning', class:''},
   { path: '/home', title: 'Home',icon:'fa fa-home', class:''},
 
 ];
@@ -51,6 +54,7 @@ export const USERROUTES : UserRouteInfo [] = [
   { path: '/balance', title: 'Balance',icon:'fa fa-coins', class:''},
   { path: '/expense', title: 'Expense',icon:'fa fa-rupee-sign', class:''},
   { path: '/requests', title: 'Requests',icon:'fa fa-recycle text-warning', class:''},
+  { path: '/labourrecord', title: 'Labour Record',icon:'fa fa-microphone text-warning', class:''},
 ];
 
 @Component({
@@ -69,6 +73,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   user: User;
   noadmin = false;
   query: any;
+  totalreqcount: number = 0;
   constructor(private router: Router, private dataService:DataService, private balanceService: BalanceService, private expService: ExpenseService,
     private queryService: QueryService) { }
 
@@ -141,61 +146,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.balanceService.getsubmittedCount().subscribe(res=>
       {
         this.submittedRequestCount = res.count;
+        console.log(this.submittedRequestCount);
         sessionStorage.setItem('submittedRequestCount', this.submittedRequestCount.toString());
       });
     }
-    this.query = {
-      "collectionName": "employees",
-      "pipeline": [
-        {
-          "$match": {
-            "manager": this.username
-          }
-        },
-        {
-          "$lookup": {
-            "from": "expenses",
-            "localField": "_id",
-            "foreignField": "empId",
-            "as": "employee_expenses"
-          }
-        },
-        {
-          "$unwind": {
-            "path": "$employee_expenses",
-            "preserveNullAndEmptyArrays": true
-          }
-        },
-        {
-          "$match": {
-            "employee_expenses.status": "UnApproved"
-          }
-        },
-        {
-          "$project": {
-            "_id": 0,
-            "empId": "$_id",
-            "empNo": "$empNo",
-            "empName": "$username",
-            "expId": "$employee_expenses._id",
-            "projectNumber": "$employee_expenses.projectNumber",
-            "expenseType": "$employee_expenses.expenseType",
-            "amount": "$employee_expenses.amount",
-            "noofWorkers": "$employee_expenses.noofWorkers",
-            "pour": "$employee_expenses.pour",
-            "floor": "$employee_expenses.floor",
-            "worktype": "$employee_expenses.worktype",
-            "remarks": "$employee_expenses.remarks",
-            "status": "$employee_expenses.status",
-            "createdAt": "$employee_expenses.createdAt",
-            "updatedAt": "$employee_expenses.updatedAt",
-            "__v": "$employee_expenses.__v"
-          }
-        }
-      ]
-    }
-    this.queryService.query(this.query).subscribe(res=>{
-      this.unApprovedCount = res.length;
+    const query = `
+    SELECT COUNT(*)::INTEGER
+    FROM employees e
+    JOIN expenses ex ON e.id = ex.empid
+    WHERE e.manager = '${this.username}' AND ex.status = 'UnApproved';
+    `;
+      this.queryService.query(query).subscribe(res=>{
+      this.unApprovedCount = res.data[0].count;
+      console.log(this.unApprovedCount);
       sessionStorage.setItem('unApprovedCount', this.unApprovedCount.toString());
     });
   }

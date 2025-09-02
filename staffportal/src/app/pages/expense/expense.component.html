@@ -65,10 +65,10 @@
           <div class="dropdown-list" *ngIf="showDropdown">
             <div 
               *ngFor="let project of filteredProjects" 
-              (click)="selectProject(project.projectName)" 
+              (click)="selectProject(project.projectname)" 
               class="dropdown-item"
             >
-              {{ project.projectName }}
+              {{ project.projectname }}
             </div>
           </div>
         </div>
@@ -80,7 +80,7 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label " for="input-projectNo">Project No: &nbsp;</label>
-                    <label class="form-control-label " for="input-projectNumber">{{selectedProject.projectNumber}}</label>
+                    <label class="form-control-label " for="input-projectNumber">{{selectedProject.projectnumber}}</label>
                   </div>
                 </div>
               </div>
@@ -184,7 +184,6 @@
                   <th scope=""><b>Remarks</b></th>
                   <th scope=""><b>Attachment</b></th>
                 </tr>
-              </thead>
               <tbody>
                 <tr *ngFor="let exptypes of data; let i = index;">
                   <td label="Expense:-">
@@ -293,13 +292,13 @@
                 <tbody>
                   <tr *ngFor="let exp of expenseDetailsList">
                     <td class="text-center">
-                      <label class="text-dark"  for="">{{exp.expenseType}}</label>
+                      <label class="text-dark"  for="">{{exp.expensetype}}</label>
                     </td>
                     <td class="text-center">
                       <label class="text-dark" for="">{{exp.amount}}</label>
                     </td>
                     <td class="text-center">
-                      <label class="text-dark"  for="">{{exp.noofWorkers}}</label>
+                      <label class="text-dark"  for="">{{exp.noofworkers}}</label>
                     </td>
                     <td class="text-center">
                       <label class="text-dark" for="">{{exp.remarks}}</label>

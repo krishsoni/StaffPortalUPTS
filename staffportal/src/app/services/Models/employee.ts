@@ -1,7 +1,7 @@
 export class Employee {
     length: number;
     constructor(
-        public empNo:String,
+        public empno:String,
         public firstname: String,
         public lastname: String,
         public mobilenumber : Number,

@@ -40,12 +40,12 @@ export class BalanceComponent implements OnInit {
     //this.empId = this.dataService.getEmpId();
     this.employeeService.getEmpById(this.empId).subscribe(res=>{
       this.employeeDetails = res;
-      this.empNo = this.employeeDetails.empNo;
+      this.empNo = this.employeeDetails.empno;
       this.username = this.employeeDetails.username;
    });
     this.balanceService.getbalbyId(this.empId).subscribe(res=>{
-      if(res[0]!==undefined)
-      this.empbalamt = res[0].netAmount;
+      if(res.net_amount)
+      this.empbalamt = res.net_amount;
     else
       this.empbalamt = 0;
     });
@@ -75,10 +75,10 @@ export class BalanceComponent implements OnInit {
   {
     console.log(this.balanceamt);
     const body = {
-        "empId": this.empId,
-        "empNo": this.empNo,
-        "empName":this.username,
-        "Amount": this.balanceamt
+        "empid": this.empId,
+        "empno": this.empNo,
+        "empname":this.username,
+        "amount": this.balanceamt
     }
     if(this.balanceamt>0)
     {
@@ -95,7 +95,7 @@ export class BalanceComponent implements OnInit {
   }
   redirectToWhatsApp(bal)
   {
-    const buttonClickKey = `whatsappClicks_${bal.Amount}_${bal.createdAt}`;
+    const buttonClickKey = `whatsappClicks_${bal.amount}_${bal.createdat}`;
     const currentDate = new Date().toDateString(); // Track for the current day
     let storedData = JSON.parse(localStorage.getItem(buttonClickKey) || '{}');
   
@@ -118,10 +118,10 @@ export class BalanceComponent implements OnInit {
 
     console.log('Stored Data:', storedData);
     // Format the date
-    const formattedDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(bal.createdAt));
+    const formattedDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(bal.createdat));
     
     // Construct the message
-    const message = `Hello, I have a query regarding the balance request Submitted for ${this.empNo+' - '+this.username} with Amount: ${bal.Amount} raised on ${formattedDate}.`;
+    const message = `Hello, I have a query regarding the balance request Submitted for ${this.empNo+' - '+this.username} with Amount: ${bal.amount} raised on ${formattedDate}.`;
     
     // Construct the WhatsApp URL
     const whatsappUrl = `https://wa.me/919372365225?text=${encodeURIComponent(message)}`;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from 'src/app/services/Models/project';
 import { Balance } from 'src/app/services/Models/balance';
-import { DatePipe, formatDate } from '@angular/common';
+import { DatePipe, NumberFormatStyle, formatDate } from '@angular/common';
 import { UserService } from 'src/app/services/user-service/user-service';
 import { BalanceService } from 'src/app/services/balance-service/balance-service';
 import { ToastrService } from 'ngx-toastr';
@@ -33,6 +33,7 @@ import { CsvExportModule } from "ag-grid-community";
 import { DataService } from 'src/app/data.service';
 import { QueryService } from 'src/app/services/query-service/query-service';
 import { forkJoin } from 'rxjs';
+import { LabourRecordService } from 'src/app/services/labourrecord-service/labourrecord-service';
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   CsvExportModule,
@@ -48,6 +49,7 @@ export class DashboardComponent implements OnInit {
   public salesChart;
   public clicked: boolean = true;
   public clicked1: boolean = false;
+  private searchTimeout: any;
   user: User;
   response: User;
   numofusers: null;
@@ -55,6 +57,8 @@ export class DashboardComponent implements OnInit {
   empres = [];
   fdate: string;
   tdate: string;
+  frdate: string;
+  trdate: string;
   emonth: string;
   bmonth: string; // Selected month in 'YYYY-MM' format
   minMonth: string; // Minimum month selectable
@@ -77,6 +81,7 @@ export class DashboardComponent implements OnInit {
   texpense = 0;
   expense = [];
   expensedetails = [];
+  labourrecorddetails = [];
   totalexpense = 0;
   projectselected = false;
   test: Date = new Date();
@@ -105,9 +110,11 @@ export class DashboardComponent implements OnInit {
   flattenedData = [];
   flattenedDataProj = [];
   flattenedDataEmp = [];
+  flattenedDatalRecord = [];
   rowData = [];
   rowDataProj = [];
   rowDataEmp = [];
+  rowDatalRecord = [];
   myDefaultValue: number = 1;
   empselected: Number;
   temp = [];
@@ -115,34 +122,41 @@ export class DashboardComponent implements OnInit {
   expemplist = [];
   empList = [];
   projList = [];
+  lrecordList = [];
   expbtn = false;
   empbtn = false;
   projbtn = false;
+  projbtn1 = false;
   allEmpBal = [];
   filteredEmployees : any[] = [];
   filteredEmployees1 : any[] = [];
   filteredEmployees2 : any[] = [];
   filteredProjects : any[] = [];
+  filteredProjects1 : any[] = [];
   searchQuery: string = '';
   searchQuery1: string = '';
   searchQuery2: string = '';
   searchProject: string = '';
+  searchProject1: string = '';
   showDropdown: boolean = false;
   showDropdown1: boolean = false;
   showDropdown2: boolean = false;
   showprojDropdown: boolean = false;
+  showlRecordDropdown: boolean = false;
   sempId : Number;
   type: string;
   reqcount : Number;
-  colNames = ['Group', 'Date', 'Project No', 'Expense Type', 'Remarks','Status', 'Amount'];
+  colNames = ['Group', 'Date', 'Project No', 'Expense Type','No Of Workers', 'Remarks','Status', 'Amount'];
   colNamesEmp = ['Group','Type', 'Date', 'Old Value', 'New Value'];
   colNamesProj = ['Group','Project No', 'Date', 'EmpName', 'Worktype', 'Slab', 'Pour', 'Expense Type','No Of Workers', 'Remarks', 'Amount'];
-  colNamesBal = ['EmpName','Total Credit','Total Debit', 'Net Balance']
+  colNamesBal = ['EmpName','Total Credit','Total Debit', 'Net Balance'];
+  colNameslrecord = ['Group','Date','Project No','Slab','Pour','Worker Name', 'Worker Type','No Of Workers', 'In-Time','Out-Time'];
   colDefs: ColDef[] = [
-    { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter },
+    { headerName: "Date", field: "createdat", valueFormatter: this.dateFormatter },
     // { headerName: "EmpId", field: "empId" },
-    { headerName: "ProjectNo", field: "projectNumber", },
-    { headerName: "ExpenseType", field: "expenseType" },
+    { headerName: "ProjectNo", field: "projectnumber", },
+    { headerName: "ExpenseType", field: "expensetype" },
+    { headerName: "NoOfWorkers", field: "noofworkers" },
     { headerName: "Remarks", field: "remarks" },
     {
       headerName: "Amount", field: "amount",
@@ -156,7 +170,7 @@ export class DashboardComponent implements OnInit {
           return null; // Hide the button for group rows
         } else {
           // Check if a file is available in the download column
-          const hasFile = params.data && params.data.attachmentCount; // Assuming `download` contains file information
+          const hasFile = params.data && params.data.attachmentcount; // Assuming `download` contains file information
           const buttonClass = hasFile ? "btn-success" : "btn-secondary"; // Change class based on file availability
           const buttonText = hasFile ? "Download" : "No Attachment"; // Update button text accordingly
           return `<button class="btn ${buttonClass} btn-sm" data-action="download">${buttonText}</button>`;
@@ -167,14 +181,14 @@ export class DashboardComponent implements OnInit {
     }
   ];
   colDefsProj: ColDef[] = [
-    { headerName: "Date", field: "createdAt", valueFormatter: this.dateFormatter },
-    { headerName: "ProjectNo", field: "projectNumber" },
-    { headerName: "EmpName", field: "empName" },
+    { headerName: "Date", field: "createdat", valueFormatter: this.dateFormatter },
+    { headerName: "ProjectNo", field: "projectnumber" },
+    { headerName: "EmpName", field: "empname" },
     { headerName: "WorkType", field: "worktype" },
     { headerName: "Slab", field: "floor" },
     { headerName: "Pour", field: "pour" },
-    { headerName: "ExpenseType", field:"expenseType"},
-    { headerName: "NoofWorkers", field: "noofWorkers" },
+    { headerName: "ExpenseType", field:"expensetype"},
+    { headerName: "NoofWorkers", field: "noofworkers" },
     { headerName: "Remarks", field: "remarks" },
     {
       headerName: "Amount", field: "amount",
@@ -187,7 +201,34 @@ export class DashboardComponent implements OnInit {
     { headerName: "OldValue", field: "oldValue" },
     { headerName: "NewValue", field: "newValue" },
   ];
-
+  colDefslRecord: ColDef[] = [
+    { headerName: "Date", field: "creationdate", valueFormatter: this.dateFormatter },
+    { headerName: "ProjectNo", field: "projectnumber" },
+    { headerName: "WorkType", field: "worktype" },
+    { headerName: "Slab", field: "floor" },
+    { headerName: "Pour", field: "pour" },
+    { headerName: "WorkerName", field: "workername" },
+    { headerName: "WorkerType", field: "workertype" },
+    { headerName: "NoofWorkers", field: "noofworkers" },
+    { headerName: "In-Time", field: "intime" },
+    { headerName: "Out-Time", field: "outtime" },
+    {
+      headerName: "Download",
+      cellRenderer: function (params) {
+        if (params.node.group) {
+          return null; // Hide the button for group rows
+        } else {
+          // Check if a file is available in the download column
+          const hasFile = params.data && params.data.attachmentcount; // Assuming `download` contains file information
+          const buttonClass = hasFile ? "btn-success" : "btn-secondary"; // Change class based on file availability
+          const buttonText = hasFile ? "Download" : "No Attachment"; // Update button text accordingly
+          return `<button class="btn ${buttonClass} btn-sm" data-action="download">${buttonText}</button>`;
+        }
+      },
+      editable: false,
+      colId: "download"
+    }
+  ];
   public autoSizeStrategy:
     | SizeColumnsToFitGridStrategy
     | SizeColumnsToFitProvidedWidthStrategy
@@ -213,6 +254,7 @@ export class DashboardComponent implements OnInit {
     return null;
   }
   gridApi: GridApi<any>;
+  gridApi1: GridApi<any>;
   gridOptions: GridOptions = {
     getRowStyle: this.getRowStyle,
     groupIncludeTotalFooter: true,
@@ -254,7 +296,7 @@ export class DashboardComponent implements OnInit {
   constructor(private userService: UserService, private router: Router, private employeeService: EmployeeService,
     private projectService: ProjectService, private expenseService: ExpenseService, private attachmentService: AttachmentService,
     private balanceService: BalanceService, private auditService: AuditTrailService, private toastr: ToastrService,
-    private dataService: DataService, private queryService: QueryService) {
+    private dataService: DataService, private queryService: QueryService, private labourrecordService: LabourRecordService) {
       const today = new Date();
     
       // Define the current month and the range
@@ -284,6 +326,7 @@ export class DashboardComponent implements OnInit {
     const day = String(today.getDate()).padStart(2, '0');
     // Set the dateValue in yyyy-mm-dd format for the input field
     this.tdate = `${year}-${month}-${day}`;
+    this.trdate = `${year}-${month}-${day}`;
 
     tenday.setDate(today.getDate() - 30); // Subtract 30 days
     const tyear = tenday.getFullYear();
@@ -291,6 +334,8 @@ export class DashboardComponent implements OnInit {
     const tday = String(tenday.getDate()).padStart(2, '0');
 
     this.fdate = `${tyear}-${tmonth}-${tday}`;
+    this.frdate = `${tyear}-${tmonth}-${tday}`;
+
     if (sessionStorage.getItem('isadmin') == 'true') {
      //if (this.dataService.getisAdmin() == true) {
       this.router.navigate(['/dashboard']);
@@ -303,12 +348,14 @@ export class DashboardComponent implements OnInit {
         this.numofemployees = res.length;
         this.filteredEmployees = this.empres;
         this.filteredEmployees1 = this.empres;
+        console.log(this.filteredEmployees1);
         this.filteredEmployees2 = this.empres;
       });
       this.projectService.getAllProjects().subscribe(res => {
         this.projectresponse = res;
         this.numofprojects = this.projectresponse.length;
         this.filteredProjects = this.projectresponse;
+        this.filteredProjects1 = this.projectresponse;
             this.progresscount = 0;
             this.completedcount = 0;
             this.statecount = 0;
@@ -326,37 +373,15 @@ export class DashboardComponent implements OnInit {
             }
           }
       });
-      const balquery = {
-        "collectionName": "balances",
-        "filter": { "operation": "C"},
-        "pipeline": [
-          {
-            "$group": {
-              "_id": null,
-              "totalBalance": { "$sum": "$amount" }
-            }
-          }
-        ]
-      }
+      const balquery = `Select COALESCE(sum(amount), 0) totalBalance from balances b where operation = 'C'`;
       this.queryService.query(balquery).subscribe(res=>{
-        this.tbalance = res[0].totalBalance;
+        this.tbalance = res.data[0].totalbalance;
       })
       this.onMonthChange(this.getCurrentMonth());
-      const query = {
-        "collectionName": "expenses",
-        "filter": { },
-        "pipeline": [
-          {
-            "$group": {
-              "_id": null,
-              "totalExpense": { "$sum": "$amount" }
-            }
-          }
-        ]
-      }
+      const query = `select COALESCE(sum(amount), 0) totalExpense from expenses`;
       this.queryService.query(query).subscribe(res=>
         {
-          this.texpense = res[0].totalExpense;
+          this.texpense = res.data[0].totalexpense;
         });
         this.oneMonthChange(this.getCurrentMonth());      
 
@@ -376,6 +401,10 @@ export class DashboardComponent implements OnInit {
     this.gridApi = params.api;
     // Additional initialization code...
 }
+onGridReady1(params: GridReadyEvent) {
+  this.gridApi1 = params.api;
+  // Additional initialization code...
+}
   // Get current month in 'YYYY-MM' format
   private getCurrentMonth(): string {
     const today = new Date();
@@ -384,59 +413,21 @@ export class DashboardComponent implements OnInit {
     return `${year}-${month}`;
   }
   onMonthChange(month: string) {
-    const query1 = {
-      "collectionName": "balances",
-      "filter": {
-        "operation": "C"
-      },
-      "pipeline": [
-        {
-          "$addFields": {
-            "monthYear": { "$dateToString": { "format": "%Y-%m", "date": "$createdAt" } }
-          }
-        },
-        {
-          "$match": {
-            "monthYear": month
-          }
-        },
-        {
-          "$group": {
-            "_id": null,
-            "totalBalance": { "$sum": "$amount" }
-          }
-        }
-      ]
-    };
+    const query1 = `SELECT SUM(amount)
+                    FROM balances
+                    WHERE operation = 'C'
+                    AND TO_CHAR(createdat, 'YYYY-MM') = '${month}'`;
     this.queryService.query(query1).subscribe(res=>{
-      this.totalbalance = res.length>0 ?res[0].totalBalance:0;
+      this.totalbalance = res.data[0].sum>0 ?res.data[0].sum:0;
     });
     // Add logic here to fetch and display the balance
   }
   oneMonthChange(month: string) {
-    const query1 = {
-      "collectionName": "expenses",
-      "pipeline": [
-        {
-          "$addFields": {
-            "monthYear": { "$dateToString": { "format": "%Y-%m", "date": "$createdAt" } }
-          }
-        },
-        {
-          "$match": {
-            "monthYear": month
-          }
-        },
-        {
-          "$group": {
-            "_id": null,
-            "totalExpense": { "$sum": "$amount" }
-          }
-        }
-      ]
-    };
+    const query1 = `SELECT SUM(amount)
+                    FROM expenses
+                    WHERE TO_CHAR(createdat, 'YYYY-MM') = '${month}'`;
     this.queryService.query(query1).subscribe(res=>{
-      this.totalexpense = res.length>0 ?res[0].totalExpense:0;
+      this.totalexpense = res.data[0].sum>0 ?res.data[0].sum:0;
     });
     // Add logic here to fetch and display the balance
   }
@@ -454,23 +445,33 @@ getexpenses()
   let exNo = sessionStorage.getItem('expNo');
   this.selectEmployee(Number(exemp), exName, exNo,this.type,'false');
 }
-  filterEmployees(queryKey: string, filteredListKey: string) {
-    const query = this[queryKey].toLowerCase();
-    this[filteredListKey] = this.empres.filter(emp =>
-      `${emp.empNo}: ${emp.username}`.toLowerCase().includes(query)
-    );
-  }
-  filterProjects() { 
-    if (this.searchProject) {
-      this.filteredProjects = this.projectresponse.filter(proj =>
-        `${proj.projectNumber}: ${proj.projectName}`.toLowerCase().includes(this.searchProject.toLowerCase())
+filterEmployees(queryKey: string, filteredListKey: string) {
+  const rawQuery = this[queryKey] || '';
+  const query = rawQuery.toLowerCase().replace(/[^a-z0-9]/gi, '');
+
+  this[filteredListKey] = this.empres.filter(emp => {
+    const empText = `${emp.empno}${emp.firstname || emp.username || ''}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]/gi, '');
+    
+    return empText.includes(query);
+  });
+}
+
+filterProjectsGeneric(searchValue: string, target: 'filteredProjects' | 'filteredProjects1') {
+  clearTimeout(this.searchTimeout);
+  this.searchTimeout = setTimeout(() => {
+    if (searchValue) {
+      this[target] = this.projectresponse.filter(proj =>
+        `${proj.projectnumber}: ${proj.projectname}`.toLowerCase().includes(searchValue.toLowerCase())
       );
     } else {
-      this.filteredProjects = this.projectresponse;
+      this[target] = this.projectresponse;
     }
-  }
+  }, 200);
+}
  
-  selectEmployee(employeeId: Number, employeeName:string, employeeNo: string, status: string, dropdownKey: string) {
+  selectEmployee(employeeId: NumberFormatStyle, employeeName:string, employeeNo: string, status: string, dropdownKey: string) {
     this.sempId = employeeId;
     this.expbtn = true;
     sessionStorage.setItem('expEmp', this.sempId.toString());
@@ -479,57 +480,30 @@ getexpenses()
     this.rowData = [];
     if(employeeId && this.fdate && this.tdate && this.type)
     {
-      const query = {
-        "collectionName": "expenses",
-        "pipeline": [
-          {
-            "$addFields": {
-              "createdDateStr": {
-                "$dateToString": {
-                  "format": "%Y-%m-%d",
-                  "date": "$createdAt"
-                }
-              }
-            }
-          },
-          {
-            "$match": {
-              "empId": employeeId,
-              "status": this.type,
-              "createdDateStr": {
-                "$gte": this.fdate,
-                "$lte":  this.tdate
-              }
-            }
-          },
-          // {
-          //   "$lookup": {
-          //     "from": "attachments",
-          //     "localField": "_id",
-          //     "foreignField": "expenseId",
-          //     "as": "attachments"
-          //   }
-          // },
-          {
-            "$project": {
-              "projectNumber": 1,
-              "empId": 1,
-              "expenseType": 1,
-              "amount": 1,
-              "remarks": 1,
-              "createdAt": 1,
-              "status":1,
-              "attachmentCount": 1
-            }
-          }
-        ]
-      }
+      const startDate = new Date(this.fdate).toISOString().slice(0, 10); // 'YYYY-MM-DD'
+      const endDate = new Date(this.tdate).toISOString().slice(0, 10);
+      const query = `Select 
+      id,
+      projectnumber, 
+      empid, 
+      expensetype,
+      noofworkers, 
+      amount, 
+      remarks, 
+      createdat, 
+      status, 
+      attachmentcount
+      FROM expenses
+      Where empid= ${employeeId}
+      AND status= '${this.type}'
+      AND createdat >= '${startDate}'
+      AND createdat <= '${endDate}';`;
       this.queryService.query(query).subscribe(res=>{
         this.totalexpofemp = 0;
-        this.rowData = res;
+        this.rowData = res.data;
         console.log(this.rowData);
         const groupedData = this.rowData.reduce((groups, item) => {
-          const projectNumber = item.projectNumber;
+          const projectNumber = item.projectnumber;
           const group = groups.find(group => group.projectNumber === projectNumber);
           if (group) {
             group.items.push(item);
@@ -559,9 +533,13 @@ getexpenses()
   projclick() {
     this.exporttoExcelProj(this.flattenedDataProj, this.colNamesProj)
   }
+  recordclick(){
+    this.exporttoExcellRecord(this.flattenedDatalRecord, this.colNameslrecord)
+  }
   allempbalclick() {
     this.balanceService.getallEmpBalance().subscribe(
       (res) => {
+        console.log(res);
         this.allEmpBal = res.map((item) => [
           item.firstName,
           item.totalCredit,
@@ -586,6 +564,9 @@ getexpenses()
   hideProjDropdown() {
     setTimeout(() => this.showprojDropdown = false, 200); // Delay to allow click event
   }
+  hidelRecordDropdown() {
+    setTimeout(() => this.showlRecordDropdown = false, 200); // Delay to allow click event
+  }
   exporttoExcel(data, columnNames, employeeName) {
     try {
       let empName = "";
@@ -600,11 +581,11 @@ getexpenses()
             this.expemplist.push(["ProjectNumber: "+data[i].projectNumber])
           }
           else{
-            this.expemplist.push(["", formatDate(data[i].createdAt, "dd-MM-yyyy", "en"), data[i].projectNumber, data[i].expenseType, data[i].remarks, data[i].status, data[i].amount])
+            this.expemplist.push(["", formatDate(data[i].createdat, "dd-MM-yyyy", "en"), data[i].projectnumber, data[i].expensetype, data[i].noofworkers, data[i].remarks, data[i].status, data[i].amount])
           totalamt = totalamt + data[i].amount;
           }
         }
-        this.expemplist.push(['Total', null, null, null, null, null, totalamt]);
+        this.expemplist.push(['Total', null, null, null, null, null, null, totalamt]);
         this.fileName = "";
         this.fileName = 'Employee-Expense-Data--'+ empName + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');
         // Create a new workbook
@@ -634,13 +615,15 @@ getexpenses()
   exporttoExcelEmp(data, columnNames) {
     try {
       let empName = "";
+      let empNo = "";
       if (data.length > 0) {
         this.empList = [];
         for(var k=0;k<this.empres.length;k++)
         {
-          if(this.empres[k]._id == this.empselected)
+          if(this.empres[k].id == this.empselected)
           {
             empName = this.empres[k].firstname;
+            empNo = this.empres[k].empno;
           }
         }
         this.empList.push(['Employee Name:'+ empName]);
@@ -654,7 +637,7 @@ getexpenses()
         }
       }
         this.fileName = "";
-        this.fileName = 'Employee-Change-History--' + empName + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');
+        this.fileName = 'Employee-Change-History--' + empNo +'-'+ empName + '-Dt-' + formatDate(new Date, 'dd-MM-yyyy', 'en');
         // Create a new workbook
         const wb = XLSX.utils.book_new();
 
@@ -685,13 +668,6 @@ getexpenses()
       let totalamt = 0;
       if (data.length > 0) {
         this.projList = [];
-        // for(var k=0;k<this.projectresponse.length;k++)
-        // {
-        //   if(this.projectresponse[k].projectNumber == this.expprojectId)
-        //   {
-        //     projName = this.projectresponse[k].projectName;
-        //   }
-        // }
         this.projList.push(['Project: '+ projName]);
         for (var i = 0; i < data.length; i++) {
           if(data[i].isGroupHeader)
@@ -699,7 +675,7 @@ getexpenses()
             this.projList.push(["WorkType: "+data[i].worktype])
           }
           else{
-          this.projList.push(["",data[i].projectNumber, formatDate(data[i].createdAt, "dd-MM-yyyy", "en"), data[i].empName, data[i].worktype, data[i].floor, data[i].pour, data[i].expenseType, data[i].noofWorkers, data[i].remarks, data[i].amount])
+          this.projList.push(["",data[i].projectnumber, formatDate(data[i].createdat, "dd-MM-yyyy", "en"), data[i].empname, data[i].worktype, data[i].floor, data[i].pour, data[i].expensetype, data[i].noofworkers, data[i].remarks, data[i].amount])
           totalamt = totalamt + data[i].amount;
         }
       }
@@ -729,6 +705,93 @@ getexpenses()
       console.error('Error exporting data to Excel:', error);
     }
   }
+  exporttoExcellRecord(data, columnNames){
+    try {
+      let projName = this.searchProject1;
+      if (data.length > 0) {
+        this.lrecordList = [];
+        this.lrecordList.push(['Project: ' + projName]);
+  
+        let groupedByWorktype: any = {};
+        let grandTotal = 0, grandContract = 0, grandOthers = 0;
+  
+        // First, group data by worktype and date
+        for (const row of data) {
+          if (row.isGroupHeader) {
+            continue; // Skip header marker rows
+          }
+  
+          const wt = row.worktype || 'Others';
+          const date = formatDate(row.creationdate, "dd-MM-yyyy", "en");
+  
+          if (!groupedByWorktype[wt]) groupedByWorktype[wt] = {};
+          if (!groupedByWorktype[wt][date]) groupedByWorktype[wt][date] = [];
+  
+          groupedByWorktype[wt][date].push(row);
+        }
+  
+        // Loop over worktypes
+        for (const wt in groupedByWorktype) {
+          this.lrecordList.push(['WorkType: ' + wt]);
+  
+          const dateGroups = groupedByWorktype[wt];
+  
+          for (const date in dateGroups) {
+            const rows = dateGroups[date];
+            let dateTotalWorkers = 0, dateTotalContract = 0, dateTotalOthers = 0;
+  
+            for (const row of rows) {
+              this.lrecordList.push([
+                '', 
+                formatDate(row.creationdate, "dd-MM-yyyy", "en"),
+                row.projectnumber,
+                row.floor,
+                row.pour,
+                row.workername,
+                row.workertype,
+                row.noofworkers,
+                row.intime,
+                row.outtime
+              ]);
+  
+              dateTotalWorkers += Number(row.noofworkers || 0);
+            }
+  
+            // Add date total row for this date
+            this.lrecordList.push([
+              'Date Total: ' + date, '', '', '', '','','',
+              dateTotalWorkers,
+            ]);
+            // Add empty row for spacing
+            this.lrecordList.push(['', '', '', '', '', '', '', '','','']);
+            // Accumulate to grand totals
+            grandTotal += dateTotalWorkers;
+          }
+        }
+  
+        // Add Grand Total row
+        this.lrecordList.push([
+          'Grand Total', '', '', '', '','','',
+          grandTotal,
+        ]);
+  
+        // Prepare export
+        this.fileName = 'Labour-Record-Data--' + projName + '-Dt-' + formatDate(new Date(), 'dd-MM-yyyy', 'en');
+        const wb = XLSX.utils.book_new();
+        const header = columnNames.map(name => ({ v: name }));
+        const wsData = [columnNames, ...this.lrecordList];
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        XLSX.utils.book_append_sheet(wb, ws, 'Labour Record Data');
+        XLSX.writeFile(wb, this.fileName + '.xlsx');
+      } else {
+        this.toastr.warning("No Data to Export");
+      }
+    } catch (error) {
+      console.error('Error exporting data to Excel:', error);
+    }
+  }
+  
+  
   exporttoExcelAllEmpBal(data, columnNames) {
     try {
       if (data.length > 0) {
@@ -765,7 +828,7 @@ getexpenses()
       this.toastr.success("Balance Updated Successfully");
       this.balanceService.getbalbyId(this.emplId).subscribe(res=>{
         console.log(res);
-        this.empbalamt = res[0].netAmount;
+        this.empbalamt = res.net_amount;
       });
       // this.router.navigate(['/dashboard']).then(() => {
       //   setTimeout(() => window.location.reload(), 700);
@@ -800,6 +863,12 @@ getexpenses()
     this.rowDataProj = [];
     this.filteredProjects = [...this.projectresponse];
   }
+  clearProject1(){
+    this.searchProject1 = '';
+    this.projbtn1 = false;
+    this.rowDatalRecord = [];
+    this.filteredProjects1 = [...this.projectresponse];
+  }
   public updateOptions() {
     this.salesChart.data.datasets[0].data = this.data;
     this.salesChart.update();
@@ -816,18 +885,7 @@ getexpenses()
     this.empbtn = true;
     sessionStorage.setItem('empch', this.empselected.toString());
   
-    const getbalquery = {
-      collectionName: 'balances',
-      pipeline: [
-        {
-          $match: {
-            operation: 'C', // Filter documents where operation is "C"
-            empId: this.empselected,
-          },
-        },
-      ],
-    };
-  
+   const getbalquery = `Select * from balances Where operation='C' AND empid=${this.empselected}`;
     // Make both service calls
     const auditTrail$ = this.auditService.getEmployeeUpdates();
     const balances$ = this.queryService.query(getbalquery);
@@ -836,7 +894,7 @@ getexpenses()
     forkJoin([auditTrail$, balances$]).subscribe(
       ([auditTrailResponse, balanceResponse]) => {
         this.temp = auditTrailResponse;
-        this.balance = balanceResponse;
+        this.balance = balanceResponse.data;
   
         // Process audit trail data
         this.rowDataEmp = [];
@@ -853,7 +911,7 @@ getexpenses()
         for (let k = 0; k < this.balance.length; k++) {
           this.rowDataEmp.push({
             field: 'Balance',
-            date: this.balance[k].createdAt,
+            date: this.balance[k].createdat,
             oldValue: 0,
             newValue: this.balance[k].amount,
           });
@@ -905,50 +963,33 @@ getexpenses()
     this.expprojlist = []; // Clear the project list
     this.projtotalamt = 0; // Reset total amount
     this.rowDataProj = []; // Reset grid data
-  
-    const projquery = {
-      collectionName: 'expenses',
-      pipeline: [
-        {
-          $match: {
-            projectNumber: expProjNumber,
-          },
-        },
-        {
-          $lookup: {
-            from: 'employees',
-            localField: 'empId',
-            foreignField: '_id',
-            as: 'employee',
-          },
-        },
-        {
-          $unwind: '$employee',
-        },
-        {
-          $project: {
-            _id: 0, // Exclude _id field
-            expenseId: '$_id',
-            amount: 1, // Include fields from expenses collection
-            createdAt: 1,
-            employeeId: '$employee._id',
-            empName: '$employee.firstname', // Include fields from employees collection
-            projectNumber: 1,
-            expenseType: 1,
-            floor: 1,
-            pour: 1,
-            noofWorkers: 1,
-            worktype: 1,
-            remarks: 1,
-          },
-        },
-      ],
-    };
-  
+
+    const projquery = `
+   SELECT 
+  ex.id,
+  ex.amount,
+  ex.createdat,
+  emp.id,
+  emp.firstname AS empname,
+  ex.projectnumber,
+  ex.expensetype,
+  ex.floor,
+  ex.pour,
+  ex.noofworkers,
+  ex.worktype,
+  ex.remarks
+FROM 
+  expenses ex
+JOIN 
+  employees emp ON ex.empid = emp.id
+WHERE 
+  ex.projectnumber = '${expProjNumber}'
+  AND
+  ex.status = 'Approved';`
     // Service call to fetch project data
     this.queryService.query(projquery).subscribe(
       (res) => {
-        this.expensedetails = res; // Assign response to expensedetails
+        this.expensedetails = res.data; // Assign response to expensedetails
         sessionStorage.setItem('expProject', expProjNumber); // Save project number in session storage
   
         // Process response data
@@ -988,39 +1029,117 @@ getexpenses()
     this.searchProject = `${expProjNumber} : ${expProjName}`;
     this.showprojDropdown = false;
   }
+
+  onpChange(expprojectId: number, expProjNumber: string, expProjName: string) {
+    this.projbtn1 = true; // Enable project button
+    this.lrecordList = []; // Clear the project list
+    //this.projtotalamt = 0; // Reset total amount
+    this.rowDatalRecord = []; // Reset grid data
+    if(expProjNumber && this.frdate && this.trdate)
+    {
+      const startDate = new Date(this.fdate).toISOString().slice(0, 10); // 'YYYY-MM-DD'
+      const endDate = new Date(this.tdate).toISOString().slice(0, 10);
+      const query = `Select * from labourrecord
+      Where projectnumber= '${expProjNumber}'
+      AND creationdate >= '${startDate}'
+      AND creationdate <= '${endDate}';`;
+      this.queryService.query(query).subscribe(
+    // Service call to fetch project data
+      (res) => {
+        this.labourrecorddetails = res.data; // Assign response 
+        sessionStorage.setItem('expProject', expProjNumber); // Save project number in session storage
+  
+        // Process response data
+        for (let i = 0; i < this.labourrecorddetails.length; i++) {
+          this.rowDatalRecord.push(this.labourrecorddetails[i]); // Push data to grid array
+        }
+        console.log(this.rowDatalRecord);
+        // Group and flatten data for display
+        const groupedData = this.rowDatalRecord.reduce((groups, item) => {
+          const worktype = item.worktype;
+          const group = groups.find((group) => group.worktype === worktype);
+          if (group) {
+            group.items.push(item);
+          } else {
+            groups.push({ worktype, items: [item] });
+          }
+          return groups;
+        }, []);
+  
+        this.flattenedDatalRecord = groupedData.flatMap((group) => [
+          { worktype: group.worktype, isGroupHeader: true },
+          ...group.items,
+        ]);
+  
+        // Update AG Grid data
+        this.gridApi1.setRowData(this.rowDatalRecord);
+  
+        //console.log(this.flattenedDataProj); // Log grouped and flattened data
+      },
+      (error) => {
+        console.error('Error fetching project data:', error); // Handle errors
+      }
+    );
+  }
+    // Update the search project field and close dropdown
+    this.searchProject1 = `${expProjNumber} : ${expProjName}`;
+    this.showlRecordDropdown = false;
+  }
   
   onCellClicked(params) {
-    // Handle click event for action cells
-    if (params.column.colId === "download" && params.event.target.dataset.action) {
-      let action = params.event.target.dataset.action;
-
-      if (action === "download") {
-        this.attachmentService.getAttachmentByExpId(params.data._id).subscribe(res => {
-          console.log(res);
-          if (res.length == 0) {
-            this.toastr.warning("No Attachment for this expense");
-          }
-          else {
-            for(var k=0;k<res.length;k++)
-            {
-            var byteCharacters = atob(res[k].data);
-            var byteNumbers = new Array(byteCharacters.length);
-            for (var i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            var byteArray = new Uint8Array(byteNumbers);
-            var blob = new Blob([byteArray], { type: 'application/octet-stream' });
-            var url = window.URL.createObjectURL(blob);
-            var link = document.createElement('a');
+    if (params.column.colId === "download" && params.event.target.dataset.action === "download") {
+      this.attachmentService.getAttachmentByExpId(params.data.id,'expense').subscribe(res => {
+        if (!res || res.length === 0) {
+          this.toastr.warning("No Attachment for this expense");
+          return;
+        }
+  
+        for (let k = 0; k < res.length; k++) {
+          const attachment = res[k];
+  
+          this.attachmentService.downloadAttachment(attachment.id).subscribe(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+  
             link.href = url;
-            link.download = 'Employee' + '-' + this.searchQuery + '-' + params.data.projectNumber + '-' + params.data.expenseType + '-' + 'Dt' + '-' + formatDate(params.data.createdAt, 'dd-MM-yyyy', 'en')+'.'+res[k].name.substring(res[k].name.indexOf(".") + 1);
+            link.download = `Employee-${this.searchQuery}-${params.data.projectnumber}-${params.data.expensetype}-Dt-${formatDate(params.data.createdat, 'dd-MM-yyyy', 'en')}.${attachment.filename.split('.').pop()}`;
             link.click();
-
+  
             window.URL.revokeObjectURL(url);
-          }
-          }
-        })
-      }
+          }, error => {
+            this.toastr.error("Error downloading attachment");
+          });
+        }
+      });
+    }
+  }
+  
+  onrecordClicked(params) {
+
+    if (params.column.colId === "download" && params.event.target.dataset.action === "download") {
+      this.attachmentService.getAttachmentByRecordId(params.data.id,'labourrecord').subscribe(res => {
+        if (!res || res.length === 0) {
+          this.toastr.warning("No Attachment for this labourrecord");
+          return;
+        }
+  
+        for (let k = 0; k < res.length; k++) {
+          const attachment = res[k];
+  
+          this.attachmentService.downloadAttachment(attachment.id).subscribe(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+  
+            link.href = url;
+            link.download = `Labour-Record-Project-${this.searchProject1}-${params.data.worktype}-Dt-${formatDate(params.data.creationdate, 'dd-MM-yyyy', 'en')}.${attachment.filename.split('.').pop()}`;
+            link.click();
+  
+            window.URL.revokeObjectURL(url);
+          }, error => {
+            this.toastr.error("Error downloading attachment");
+          });
+        }
+      });
     }
   }
   getbalbyId(empId: Number,empName: String ,empNo:Number) {
@@ -1028,9 +1147,9 @@ getexpenses()
     this.empbalamt = 0;
     this.balanceService.getbalbyId(empId).subscribe(res => {
       console.log(res);
-      if (res.length != 0) {
+      if (res.net_amount != 0) {
         this.nobal = false;
-        this.empbalamt = res[0].netAmount;
+        this.empbalamt = res.net_amount;
       }
       else {
         this.nobal = true;
